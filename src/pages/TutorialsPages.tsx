@@ -42,11 +42,11 @@ export function TutorialsIndexPage() {
         <h2>How to use these</h2>
         <p>
           Do the moves on the <strong>hardware</strong>. Tap <em>I did it — next</em> when you’ve
-          done that step. Progress saves in this browser. New to phrases/EQ? Skim{" "}
-          <Link to="/dj-basics">DJ basics</Link> first. Advanced tutorials include a{" "}
-          <strong>song sheet</strong> with exact titles, rough timestamps, and backup pairs — always
-          confirm cues on the waveform (radio vs extended vs sing-along edits differ). Soundtrack
-          mixes (KPop Demon Hunters, Encanto, Zootopia/Trolls) are in Advanced.
+          done that step. Progress saves in this browser. New to headphones vs the room? Read{" "}
+          <Link to="/pre-cue">Pre-cueing</Link> then do the Start here / Basics pre-cue drills.
+          Phrases and EQ: <Link to="/dj-basics">DJ basics</Link>. Advanced tutorials include a{" "}
+          <strong>song sheet</strong> — always confirm cues on the waveform (radio vs extended vs
+          sing-along edits differ).
         </p>
       </div>
 

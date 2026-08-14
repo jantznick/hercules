@@ -6,6 +6,7 @@ const NAV_GROUPS: { label: string; items: { to: string; label: string; end?: boo
     items: [
       { to: "/", label: "Home", end: true },
       { to: "/gear", label: "Gear & setup" },
+      { to: "/pre-cue", label: "Pre-cue" },
       { to: "/dj-basics", label: "DJ basics" },
       { to: "/tutorials", label: "Tutorials" },
     ],
@@ -54,7 +55,7 @@ export function Layout() {
           ))}
         </nav>
         <p className="sidebar-foot">
-          Suggested path: Gear → DJ basics → Labs → Tutorials (Start here → Advanced).
+          Suggested path: Gear → Pre-cue → DJ basics → Labs → Tutorials.
         </p>
       </aside>
 

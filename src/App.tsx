@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { HomePage } from "./pages/HomePage";
 import { GearPage } from "./pages/GearPage";
+import { PreCuePage } from "./pages/PreCuePage";
 import { DjBasicsPage } from "./pages/DjBasicsPage";
 import { TutorialDetailPage, TutorialsIndexPage } from "./pages/TutorialsPages";
 import {
@@ -22,6 +23,7 @@ export default function App() {
         <Route element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="gear" element={<GearPage />} />
+          <Route path="pre-cue" element={<PreCuePage />} />
           <Route path="dj-basics" element={<DjBasicsPage />} />
           <Route path="tutorials" element={<TutorialsIndexPage />} />
           <Route path="tutorials/:tutorialId" element={<TutorialDetailPage />} />

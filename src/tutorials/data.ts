@@ -80,6 +80,60 @@ export const TUTORIALS: Tutorial[] = [
     ],
   },
   {
+    id: "pre-cue-hear-first",
+    title: "Hear it first (pre-cue)",
+    time: "~6 min",
+    level: "Start here",
+    summary:
+      "The core DJ move: play the next track in headphones (or quietly) while the room stays on Deck 1. Learn what the headphone buttons actually do.",
+    needs: [
+      "Two different songs loaded (Deck 1 and Deck 2)",
+      "Some way to hear master (speakers or laptop)",
+      "Headphones if you have them — Mac can use AirPods as Pre-Cueing; phone usually needs the splitter tutorial next",
+    ],
+    steps: [
+      {
+        title: "Make Deck 1 the only thing in the room",
+        hardware:
+          "Crossfader hard LEFT. Deck 1 channel fader up. Deck 2 channel fader all the way down. Play Deck 1.",
+        expect: "Guests / speakers = Track A only. Deck 2 can be loaded but must be silent in the room.",
+        tip: "If you still hear Deck 2 in the room, its fader isn’t fully down or the crossfader isn’t parked.",
+      },
+      {
+        title: "Light only Deck 2’s headphone button",
+        hardware:
+          "Find the two small headphone / monitor buttons (one per deck). Turn Deck 1’s off (dark). Turn Deck 2’s on (lit).",
+        djay:
+          "Mac: Audio panel — Main = speakers, Pre-Cueing = your headphones (not Split Output unless you’re on the Y-cable). Phone: you’ll only hear a real split with the green/black cable.",
+        expect:
+          "Those buttons are on/off gates for cue — they do not pick which Bluetooth gadget is ‘the room.’",
+      },
+      {
+        title: "Play Deck 2 with its fader still down",
+        hardware: "Press Play on Deck 2. Do not raise its channel fader. Do not move the crossfader.",
+        listen:
+          "Headphones / pre-cue device should get Track B. Speakers should still be Track A. If both places play B, Deck 2 is leaking into master — fader down, crossfader left.",
+        expect:
+          "Play started the song. Faders kept it out of the room. Cue let you hear it. That’s pre-cue (PFL).",
+      },
+      {
+        title: "Both headphone buttons on, then off",
+        hardware:
+          "Light Deck 1’s headphone button too — both decks in cans so you can check if they’re lined up. Then turn both off.",
+        listen: "Both on = A+B in ears. Both off = cue silent; room still plays A.",
+        expect: "Cue can go fully quiet without stopping the party.",
+      },
+      {
+        title: "Bring Deck 2 into the room on purpose",
+        hardware:
+          "Leave Deck 2 playing. Raise its channel fader slowly, then ease the crossfader toward the center.",
+        listen: "B appears in the room when you choose — not when you pressed Play ten steps ago.",
+        expect: "You now have the loop you’ll use all night: cue incoming → line up → fade in.",
+        tip: "Read the Pre-cue page if Auto Select keeps flipping the lights for you.",
+      },
+    ],
+  },
+  {
     id: "hot-cues",
     title: "Hot cues: jump map",
     time: "~5 min",
@@ -265,6 +319,138 @@ export const TUTORIALS: Tutorial[] = [
         hardware:
           "Turn Deck 1 LOW down, move crossfader fully to Deck 2, pause/stop Deck 1, reset Deck 1’s EQ/Filter to center, load the next track.",
         expect: "Clean exit. You’re ready to repeat the other direction.",
+      },
+    ],
+  },
+  {
+    id: "pre-cue-split",
+    title: "Test the splitter (pre-cue)",
+    time: "~8 min",
+    level: "Basics",
+    summary:
+      "Prove that headphones (green) can hear the next track while speakers (black) keep playing the mix — and that two Bluetooth audio devices cannot do this.",
+    needs: [
+      "Mix Ultra paired in djay",
+      "Included splitter cable",
+      "Wired headphones",
+      "Phone 3.5 mm jack OR USB-C/Lightning → 3.5 mm dongle",
+      "Something in the black jack: computer speakers, a mini speaker, or a second cheap 3.5 mm headset",
+    ],
+    steps: [
+      {
+        title: "Wire it like a tiny DJ booth",
+        hardware:
+          "Phone (or dongle) ← splitter plug. GREEN → your headphones. BLACK → speakers (aux in). Do not Bluetooth the speakers for this test.",
+        djay: "Controller paired. Settings → Pre-cueing / Audio → enable Split output (often hidden until Mix Ultra is connected).",
+        expect: "Physical split is in. Split output is on.",
+        tip: "Charge-only USB-C dongles fail here — you need one that actually carries headphone audio.",
+      },
+      {
+        title: "Two different songs",
+        hardware:
+          "Load Track A on Deck 1, Track B on Deck 2. Crossfader LEFT. Deck 1 fader up, Deck 2 fader DOWN. Play Deck 1.",
+        listen: "Speakers (black) should be Track A only.",
+        expect: "Room = A. Deck 2 is loaded but silent in the room.",
+      },
+      {
+        title: "Cue Deck 2 in headphones",
+        hardware:
+          "Put headphones on. Press the Deck 2 headphone (monitor) button. Play Deck 2 (it can play even with its channel fader down).",
+        listen:
+          "Green/headphones = Track B (or A+B). Black/speakers should still be A only — guests don’t hear you hunting for the drop.",
+        expect: "That’s pre-cue. The two buttons choose which deck is in your ears, not which Bluetooth gadget.",
+      },
+      {
+        title: "Toggle Deck 1 phones",
+        hardware:
+          "Press Deck 1’s headphone button too. Both on = both decks in cans so you can check if they’re lined up. Turn Deck 2 phones off: cans should follow Deck 1 / master-ish cue.",
+        expect: "Buttons are PFL selects. They don’t route to two wireless devices.",
+      },
+      {
+        title: "What not to expect from Bluetooth",
+        djay: "If you unplug the splitter and connect a Bluetooth speaker + Bluetooth headphones, both will play the same mix. Cue buttons won’t split them.",
+        expect:
+          "For real cue vs room: wired split. Bluetooth speaker is OK as master only if you skip PFL or mix with faders down.",
+        tip: "On a Mac you can skip the cable: Main = speakers, Pre-Cueing = headphones. See the Mac two-devices tutorial.",
+      },
+    ],
+  },
+  {
+    id: "pre-cue-mac",
+    title: "Mac: speakers + headphones",
+    time: "~5 min",
+    level: "Basics",
+    summary:
+      "Use djay on a Mac to send the mix to one device and pre-cue to another — without the Y-cable. iPhone generally cannot do this with two Bluetooth gadgets.",
+    needs: [
+      "djay on Mac",
+      "Speakers or laptop speakers for the room",
+      "Headphones (wired is tighter; AirPods work but lag)",
+      "Two tracks loaded",
+    ],
+    steps: [
+      {
+        title: "Open djay’s Audio panel",
+        djay: "Mixer Mode = Internal. Booth = None unless you have a third speaker.",
+        expect: "You’re routing in software. Mix Ultra is only MIDI here.",
+      },
+      {
+        title: "Assign two different devices",
+        djay:
+          "Main Output = the room (MacBook speakers, monitor, Bluetooth speaker). Pre-Cueing = your headphones — pick the actual device name, not Split Output.",
+        expect: "Two destinations. Split Output is only for the green/black analog cable.",
+        tip: "Do not put AirPods on Main and Split Output on Pre-Cueing if you want a real booth.",
+      },
+      {
+        title: "Prove master is independent",
+        hardware:
+          "Crossfader left, Deck 1 fader up, play Deck 1. Turn both Mix Ultra headphone buttons OFF.",
+        listen: "Speakers play Track A. Headphones should be silent.",
+        expect: "Cue is gated by the buttons. The party doesn’t need them on.",
+      },
+      {
+        title: "Prove cue is independent",
+        hardware:
+          "Deck 2 fader down. Light only Deck 2 phones. Play Deck 2.",
+        listen: "Headphones = Track B. Speakers still = Track A.",
+        expect: "That’s the Mac two-device booth. AirPods will feel late vs speakers — normal Bluetooth latency.",
+      },
+      {
+        title: "When you’d still use the splitter",
+        djay:
+          "One analog jack (Mac headphone port or USB dongle): Main = that output, Pre-Cueing = Split Output, green = cans, black = speakers.",
+        expect: "Same PFL idea, different wire. Phone/tablet almost always needs this for a real split.",
+      },
+    ],
+  },
+  {
+    id: "pre-cue-auto-select",
+    title: "Tame Auto Select",
+    time: "~4 min",
+    level: "Basics",
+    summary:
+      "If the headphone lights jump when you move the crossfader, that’s djay Auto Select — turn it off so cue stays on the deck you chose.",
+    needs: ["djay open", "Both decks loaded", "Pre-cue already working (Mac two devices or splitter)"],
+    steps: [
+      {
+        title: "Watch it steal your cue",
+        hardware:
+          "Light only Deck 2’s headphone button. Slowly move the crossfader from left to right and back.",
+        expect:
+          "If Auto Select is on, the lights (and what you hear in cans) may flip by themselves. That’s djay, not a broken controller.",
+      },
+      {
+        title: "Turn Auto Select off",
+        djay:
+          "Mac: click the headphone icon at the top of the window → uncheck Auto Select. Or Settings → Advanced → Pre-Cueing → Auto Select off. iOS: Settings → Sound or Advanced → Pre-Cueing.",
+        expect: "The setting is in djay, not on the Mix Ultra.",
+      },
+      {
+        title: "Confirm the buttons stay put",
+        hardware:
+          "Light only Deck 2 phones. Move faders and the crossfader. The Deck 2 cue light should stay lit until you press it.",
+        expect: "You choose when to listen to the incoming track. Cue the incoming deck, not whichever djay thinks is ‘active.’",
+        tip: "You can leave Auto Select on later if you like it — just know why the lights move.",
       },
     ],
   },

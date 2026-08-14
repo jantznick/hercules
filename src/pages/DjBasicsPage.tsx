@@ -80,10 +80,11 @@ export function DjBasicsPage() {
         <section className="info-block">
           <h2>Headphones (pre-cue)</h2>
           <p>
-            Pros line up the next track in headphones while the room hears only the master. On Mix
-            Ultra that needs the splitter + djay split output (see{" "}
-            <Link to="/gear">Gear & setup</Link>). Without cans, practice quietly: keep the incoming
-            fader down until you’re sure, then edge it in.
+            Pros line up the next track in headphones while the room hears only the master. Play
+            starts the song; faders decide if the room hears it; the two headphone buttons decide if
+            you hear it in cue. Full explainer: <Link to="/pre-cue">Pre-cueing</Link>.
+            Start with <Link to="/tutorials/pre-cue-hear-first">Hear it first</Link> (no splitter
+            required if you’re on a Mac with two audio devices).
           </p>
         </section>
 

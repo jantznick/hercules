@@ -38,20 +38,26 @@ export function HomePage() {
           </Link>
         </li>
         <li>
+          <Link to="/pre-cue">
+            <strong>2. Pre-cue</strong>
+            <span>Hear the next track in cans while the room stays on the current one</span>
+          </Link>
+        </li>
+        <li>
           <Link to="/dj-basics">
-            <strong>2. DJ basics</strong>
+            <strong>3. DJ basics</strong>
             <span>BPM, phrases, “the One,” EQ — how mixing works</span>
           </Link>
         </li>
         <li>
           <Link to="/labs/cue">
-            <strong>3. Labs</strong>
+            <strong>4. Labs</strong>
             <span>Click around Cue, Hot cue, Filter, Neural, Pads until they click</span>
           </Link>
         </li>
         <li>
           <Link to="/tutorials">
-            <strong>4. Tutorials</strong>
+            <strong>5. Tutorials</strong>
             <span>Do it on the Mix Ultra — Start here → Basics → Mixing → Advanced</span>
           </Link>
         </li>
@@ -89,6 +95,10 @@ export function HomePage() {
         <Link to="/gear" className="home-card">
           <h3>Gear & setup</h3>
           <p>Battery, charging, pairing, splitter, cover — non-DJ essentials.</p>
+        </Link>
+        <Link to="/pre-cue" className="home-card">
+          <h3>Pre-cue</h3>
+          <p>Headphone buttons, faders vs Play, Mac vs phone, splitter, Auto Select — then do the drills.</p>
         </Link>
         <Link to="/dj-basics" className="home-card">
           <h3>DJ basics</h3>

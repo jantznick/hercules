@@ -88,14 +88,13 @@ export function GearPage() {
               speakers add delay — fine for parties, harder for tight scratching.
             </li>
             <li>
-              <strong>Headphones + speakers together:</strong> need a headphone jack (or USB-C /
-              Lightning → 3.5 mm adapter), the included <strong>splitter cable</strong> (green =
-              headphones, black = speakers), and in djay enable{" "}
-              <em>Split output / pre-cueing</em> after the controller is paired.
+              <strong>Headphones + speakers together:</strong> on a <strong>Mac</strong>, djay can
+              send Main to speakers and Pre-Cueing to headphones (two devices). On a{" "}
+              <strong>phone</strong>, use the included splitter (green = cans, black = speakers) and
+              Split Output. Explainer: <Link to="/pre-cue">Pre-cueing</Link>.
             </li>
             <li>
-              Two Bluetooth audio devices at once won’t give you separate cue/master — phones send
-              one stream.
+              Two Bluetooth devices on iPhone/iPad share one mix — they won’t split cue vs room.
             </li>
           </ul>
         </section>
