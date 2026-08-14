@@ -73,9 +73,9 @@
 
 .sidebar-foot {
   margin-top: auto;
-  font-size: 0.75rem;
-  line-height: 1.4;
-  color: var(--ink-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 
 .shell-main {
@@ -227,9 +227,18 @@
   border-color: var(--accent);
 }
 
+.tutorial-level-block {
+  scroll-margin-top: 1rem;
+}
+
 .tutorial-index-card h3 {
   margin: 0.35rem 0 0.3rem;
   font-size: 1.1rem;
+}
+
+.tutorial-num {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
 }
 
 .tutorial-index-card > p {
@@ -503,6 +512,101 @@
   line-height: 1.45;
 }
 
+.what-it-does,
+.how-to-use {
+  margin-top: 1.75rem;
+}
+
+.what-it-does > .section-head h2,
+.how-to-use > .section-head h2 {
+  font-size: 1.2rem;
+}
+
+.what-it-does .pad-detail-grid {
+  margin-top: 0;
+}
+
+.what-it-does .compare {
+  margin-top: 0;
+}
+
+.explain-panel {
+  background: #fff8ee;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.75rem 0.95rem;
+}
+
+.explain-panel h3 {
+  margin: 0 0 0.45rem;
+  font-size: 0.95rem;
+}
+
+.explain-panel p:last-child,
+.explain-panel ul:last-child {
+  margin-bottom: 0;
+}
+
+.how-to-use-sub {
+  margin-top: 0.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.how-to-use-sub h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.how-to-use-hint {
+  margin: 0 0 0.85rem;
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+}
+
+.how-to-use-toggle {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+
+.how-to-use-toggle.on {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: #9bcfc6;
+}
+
+.recipe-mode-pad {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.7rem;
+  height: 1.7rem;
+  aspect-ratio: auto !important;
+  padding: 0 0.4rem;
+  background: #16382c;
+  color: var(--led);
+  border: 1px solid var(--led);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.recipe-steps {
+  margin: 0.45rem 0 0;
+  padding-left: 1.15rem;
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 .pill {
   font-family: var(--mono);
   font-size: 0.68rem;
@@ -767,6 +871,21 @@
   line-height: 1.45;
 }
 
+.compare p + p,
+.compare p + ul,
+.compare ul + p {
+  margin-top: 0.55rem;
+}
+
+.compare ul {
+  margin: 0.45rem 0 0;
+  padding-left: 1.15rem;
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+}
+
 .knob-row {
   display: grid;
   grid-template-columns: 1fr;
@@ -815,6 +934,18 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 0.45rem;
   margin-top: 0.65rem;
+}
+
+.lab-crosslink {
+  margin: 0.85rem 0 0;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: #d8d0c4;
+}
+
+.lab-crosslink a {
+  color: var(--led);
+  font-weight: 650;
 }
 
 .pad {
@@ -1429,6 +1560,57 @@ tr:last-child td {
   line-height: 1.4;
 }
 
+.follow-plan {
+  margin: 1.75rem 0 1.5rem;
+}
+
+.follow-plan-note {
+  margin: 0 0 0.75rem;
+  color: var(--ink-muted);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.follow-plan-list {
+  margin: 0;
+  padding: 0 0 0 1.2rem;
+}
+
+.follow-plan-list li {
+  margin: 0 0 0.85rem;
+}
+
+.follow-plan-row {
+  font-weight: 650;
+}
+
+.follow-plan-sep {
+  margin: 0 0.35rem;
+  color: var(--ink-muted);
+  font-weight: 400;
+}
+
+.follow-plan-list p {
+  margin: 0.2rem 0 0;
+  color: var(--ink-muted);
+  line-height: 1.45;
+  font-weight: 400;
+}
+
+.layer-links {
+  margin: 1rem 0 0;
+  line-height: 1.7;
+}
+
+.layer-links .pill {
+  margin-left: 0.6rem;
+  margin-right: 0.25rem;
+}
+
+.layer-links .pill:first-child {
+  margin-left: 0;
+}
+
 .topic-find {
   list-style: none;
   margin: 0 0 1.75rem;
@@ -1621,34 +1803,128 @@ tr:last-child td {
   color: var(--ink);
 }
 
-.hub-tabs {
+.tutorial-filters {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  margin: 0 0 1rem;
+  margin: 0 0 1.1rem;
 }
 
-.hub-tab {
-  flex: 0 0 auto;
-  text-decoration: none;
-  color: var(--ink);
-  font-size: 0.8rem;
-  font-weight: 500;
-  padding: 0.4rem 0.7rem;
+.filter-chip {
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 0.35rem 0.7rem;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: #fff;
-  white-space: nowrap;
+  cursor: pointer;
 }
 
-.hub-tab:hover {
-  background: var(--bg-deep);
-}
-
-.hub-tab.active {
+.filter-chip.active {
   background: var(--accent-soft);
   border-color: #9bcfc6;
   color: var(--accent);
+}
+
+.djing-nav {
+  margin: 0 0 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.djing-nav-groups,
+.djing-nav-pages {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.djing-nav-groups {
+  background: #fff8ee;
+  border-bottom: 1px solid var(--line);
+}
+
+.djing-nav-l1 {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  height: 2.6rem;
+  padding: 0 1rem;
+  text-decoration: none;
+  color: var(--ink-muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.djing-nav-l1:hover {
+  color: var(--ink);
+  background: var(--bg-deep);
+}
+
+.djing-nav-l1.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  background: #fff;
+}
+
+.djing-nav-pages {
+  min-height: 2.5rem;
+  align-items: stretch;
+  background: #fff;
+}
+
+.djing-nav-pages + .djing-nav-pages {
+  border-top: 1px solid var(--line);
+}
+
+.djing-nav-l2 {
+  flex: 1 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0 0.9rem;
+  text-decoration: none;
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 500;
+  white-space: nowrap;
+  border-right: 1px solid var(--line);
+}
+
+.djing-nav-l2:last-child {
+  border-right: none;
+}
+
+.djing-nav-l2:hover {
+  background: var(--bg-deep);
+}
+
+.djing-nav-l2.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 650;
+}
+
+@media (max-width: 720px) {
+  .djing-nav-l1 {
+    height: 2.4rem;
+    padding: 0 0.75rem;
+    font-size: 0.82rem;
+  }
+
+  .djing-nav-l2 {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    min-height: 2.35rem;
+    padding: 0 0.8rem;
+  }
 }
 
 .eq-bands {

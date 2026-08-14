@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { RelatedExtras } from "../components/RelatedExtras";
 import { useGenre } from "../djing/GenreContext";
 import { LevelBand } from "../components/SectionCards";
 import { PageHeader } from "./HomePage";
@@ -8,9 +9,9 @@ export function LoopingPage() {
   return (
     <>
       <PageHeader
-        eyebrow="DJing · Next"
+        eyebrow="DJing · Remix"
         title="Looping"
-        description="Repeat a phrase to buy time or extend a hook. On Mix Ultra, loop pads start from the playhead — not from the hot cue you just hit."
+        description="A loop repeats a few bars so you can buy time or stretch a hook. On Mix Ultra, loop pads start from where the playhead is right now — not from the hot cue you just hit."
         actions={
           <Link to="/djing" className="text-back">
             DJing
@@ -124,12 +125,33 @@ export function LoopingPage() {
             <Link to="/settings">djay settings</Link>.
           </p>
           <p>
-            Drill: <Link to="/tutorials/loop-from-cue">Loop from a cue</Link>. In a mix:{" "}
-            <Link to="/tutorials/mix-loop-bridge">Loop-bridge into the next intro</Link> ·{" "}
+            Tutorial: <Link to="/tutorials/loop-from-cue">Loop from a cue</Link>. In a mix:{" "}
+            <Link to="/tutorials/mix-loop-bridge">Loop-bridge into the next intro</Link>. Lab:{" "}
+            <Link to="/labs/pads">Pad modes</Link>. Hands:{" "}
             <Link to="/djing/blend">The two-deck blend</Link>.
           </p>
         </section>
       </div>
+
+      <RelatedExtras
+        links={[
+          {
+            to: "/djing/remix",
+            label: "Remix catalog",
+            blurb: "Named one-song moves, including loop a hook",
+          },
+          {
+            to: "/tutorials/remix-loop-replay",
+            label: "Drill: loop a hook, replay the drop",
+            blurb: "One song, extra chorus",
+          },
+          {
+            to: "/tutorials/loop-from-cue",
+            label: "Drill: loop from a cue",
+            blurb: "Arm paused so the in-point is the One",
+          },
+        ]}
+      />
     </>
   );
 }

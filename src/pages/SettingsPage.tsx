@@ -7,7 +7,7 @@ export function SettingsPage() {
       <PageHeader
         eyebrow="Gear · djay"
         title="djay settings"
-        description="What the switches actually do, Mix Ultra–relevant defaults, and what does (and does not) follow you between phone and Mac."
+        description="What the djay switches actually do, sensible Mix Ultra defaults, and what follows you between phone and Mac."
         actions={
           <Link to="/gear" className="text-back">
             Gear
@@ -351,9 +351,9 @@ export function SettingsPage() {
       </div>
 
       <p className="footer-note">
-        Hardware pairing and the splitter: <Link to="/gear">Gear</Link> ·{" "}
-        <Link to="/pre-cue">Pre-cue</Link>. Then <Link to="/controls">The controller</Link> and{" "}
-        <Link to="/djing">DJing</Link>.
+        Hardware pairing and the splitter: <Link to="/gear/box">The box</Link> ·{" "}
+        <Link to="/pre-cue">Headphones</Link>. Button names: <Link to="/cheatsheet">Cheat sheet</Link>
+        . Craft: <Link to="/djing">DJing</Link>.
       </p>
     </>
   );

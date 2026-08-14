@@ -1,82 +1,111 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { TUTORIALS, type Tutorial } from "../tutorials/data";
-import { techniquesForTutorial } from "../djing/techniques";
+import {
+  TUTORIALS,
+  TUTORIAL_LEVELS,
+  tutorialChecklistPlace,
+  tutorialDecks,
+  tutorialNeedsHeadphones,
+  type Tutorial,
+} from "../tutorials/data";
+import { loadProgress, saveProgress } from "../tutorials/progress";
+import { tutorialsInSpineOrder } from "../spine";
+import { labsForTutorial, techniquePath, techniquesForTutorial } from "../djing/techniques";
 import { PageHeader } from "./HomePage";
 
-const STORAGE_KEY = "mix-ultra-tutorial-progress";
-
-type Progress = Record<string, number>;
-
-function loadProgress(): Progress {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return {};
-    return JSON.parse(raw) as Progress;
-  } catch {
-    return {};
-  }
-}
-
-function saveProgress(p: Progress) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
-}
-
-const LEVEL_ORDER = ["Start here", "Basics", "Remix", "Mixing", "Advanced"] as const;
-
 export function TutorialsIndexPage() {
-  const [progress, setProgress] = useState<Progress>({});
-
-  useEffect(() => {
-    setProgress(loadProgress());
-  }, []);
+  const [deckFilter, setDeckFilter] = useState<"all" | "one" | "two">("all");
+  const [headphonesOnly, setHeadphonesOnly] = useState(false);
 
   return (
     <>
       <PageHeader
-        eyebrow="4 · Practice"
-        title="Tutorials"
-        description="Hardware + djay first. Work Start here → Basics → Remix (one song) → Mixing (two decks), then Advanced recipes — club tracks, KPop Demon Hunters, and Disney/kids party mixes."
-        actions={
-          <Link to="/practice" className="text-back">
-            Practice
-          </Link>
-        }
+        eyebrow="Tutorials"
+        title="Do these on the Mix Ultra"
+        description="Top to bottom. Numbers stay the same so you can remember “I got through 6.” Leave the SYNC button off."
       />
 
-      <div className="callout accent" style={{ marginBottom: "1rem" }}>
-        <h2>How to use these</h2>
+      <p className="footer-note" style={{ marginBottom: "1rem" }}>
+        Headphones: <Link to="/pre-cue">Pre-cue</Link>. djay: <Link to="/settings">settings</Link>.
+        Click-around: <Link to="/labs">Labs</Link>. Moves:{" "}
+        <Link to="/djing/techniques">Techniques</Link>. Confirm cues on the waveform — radio vs
+        extended vs sing-along edits differ.
+      </p>
+
+      <div className="tutorial-filters" role="group" aria-label="Filter tutorials">
+        <button
+          type="button"
+          className={deckFilter === "all" && !headphonesOnly ? "filter-chip active" : "filter-chip"}
+          onClick={() => {
+            setDeckFilter("all");
+            setHeadphonesOnly(false);
+          }}
+        >
+          All
+        </button>
+        <button
+          type="button"
+          className={deckFilter === "one" ? "filter-chip active" : "filter-chip"}
+          onClick={() => setDeckFilter("one")}
+        >
+          One-deck
+        </button>
+        <button
+          type="button"
+          className={deckFilter === "two" ? "filter-chip active" : "filter-chip"}
+          onClick={() => setDeckFilter("two")}
+        >
+          Two-deck
+        </button>
+        <button
+          type="button"
+          className={headphonesOnly ? "filter-chip active" : "filter-chip"}
+          onClick={() => setHeadphonesOnly((v) => !v)}
+        >
+          Needs headphones
+        </button>
+      </div>
+
+      <div className="callout accent" style={{ marginBottom: "1.25rem" }}>
+        <h2>After Start here and Basics</h2>
         <p>
-          Do the moves on the <strong>hardware</strong>. Tap <em>I did it — next</em> when you’ve
-          done that step. Progress saves in this browser. Setup:{" "}
-          <Link to="/pre-cue">Pre-cue</Link> · <Link to="/settings">djay settings</Link>.           Ideas:{" "}
-          <Link to="/djing">DJing</Link> (cues, mix-in, remix). Named moves:{" "}
-          <Link to="/djing/techniques">Techniques</Link>. Click-around:{" "}
-          <Link to="/labs">Labs</Link>. Advanced tutorials include a <strong>song sheet</strong> —
-          always confirm cues on the waveform (radio vs extended vs sing-along edits differ).
+          Learn a new move by name. Two songs: <Link to="/djing/techniques">Mix techniques</Link>.
+          One song: <Link to="/djing/remix">Remix</Link> (Filter, pads, Neural Mix). Open Full
+          steps, then the linked tutorial or lab.
         </p>
       </div>
 
-      {LEVEL_ORDER.map((level) => {
-        const items = TUTORIALS.filter((t) => t.level === level);
+      {TUTORIAL_LEVELS.map((level) => {
+        const items = TUTORIALS.filter((t) => t.level === level.label).filter((t) => {
+          if (deckFilter !== "all" && tutorialDecks(t) !== deckFilter) return false;
+          if (headphonesOnly && !tutorialNeedsHeadphones(t)) return false;
+          return true;
+        });
         if (!items.length) return null;
         return (
-          <section key={level} className="tutorial-level-block">
-            <h2 className="home-section-title">{level}</h2>
+          <section key={level.slug} id={level.slug} className="tutorial-level-block">
+            <h2 className="home-section-title">{level.label}</h2>
             <div className="tutorial-index">
               {items.map((t) => {
-                const step = progress[t.id] ?? 0;
-                const done = step >= t.steps.length;
+                const place = tutorialChecklistPlace(t.id);
                 return (
                   <Link key={t.id} to={`/tutorials/${t.id}`} className="tutorial-index-card">
                     <div className="tutorial-meta">
-                      <span className="pill">{t.level}</span>
+                      <span className="pill">{place ? `${place.n}` : t.level}</span>
                       <span className="tutorial-time">{t.time}</span>
                     </div>
-                    <h3>{t.title}</h3>
+                    <h3>
+                      {place ? (
+                        <span className="tutorial-num" aria-hidden="true">
+                          {place.n}.{" "}
+                        </span>
+                      ) : null}
+                      {t.title}
+                    </h3>
                     <p>{t.summary}</p>
-                    <span className={`tutorial-progress ${done ? "complete" : ""}`}>
-                      {done ? "Done" : `${step}/${t.steps.length} steps`}
+                    <span className="tutorial-progress">
+                      {place ? `${place.n} of ${place.total} · ` : null}
+                      {t.steps.length} steps
                     </span>
                   </Link>
                 );
@@ -108,14 +137,19 @@ function TutorialRunner({ tutorial }: { tutorial: Tutorial }) {
   const safeIndex = Math.min(stepIndex, tutorial.steps.length - 1);
   const step = done ? null : tutorial.steps[safeIndex];
   const relatedTechniques = techniquesForTutorial(tutorial.id);
-  const idx = TUTORIALS.findIndex((t) => t.id === tutorial.id);
-  const prevTut = idx > 0 ? TUTORIALS[idx - 1] : null;
-  const nextTut = idx >= 0 && idx < TUTORIALS.length - 1 ? TUTORIALS[idx + 1] : null;
+  const relatedLabs = labsForTutorial(tutorial.id);
+  const place = tutorialChecklistPlace(tutorial.id);
+  const ordered = tutorialsInSpineOrder();
+  const idx = ordered.findIndex((t) => t.id === tutorial.id);
+  const prevTut = idx > 0 ? ordered[idx - 1] : null;
+  const nextTut = idx >= 0 && idx < ordered.length - 1 ? ordered[idx + 1] : null;
 
   return (
     <>
       <PageHeader
-        eyebrow={tutorial.level}
+        eyebrow={
+          place ? `${tutorial.level} · ${place.n} of ${place.total}` : tutorial.level
+        }
         title={tutorial.title}
         description={`${tutorial.time} · ${tutorial.summary}`}
         actions={
@@ -132,15 +166,29 @@ function TutorialRunner({ tutorial }: { tutorial: Tutorial }) {
         </div>
       )}
 
-      {relatedTechniques.length > 0 && (
-        <p className="technique-links" style={{ marginBottom: "1rem" }}>
-          <span className="technique-links-label">Technique</span>
-          {relatedTechniques.map((tech) => (
-            <Link key={tech.id} to={`/djing/techniques#${tech.id}`}>
-              {tech.title}
-            </Link>
-          ))}
-        </p>
+      {(relatedTechniques.length > 0 || relatedLabs.length > 0) && (
+        <div style={{ marginBottom: "1rem" }}>
+          {relatedTechniques.length > 0 && (
+            <p className="technique-links">
+              <span className="technique-links-label">Technique</span>
+              {relatedTechniques.map((tech) => (
+                <Link key={tech.id} to={techniquePath(tech)}>
+                  {tech.title}
+                </Link>
+              ))}
+            </p>
+          )}
+          {relatedLabs.length > 0 && (
+            <p className="technique-links">
+              <span className="technique-links-label">Lab</span>
+              {relatedLabs.map((lab) => (
+                <Link key={lab.to} to={lab.to}>
+                  {lab.label}
+                </Link>
+              ))}
+            </p>
+          )}
+        </div>
       )}
 
       <div className="tutorial-needs panel">

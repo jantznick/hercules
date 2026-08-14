@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { HowToUse, WhatItDoes } from "./HowToUse";
 
 export function FilterLab() {
   // -1 = full low-pass (cut highs), 0 = flat, +1 = full high-pass (cut lows)
@@ -142,38 +144,58 @@ export function FilterLab() {
         </div>
       </div>
 
-      <div className="explain">
-        <details open>
-          <summary>Filter vs High / Mid / Low EQ</summary>
-          <ul>
-            <li>
-              <strong>Filter</strong> — one sweeping “brightness” control. Left muffles the track;
-              right thins it. Great for dramatic transitions.
-            </li>
-            <li>
-              <strong>EQ (High / Mid / Low)</strong> — three separate bands you trim more precisely
-              (e.g. kill bass on the incoming track so kicks don’t clash, then bring bass back).
-            </li>
-          </ul>
-        </details>
-        <details>
-          <summary>Simple transition recipe</summary>
+      <WhatItDoes>
+        <div className="explain">
+          <div className="explain-panel">
+            <p>
+              One knob for brightness. Mix Ultra Filter, left of the mixer. Center is open (12
+              o’clock).
+            </p>
+            <ul>
+              <li>
+                <strong>Filter</strong> — twist left to muffle (cut highs), right to thin (cut
+                lows). Dramatic sweeps.
+              </li>
+              <li>
+                <strong>EQ (HIGH / MID / LOW)</strong> — three bands you trim more carefully (kill
+                bass so kicks don’t clash, then bring it back). Different knobs.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </WhatItDoes>
+
+      <HowToUse>
+      <div className="compare">
+        <article>
+          <h3>In a mix</h3>
           <p>
             Track A playing, Track B ready: pull B’s Low down a bit → fade B in with the
             crossfader → turn B’s filter from right (thin) toward center as it arrives → kill A’s
-            Low → crossfade fully to B → open A’s controls back to neutral for the next load.
+            Low → crossfade fully to B → open A’s controls back to neutral for the next load. Park
+            Filter at 12 o’clock when you’re done.
           </p>
-        </details>
-        <details>
-          <summary>One-song remix recipe</summary>
+          <p>
+            Full steps: <Link to="/djing/eq">EQ &amp; Filter</Link>. Drill:{" "}
+            <Link to="/tutorials/filter-sweep">Filter sweep</Link> ·{" "}
+            <Link to="/tutorials/adv-filter-open">Filter-open into a drop</Link>.
+          </p>
+        </article>
+        <article>
+          <h3>On one song</h3>
           <p>
             Stay on this deck. In a breakdown, twist Filter left (muffle) or right (thin). When{" "}
             <em>this</em> song’s drop hits (or you slap its hot cue), sweep Filter back to center
             over 8–16 beats. Same “bloom” as bringing a new track in — you never left the song.
             Always park at 12 o’clock when you’re done.
           </p>
-        </details>
+          <p>
+            Full steps: <Link to="/djing/filter">Filter as a performance tool</Link>. Drill:{" "}
+            <Link to="/tutorials/remix-filter-own-drop">Filter-open your own drop</Link>.
+          </p>
+        </article>
       </div>
+      </HowToUse>
     </div>
   );
 }

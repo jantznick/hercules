@@ -21,7 +21,7 @@ export function WaveformPage() {
       <PageHeader
         eyebrow="DJing · Basics"
         title="Read the waveform"
-        description="djay’s overview is an energy map. Tall is usually loud. Thin is usually quiet. That’s how you find where to start, the chorus/drop, singing, and where to leave — before you hear the whole file."
+        description="In djay, the overview waveform is a picture of loud vs quiet. Tall is usually loud; thin is usually quiet. You can spot where to start, the loud part, singing, and where you leave before you hear the whole file."
         actions={
           <Link to="/djing" className="text-back">
             DJing
@@ -89,8 +89,8 @@ export function WaveformPage() {
             </li>
           </ul>
           <p>
-            Mix Ultra does not auto-plant vocal cues. Isolation can smear — confirm by ear.{" "}
-            <Link to="/controls">The controller</Link>.
+            Mix Ultra does not auto-plant vocal cues. Isolation can smear — confirm by ear. Neural
+            Mix pads: <Link to="/labs/neural-pads">lab</Link>.
           </p>
         </section>
 
@@ -116,7 +116,7 @@ export function WaveformPage() {
             <Link to="/djing/style">How this music works</Link>.
           </p>
           <p>
-            Drill: <Link to="/tutorials/read-waveform">Read the waveform</Link>.
+            Tutorial: <Link to="/tutorials/read-waveform">Read the waveform</Link>.
           </p>
         </section>
       </div>

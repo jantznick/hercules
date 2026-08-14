@@ -1,17 +1,18 @@
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { HomePage } from "./pages/HomePage";
-import { GearPage } from "./pages/GearPage";
+import { GearBoxPage, GearPage } from "./pages/GearPage";
 import { PreCuePage } from "./pages/PreCuePage";
 import { MixingStrategyPage } from "./pages/MixingStrategyPage";
 import { TechniquesPage } from "./pages/TechniquesPage";
 import { CueingPage } from "./pages/CueingPage";
 import { RemixPage } from "./pages/RemixPage";
+import { RemixFilterPage } from "./pages/RemixFilterPage";
+import { RemixPadsPage } from "./pages/RemixPadsPage";
+import { RemixNeuralPage } from "./pages/RemixNeuralPage";
 import { SettingsPage } from "./pages/SettingsPage";
-import { ControlsHubPage } from "./pages/ControlsHubPage";
 import { DjingLayout } from "./pages/DjingLayout";
 import { DjingHubPage } from "./pages/DjingHubPage";
-import { PracticeHubPage } from "./pages/PracticeHubPage";
 import { PhrasingPage } from "./pages/PhrasingPage";
 import { EqMixingPage } from "./pages/EqMixingPage";
 import { LoopingPage } from "./pages/LoopingPage";
@@ -51,9 +52,10 @@ export default function App() {
         <Route element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="gear" element={<GearPage />} />
+          <Route path="gear/box" element={<GearBoxPage />} />
           <Route path="pre-cue" element={<PreCuePage />} />
           <Route path="settings" element={<SettingsPage />} />
-          <Route path="controls" element={<ControlsHubPage />} />
+          <Route path="controls" element={<Navigate to="/cheatsheet" replace />} />
           <Route path="cheatsheet" element={<CheatSheetPage />} />
           <Route path="djing" element={<DjingLayout />}>
             <Route index element={<DjingHubPage />} />
@@ -72,9 +74,12 @@ export default function App() {
             <Route path="quantize" element={<QuantizePage />} />
             <Route path="looping" element={<LoopingPage />} />
             <Route path="remix" element={<RemixPage />} />
+            <Route path="filter" element={<RemixFilterPage />} />
+            <Route path="pads-fx" element={<RemixPadsPage />} />
+            <Route path="neural" element={<RemixNeuralPage />} />
             <Route path="style" element={<StylePage />} />
           </Route>
-          <Route path="practice" element={<PracticeHubPage />} />
+          <Route path="practice" element={<Navigate to="/tutorials" replace />} />
           <Route path="tutorials" element={<TutorialsIndexPage />} />
           <Route path="tutorials/:tutorialId" element={<TutorialDetailPage />} />
           <Route path="labs" element={<LabsIndexPage />} />
@@ -82,8 +87,8 @@ export default function App() {
           <Route path="labs/hot-cue" element={<HotCueLabPage />} />
           <Route path="labs/filter" element={<FilterLabPage />} />
           <Route path="labs/neural" element={<NeuralLabPage />} />
-          <Route path="labs/neural-pads" element={<NeuralPadsLabPage />} />
           <Route path="labs/pads" element={<PadsLabPage />} />
+          <Route path="labs/neural-pads" element={<NeuralPadsLabPage />} />
           <Route path="dj-basics" element={<Navigate to="/djing" replace />} />
           <Route path="cueing" element={<CueingLegacyRedirect />} />
           <Route path="mixing-strategy" element={<Navigate to="/djing/mixing" replace />} />

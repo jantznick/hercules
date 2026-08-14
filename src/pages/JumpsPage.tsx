@@ -14,7 +14,7 @@ export function JumpsPage() {
       <PageHeader
         eyebrow="DJing · Next"
         title="When speeds don’t match"
-        description="How you leave when the next song is a different speed or a different kind of file — plus Filter, a backspin, and noise to hype a build. Short versions are on Named techniques."
+        description="When the next song is a different speed, you don’t blend for a long stretch — you leave on purpose. Filter, a backspin, and noise are extras you can use on a build."
         actions={
           <Link to="/djing" className="text-back">
             DJing
@@ -41,7 +41,7 @@ export function JumpsPage() {
           <p>
             Long blend, bass swap, drop mix, echo-out, crossfader cut:{" "}
             <Link to="/djing/transitions">Same-speed mixes</Link>. Short list of every move:{" "}
-            <Link to="/djing/techniques">Named techniques</Link>. Hands:{" "}
+            <Link to="/djing/techniques">Techniques</Link>. Hands:{" "}
             <Link to="/djing/blend">The two-deck blend</Link>.{" "}
             {genre === "any"
               ? "Pick a style above to hear which of these is the usual escape."
@@ -74,7 +74,7 @@ export function JumpsPage() {
           </ol>
           <p>{flavor.brake}</p>
           <p>
-            Drill: <Link to="/tutorials/mix-brake-cut">Echo + brake cut</Link>.
+            Tutorial: <Link to="/tutorials/mix-brake-cut">Echo + brake cut</Link>.
           </p>
         </section>
 
@@ -106,7 +106,7 @@ export function JumpsPage() {
           </ol>
           <p>{flavor.stretch}</p>
           <p>
-            Drill: <Link to="/tutorials/mix-bpm-stretch">Walk the tempo across a BPM jump</Link>.
+            Tutorial: <Link to="/tutorials/mix-bpm-stretch">Walk the tempo across a BPM jump</Link>.
           </p>
         </section>
 
@@ -120,7 +120,7 @@ export function JumpsPage() {
           </p>
           <p>{flavor.loopBridge}</p>
           <p>
-            Drill: <Link to="/tutorials/mix-loop-bridge">Loop-bridge into the next intro</Link>.
+            Tutorial: <Link to="/tutorials/mix-loop-bridge">Loop-bridge into the next intro</Link>.
           </p>
         </section>
       </div>
@@ -130,7 +130,10 @@ export function JumpsPage() {
         <section className="info-block">
           <h2>Hype the build (same song, or during a mix)</h2>
           <p>
-            Two Mix Ultra versions of “make the breakdown more exciting before the drop”:
+            Same one-song hype as Remix — Filter, backspin, noise — usable on a build even when
+            you’re about to leave for a different BPM. Full pages:{" "}
+            <Link to="/djing/filter">Filter as a performance tool</Link> ·{" "}
+            <Link to="/djing/pads-fx">Pads / FX</Link>.
           </p>
           <ul>
             <li>

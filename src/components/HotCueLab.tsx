@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { HowToUse, WhatItDoes } from "./HowToUse";
 
 const DURATION = 32;
 
@@ -130,7 +131,7 @@ export function HotCueLab() {
     setPosition(existing);
     setPlaying(true);
     setLog(
-      `Pad ${i + 1} already set → jump to ${formatTime(existing)} and play immediately. This is the big difference from the main CUE button.`,
+        `Pad ${i + 1} already set → jump to ${formatTime(existing)} and play immediately.`,
     );
   };
 
@@ -222,28 +223,29 @@ export function HotCueLab() {
         </div>
       </div>
 
+      <WhatItDoes>
+        <div className="explain">
+          <div className="explain-panel">
+            <p>
+              Press HOT CUE on Mix Ultra first. Up to eight pads on this deck. Empty pad = plant a
+              bookmark at the playhead. Lit pad = jump there and keep playing. SHIFT + pad = erase.
+            </p>
+            <p>
+              Local files usually keep hot cues in djay; streaming may not. The one main CUE button
+              is a different control — see the <Link to="/labs/cue">CUE lab</Link>.
+            </p>
+          </div>
+        </div>
+      </WhatItDoes>
+
+      <HowToUse>
       <div className="compare">
         <article>
-          <h3>Main CUE button</h3>
+          <h3>In a mix</h3>
           <p>
-            One marker per deck. While playing, the button usually{" "}
-            <strong>stops and returns</strong> to that spot. Great for “always go back to the
-            intro / drop.”
+            Two songs. Plant a mix-in map on the incoming deck so you start on the same phrase every
+            time:
           </p>
-        </article>
-        <article>
-          <h3>HOT CUE pads</h3>
-          <p>
-            Up to eight markers. Pressing a set pad{" "}
-            <strong>jumps and keeps playing</strong> — instant skips to verse, chorus, drop, vocal
-            stab, etc. Erase with SHIFT + pad.
-          </p>
-        </article>
-      </div>
-
-      <div className="explain">
-        <details>
-          <summary>How to use hot cues in a mix</summary>
           <ul>
             <li>Pad 1: intro / where you usually start the track</li>
             <li>Pad 2: first drop or chorus</li>
@@ -251,23 +253,27 @@ export function HotCueLab() {
             <li>Pad 4: outro or a loop-friendly phrase</li>
           </ul>
           <p>
-            Local files keep hot cues in djay. Streaming tracks may or may not save them depending
-            on the service.
+            Deck 2: scrub to the entry phrase → tap pad 1 (sets it). Later, tap pad 1 again to jump
+            there and play, then bring it in with the fader. Local files keep hot cues in djay;
+            streaming may not. Full steps: <Link to="/djing/cueing">Which cues to set</Link>. Drill:{" "}
+            <Link to="/tutorials/hot-cues">Hot cues jump map</Link>.
           </p>
-        </details>
-        <details>
-          <summary>How to use hot cues to remix one song</summary>
+        </article>
+        <article>
+          <h3>On one song</h3>
+          <p>Same file, different order — no second deck. A remix jump map:</p>
           <ul>
             <li>Pad 1: intro · Pad 2: verse/hook · Pad 3: drop (replay button)</li>
             <li>Pad 4: breakdown · Pad 5: a vocal or drum hit</li>
             <li>Play, then jump drop → breakdown → drop again on phrase starts (“the One”)</li>
-            <li>
-              That’s live remixing: same file, different order — no second deck. See{" "}
-              <Link to="/djing/remix">Remix one song</Link>.
-            </li>
           </ul>
-        </details>
+          <p>
+            Hitting a set pad jumps and keeps playing. Full
+            steps: <Link to="/djing/remix">Remix one song</Link>.
+          </p>
+        </article>
       </div>
+      </HowToUse>
     </div>
   );
 }

@@ -1,18 +1,59 @@
 import { Link } from "react-router-dom";
 import { PageHeader } from "./HomePage";
 
+const GEAR_PAGES = [
+  {
+    to: "/gear/box",
+    title: "The box",
+    blurb: "Charge, pair Bluetooth, battery LEDs, and where sound comes from.",
+  },
+  {
+    to: "/pre-cue",
+    title: "Headphones",
+    blurb: "Hear the next song in your ears while the room keeps the current one.",
+  },
+  {
+    to: "/settings",
+    title: "djay settings",
+    blurb: "Mix Ultra defaults in djay, and what follows you between phone and Mac.",
+  },
+];
+
 export function GearPage() {
   return (
     <>
       <PageHeader
         eyebrow="1 · Gear"
-        title="Your Mix Ultra + djay"
-        description="Charging, pairing, the splitter, and djay settings. Tabs above jump to headphones and settings."
+        title="Mix Ultra + djay"
+        description="This guide is for the Hercules DJControl Mix Ultra with djay Pro AI. Set up the box, headphones, and djay — then mix."
       />
 
-      <h2 className="home-section-title">
-        The box
-      </h2>
+      <div className="home-cards">
+        {GEAR_PAGES.map((page) => (
+          <Link key={page.to} to={page.to} className="home-card">
+            <h3>{page.title}</h3>
+            <p>{page.blurb}</p>
+          </Link>
+        ))}
+      </div>
+
+      <p className="footer-note">
+        First night on the box: <Link to="/tutorials/first-session">First session</Link>. Button
+        names: <Link to="/cheatsheet">Cheat sheet</Link>. Then <Link to="/djing">DJing</Link>.
+      </p>
+    </>
+  );
+}
+
+export function GearBoxPage() {
+  return (
+    <>
+      <PageHeader
+        eyebrow="Gear · the box"
+        title="The Mix Ultra"
+        description="Charge the box, pair Bluetooth, and set up speakers vs headphones."
+      />
+
       <div className="info-stack">
         <section className="info-block">
           <h2>Power & charging</h2>
@@ -144,8 +185,9 @@ export function GearPage() {
       </div>
 
       <p className="footer-note">
-        Next: <Link to="/controls">The controller</Link> (buttons), then{" "}
-        <Link to="/djing">DJing</Link> (techniques). Official{" "}
+        First night on the box: <Link to="/tutorials/first-session">First session</Link>. Button
+        names: <Link to="/cheatsheet">Cheat sheet</Link>. Then <Link to="/djing">DJing</Link>.
+        Official{" "}
         <a
           href="https://ts.hercules.com/download/sound/manuals/DJC_Mix_Ultra/DJControl_Mix_Ultra_user_manual_EN.pdf"
           target="_blank"

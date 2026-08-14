@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { HowToUse, WhatItDoes } from "./HowToUse";
 
 const DURATION = 32; // seconds of fake track
 
@@ -44,7 +46,7 @@ export function CueLab() {
         if (next >= DURATION) {
           setPlaying(false);
           setPosition(DURATION);
-          setLog("Track ended. Pause light would stop blinking.");
+          setLog("Track ended.");
         } else {
           setPosition(next);
         }
@@ -144,9 +146,7 @@ export function CueLab() {
   const onPlay = () => {
     if (playing) {
       setPlaying(false);
-      setLog(
-        "Paused. Play/Pause LED blinks to the beat while paused — that blink is normal, not an error.",
-      );
+      setLog("Paused. Press CUE to plant a marker here, or Play to continue.");
       return;
     }
     setPlaying(true);
@@ -189,12 +189,6 @@ export function CueLab() {
             Cue{" "}
             <strong>{cuePoint == null ? "none" : formatTime(cuePoint)}</strong>
           </span>
-          <span>
-            Play LED{" "}
-            <strong className={playing ? undefined : "blink"}>
-              {playing ? "solid" : "blinking"}
-            </strong>
-          </span>
         </div>
 
         <div
@@ -223,7 +217,7 @@ export function CueLab() {
         </div>
 
         <div className="lab-toolbar">
-          <button type="button" className={playing ? "active" : "blink"} onClick={onPlay}>
+          <button type="button" className={playing ? "active" : undefined} onClick={onPlay}>
             {playing ? "Pause" : "Play"}
           </button>
           <button type="button" className="cue-btn active" onClick={onCue}>
@@ -246,44 +240,63 @@ export function CueLab() {
         </div>
       </div>
 
-      <div className="explain">
-        <details open>
-          <summary>Why does Play blink when I pause?</summary>
+      <WhatItDoes>
+        <div className="explain">
+          <div className="explain-panel">
+            <p>
+              One main CUE per deck — the white triangle in djay. Mix Ultra + djay:
+            </p>
+            <ul>
+              <li>
+                <strong>Paused + CUE</strong> — plants (or moves) the marker at the playhead.
+              </li>
+              <li>
+                <strong>Playing + CUE</strong> — stops and jumps back to that marker. No cue yet →
+                jumps to the start.
+              </li>
+              <li>
+                <strong>CUE then Play</strong> — start from the cue (preview the drop).
+              </li>
+              <li>
+                <strong>SHIFT + CUE</strong> — play from the very beginning of the track.
+              </li>
+            </ul>
+            <p>
+              Stutter: cue first, then hold SHIFT and tap Play quickly to restart from that spot.
+              Jumping around without stopping is a hot-cue pad, not this button.
+            </p>
+          </div>
+        </div>
+      </WhatItDoes>
+
+      <HowToUse>
+      <div className="compare">
+        <article>
+          <h3>In a mix</h3>
           <p>
-            On Mix Ultra, Play/Pause shows a <strong>steady light while playing</strong> and a{" "}
-            <strong>light that blinks to the beat while paused</strong>. The blink means “deck is
-            ready / waiting,” not that something is wrong. Your cue point is separate from that
-            blink.
+            Plant the main CUE on the incoming track’s mix-in (usually a phrase One). Headphones on
+            that deck, pause, scrub, tap CUE. When it’s time, Play from that cue — don’t tap CUE
+            while the incoming deck is already playing, or it will stop and snap back.
           </p>
-        </details>
-        <details open>
-          <summary>What the CUE button actually does</summary>
-          <ul>
-            <li>
-              <strong>Paused + CUE</strong> — sets (or moves) the one main cue marker to the
-              current playhead. In djay: white triangle.
-            </li>
-            <li>
-              <strong>Playing + CUE</strong> — stops playback and jumps back to that cue. If no cue
-              exists, it jumps to the start.
-            </li>
-            <li>
-              <strong>CUE then PLAY</strong> — start from the cue (preview / stutter setup).
-            </li>
-            <li>
-              <strong>SHIFT + CUE</strong> — play from the very beginning of the track.
-            </li>
-          </ul>
-        </details>
-        <details>
-          <summary>Stutter trick (SHIFT + Play repeatedly)</summary>
           <p>
-            Hold SHIFT and mash Play/Pause quickly to restart from the cue over and over — a
-            “stutter.” Needs a cue set first. Try: pause on the vocal hit → CUE → play → SHIFT+Play
-            taps.
+            Full steps: <Link to="/djing/cueing">Which cues to set</Link>. Drill:{" "}
+            <Link to="/tutorials/cue-home">Plant your home CUE</Link>.
           </p>
-        </details>
+        </article>
+        <article>
+          <h3>On one song</h3>
+          <p>
+            One home CUE is “always go back to this drop / intro.” Play the song, tap CUE to return
+            and stop, then Play to hit it again. For jumping around without stopping, use hot-cue
+            pads instead of this button.
+          </p>
+          <p>
+            Drill: <Link to="/tutorials/stutter-cue">Stutter from CUE</Link>. Lab:{" "}
+            <Link to="/labs/hot-cue">Hot cues</Link>.
+          </p>
+        </article>
       </div>
+      </HowToUse>
     </div>
   );
 }

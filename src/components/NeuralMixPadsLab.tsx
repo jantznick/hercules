@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { HowToUse, WhatItDoes } from "./HowToUse";
 
 const STEMS_3 = ["Drums", "Melody", "Vocals"] as const;
 const STEMS_4 = ["Drums", "Bass", "Melody", "Vocals"] as const;
@@ -89,16 +91,6 @@ export function NeuralMixPadsLab() {
 
   return (
     <div>
-      <div className="callout warn" style={{ marginBottom: "0.9rem" }}>
-        <h2>The confusing part: lights mean “this pad action is ON”</h2>
-        <p>
-          Same as Hot Cue / Loop / FX on this controller: <strong>blue/lit = that pad is engaged</strong>,
-          dark = off. Neural Mix does <em>not</em> mean “lit = you can hear that stem” on every pad —
-          especially the bottom row, where lit means <strong>mute is on</strong> (you’re cutting that
-          stem out).
-        </p>
-      </div>
-
       <div className="lab">
         <div className="lab-toolbar">
           <button
@@ -188,58 +180,56 @@ export function NeuralMixPadsLab() {
         </div>
       </div>
 
-      <div className="compare" style={{ marginTop: "0.9rem" }}>
-        <article>
-          <h3>Top row lit</h3>
-          <p>
-            Solo is on. You mostly hear that stem. Other stems drop out of the pad mix until you turn
-            the solo off (press the lit pad again) or reset.
-          </p>
-        </article>
-        <article>
-          <h3>Bottom row lit</h3>
-          <p>
-            Mute/cut is on. That stem is removed from the full mix. Dark bottom pads = those stems
-            still play. This is the row people reverse in their head.
-          </p>
-        </article>
-      </div>
+      <WhatItDoes>
+        <div className="compare" style={{ marginTop: 0 }}>
+          <article>
+            <h3>Top row lit</h3>
+            <p>
+              Solo is on. You mostly hear that stem. Other stems drop out of the pad mix until you turn
+              the solo off (press the lit pad again) or reset.
+            </p>
+          </article>
+          <article>
+            <h3>Bottom row lit</h3>
+            <p>
+              Mute/cut is on. That stem is removed from the full mix. Dark bottom pads = those stems
+              still play. This is the row people reverse in their head.
+            </p>
+          </article>
+        </div>
+        <div className="explain">
+          <div className="explain-panel">
+            <p>
+              Lit pad = that pad’s action is ON (same as Hot Cue / Loop / FX). Dark = off. Bottom
+              row lit means mute is on — you are cutting that stem, not “hearing it.”
+            </p>
+            <ul>
+              <li>
+                <strong>Center N button</strong> (middle of the mixer) — HIGH/MID/LOW become Vocals /
+                Instruments / Drums volumes. No pads.
+              </li>
+              <li>
+                <strong>NEURAL MIX mode</strong> (deck, with Hot Cue / Loop / FX) — the 8 pads are
+                solo (top) / mute (bottom). Solid mode LED. Flashing = Sampler (SHIFT + Neural Mix)
+                by mistake.
+              </li>
+              <li>
+                <strong>All pads dark</strong> → full mix. One top lit → solo that stem. One bottom
+                lit → keep the track, cut that stem. Home = all dark, not all lit.
+              </li>
+            </ul>
+            <p>
+              In djay, pick 3 or 4 Neural Mix parts and check stem order on screen. Unused pads (4th
+              column with 3 stems) may do nothing.
+            </p>
+          </div>
+        </div>
+      </WhatItDoes>
 
-      <div className="explain">
-        <details open>
-          <summary>Two different “Neural Mix” controls (easy to mix up)</summary>
-          <ul>
-            <li>
-              <strong>Center N button</strong> (middle of the mixer) — turns HIGH/MID/LOW knobs into
-              Vocals / Instruments / Drums <em>volume</em> faders. No pads involved.
-            </li>
-            <li>
-              <strong>NEURAL MIX mode button</strong> (on the deck, with Hot Cue / Loop / FX) — makes
-              the 8 pads into solo/mute. LED on that mode button is solid. If it’s flashing, you’re
-              in <em>Sampler</em> (SHIFT + Neural Mix) by mistake.
-            </li>
-          </ul>
-        </details>
-        <details open>
-          <summary>Quick decode while you’re holding the controller</summary>
-          <ul>
-            <li>
-              <strong>All pads dark</strong> → normal full track (good “home” state).
-            </li>
-            <li>
-              <strong>One top pad lit</strong> → “give me only drums/vocals/…”
-            </li>
-            <li>
-              <strong>One bottom pad lit</strong> → “keep the track, but kill vocals/drums/…”
-            </li>
-            <li>
-              <strong>Want full mix again</strong> → turn off every lit pad (or punch through until
-              all are dark). Don’t chase “all pads lit.”
-            </li>
-          </ul>
-        </details>
-        <details>
-          <summary>101 transition uses</summary>
+      <HowToUse>
+      <div className="compare">
+        <article>
+          <h3>In a mix</h3>
           <ul>
             <li>
               Incoming track playing: mute its vocals (bottom vocals lit) while the outgoing vocal
@@ -254,9 +244,13 @@ export function NeuralMixPadsLab() {
               the other — watch which pads are lit so you remember what you cut.
             </li>
           </ul>
-        </details>
-        <details>
-          <summary>101 remix uses (one song)</summary>
+          <p>
+            Drill: <Link to="/tutorials/adv-vocal-swap">Vocal swap mashup</Link>. Full steps:{" "}
+            <Link to="/djing/neural">Neural Mix</Link>.
+          </p>
+        </article>
+        <article>
+          <h3>On one song</h3>
           <ul>
             <li>
               Mute vocals for 8 beats in a chorus (bottom vocals lit), then tap dark — instant
@@ -266,20 +260,17 @@ export function NeuralMixPadsLab() {
               Solo drums for a bar as a fake breakdown, then all-dark as the drop continues.
             </li>
             <li>
-              One stem trick at a time. Leftover mutes are how the next song “mysteriously”
-              has no vocals.
+              One stem trick at a time. Leftover mutes are how the next song “mysteriously” has no
+              vocals.
             </li>
           </ul>
-        </details>
-        <details>
-          <summary>If the pads don’t match drums/vocals on your unit</summary>
           <p>
-            In djay, set Neural Mix to 3 or 4 parts and confirm the stem order on screen. Pad 1 is
-            usually the first stem (often drums). Unused pads (4th column with only 3 stems) may do
-            nothing.
+            Full steps: <Link to="/djing/neural">Neural Mix (remix)</Link>. Drill:{" "}
+            <Link to="/tutorials/remix-flare-kit">Mute vocals for a phrase</Link>.
           </p>
-        </details>
+        </article>
       </div>
+      </HowToUse>
     </div>
   );
 }

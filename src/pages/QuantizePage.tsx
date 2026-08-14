@@ -8,9 +8,9 @@ export function QuantizePage() {
   return (
     <>
       <PageHeader
-        eyebrow="DJing · Next"
+        eyebrow="DJing · Hear"
         title="Quantize"
-        description="Snap cues and loops to the beat — sometimes. Mix Ultra has no Q button; this lives in djay. Fastest habit: leave it off, then tap vs hold."
+        description="Quantize snaps the cues and loops you set to the nearest beat. It is a setting, not a remix trick. Mix Ultra has no Q button — you turn it on in djay. Leave it off until you want that snap."
         actions={
           <Link to="/djing" className="text-back">
             DJing
@@ -56,8 +56,11 @@ export function QuantizePage() {
             </li>
           </ul>
           <p>
-            {guide.quantize} Drill:{" "}
-            <Link to="/tutorials/quantize-snap">Quantize: tap vs hold</Link>.
+            {guide.quantize} Tutorial:{" "}
+            <Link to="/tutorials/quantize-snap">Quantize: tap vs hold</Link>. If kicks still walk
+            after the numbers match:{" "}
+            <Link to="/tutorials/mix-beat-grid">When the grid is wrong</Link>. Lab:{" "}
+            <Link to="/labs/hot-cue">Hot cues</Link>.
           </p>
         </section>
       </div>

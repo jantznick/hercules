@@ -6,8 +6,8 @@ export function PreCuePage() {
     <>
       <PageHeader
         eyebrow="Gear · audio"
-        title="Pre-cueing"
-        description="Hear the next song in your headphones while the room keeps dancing to the current one. This page is the idea; the tutorials are the hands-on drills."
+        title="Headphones"
+        description="Hear the next song in your headphones while the room keeps dancing to the current one."
         actions={
           <Link to="/gear" className="text-back">
             Gear
@@ -17,51 +17,34 @@ export function PreCuePage() {
 
       <div className="intro-grid">
         <div className="callout accent">
-          <h2>The job in one sentence</h2>
+          <h2>What’s in the room vs what’s in your ears</h2>
           <p>
-            Line up Deck 2 (tempo, cue point, EQ) in <strong>your ears</strong> before anyone else
-            hears it. Then fade it in on purpose.
+            The <strong>room</strong> (speakers, a Bluetooth speaker, a booth) hears the mix: channel
+            faders, crossfader, and MASTER. <strong>Your headphones</strong> are a second listen
+            path. You can Play the next song, set a cue, and match speed without putting it in the
+            room.
           </p>
         </div>
         <div className="callout warn">
           <h2>Play is not “headphones only”</h2>
           <p>
-            Pressing Play starts the track. Whether the <em>room</em> hears it is the channel fader
-            and crossfader. Headphones are a separate listen path (PFL — pre-fader listen).
+            Pressing Play starts the track. Whether the room hears it is the channel fader and
+            crossfader. Headphones are separate (PFL — pre-fader listen). Dark headphone buttons =
+            quiet cue; the room still plays.
           </p>
         </div>
       </div>
 
       <div className="info-stack">
         <section className="info-block">
-          <h2>Two paths of sound</h2>
+          <h2>The two headphone buttons (Mix Ultra)</h2>
           <p>
-            Think of djay as sending audio down two pipes. They are independent. Mixing them up is
-            why cue “doesn’t work.”
+            Each deck has a headphone / monitor button. They do not pick “AirPods vs speakers” —
+            djay’s audio settings already did that. They pick <em>which deck</em> you hear in cue.
           </p>
           <ul>
             <li>
-              <strong>Main / master</strong> — the mix. Speakers, a Bluetooth speaker, a booth.
-              Controlled by channel faders, crossfader, and MASTER. Guests hear this.
-            </li>
-            <li>
-              <strong>Pre-cue</strong> — your DJ headphones (or the green half of the splitter).
-              Controlled by the two <strong>headphone / monitor</strong> buttons on the Mix Ultra.
-              Silent when both buttons are dark.
-            </li>
-          </ul>
-          <p>
-            The Mix Ultra is not a sound card. It only presses those cue buttons (and the rest of
-            MIDI). djay on the phone or Mac is what actually routes audio.
-          </p>
-        </section>
-
-        <section className="info-block">
-          <h2>The two headphone buttons</h2>
-          <p>They do not pick “AirPods vs speakers.” The audio dropdowns already did that.</p>
-          <ul>
-            <li>
-              <strong>Lit</strong> — that deck is sent to headphones (pre-cue).
+              <strong>Lit</strong> — that deck is in your headphones.
             </li>
             <li>
               <strong>Dark</strong> — that deck is not in headphones.
@@ -70,7 +53,7 @@ export function PreCuePage() {
               <strong>Both lit</strong> — both decks in your ears, to check they’re lined up.
             </li>
             <li>
-              <strong>Both dark</strong> — cue device stays quiet. The room still plays.
+              <strong>Both dark</strong> — headphones stay quiet. The room still plays.
             </li>
           </ul>
           <p>
@@ -80,15 +63,12 @@ export function PreCuePage() {
         </section>
 
         <section className="info-block">
-          <h2>Keep the incoming track out of the room</h2>
-          <p>
-            You can Play Deck 2 all day with the room still on Deck 1, if Deck 2 can’t reach master:
-          </p>
+          <h2>Keep the next song out of the room</h2>
           <ol>
-            <li>Crossfader all the way toward the live deck (left if Deck 1 is live).</li>
-            <li>Incoming <strong>channel fader down</strong> (belt and suspenders).</li>
+            <li>Park the crossfader all the way toward the live deck (left if Deck 1 is live).</li>
+            <li>Pull the incoming <strong>channel fader down</strong>.</li>
             <li>Light only the incoming deck’s headphone button.</li>
-            <li>Play, scrub, set CUE, SYNC, EQ — all in headphones.</li>
+            <li>Play, scrub, set a home CUE, match tempo, EQ — all in headphones.</li>
             <li>When you’re ready, raise the fader and/or move the crossfader.</li>
           </ol>
           <p>
@@ -105,59 +85,60 @@ export function PreCuePage() {
               <strong>Mac, two devices (easiest at home):</strong> Main = speakers. Pre-Cueing =
               AirPods or wired headphones — <em>not</em> Split Output. Live always plays; cue device
               only when a headphone button is lit. AirPods will feel late vs speakers; wired cue is
-              tighter. Drill:{" "}
+              tighter. Tutorial:{" "}
               <Link to="/tutorials/pre-cue-mac">Mac: speakers + headphones</Link>.
             </li>
             <li>
-              <strong>One analog jack + Hercules Y-cable:</strong> Main = that headphone/output.
-              Pre-Cueing = <strong>Split Output</strong>. Green = your headphones (cue). Black = speakers
-              (live). Works on phone or Mac. Drill:{" "}
+              <strong>Splitter (green / black):</strong> if you have the Hercules Y-cable, Main =
+              that headphone/output jack. Pre-Cueing = <strong>Split Output</strong>. Green = your
+              headphones (cue). Black = speakers (the room). Works on phone or Mac. Tutorial:{" "}
               <Link to="/tutorials/pre-cue-split">Test the splitter</Link>.
             </li>
             <li>
               <strong>iPhone / iPad without a splitter:</strong> one Bluetooth stream. Cue buttons
               won’t send AirPods one song and a speaker another. Practice with the incoming fader
-              down, or get the cable.
+              down, or use the cable.
             </li>
           </ul>
         </section>
 
         <section className="info-block">
-          <h2>What “Split Output” actually is</h2>
+          <h2>djay split output</h2>
           <p>
-            It is not a second Bluetooth device. It means: take <em>one</em> stereo jack and put the
-            mix on one side of the Y-cable and cue on the other.
+            Split Output is not a second Bluetooth device. It takes <em>one</em> stereo jack and
+            puts the mix on one side of the Y-cable and cue on the other.
           </p>
           <ul>
             <li>
               <strong>Green</strong> → headphones (cue)
             </li>
             <li>
-              <strong>Black</strong> → speakers (master)
+              <strong>Black</strong> → speakers (the room)
             </li>
           </ul>
           <p>
             If Main is Bluetooth headphones and Pre-Cueing is Split Output, you usually get mix in
-            one ear and cue in the other of <em>the same</em> headphones — not a booth. For a real room vs
-            DJ split: wired jack + Y-cable, or (Mac) two separate devices without Split Output.
+            one ear and cue in the other of <em>the same</em> headphones — not a booth. For a real
+            room vs DJ split: wired jack + Y-cable, or (Mac) two separate devices without Split
+            Output.
           </p>
         </section>
 
         <section className="info-block">
           <h2>djay Audio panel (Mac)</h2>
           <p>
-            Mixer Mode: <strong>Internal</strong>. Mix Ultra is MIDI, not a hardware mixer.
+            Mixer Mode: <strong>Internal</strong>. Mix Ultra is MIDI, not a hardware mixer. djay
+            on the phone or Mac is what actually routes audio.
           </p>
           <ul>
             <li>
-              <strong>Main Output</strong> — what guests hear.
+              <strong>Main Output</strong> — what the room hears.
             </li>
             <li>
-              <strong>Pre-Cueing</strong> — your DJ headphones, or Split Output if using the
-              Y-cable.
+              <strong>Pre-Cueing</strong> — your headphones, or Split Output if using the Y-cable.
             </li>
             <li>
-              <strong>Booth</strong> — extra copy of master. Leave None unless you have a third
+              <strong>Booth</strong> — extra copy of the mix. Leave None unless you have a third
               speaker.
             </li>
           </ul>
@@ -166,8 +147,8 @@ export function PreCuePage() {
         <section className="info-block">
           <h2>Cue lights jumping by themselves</h2>
           <p>
-            That’s djay <strong>Auto Select</strong>, not the Mix Ultra guessing. It flips headphone
-            cue toward whichever deck isn’t fully in the mix as you move faders.
+            That’s djay <strong>Auto Select</strong>. It flips headphone cue toward whichever deck
+            isn’t fully in the mix as you move faders.
           </p>
           <ul>
             <li>
@@ -202,6 +183,16 @@ export function PreCuePage() {
             </li>
           </ul>
         </section>
+
+        <section className="info-block">
+          <h2>CUE button vs headphones</h2>
+          <p>
+            The headphone buttons choose what you <em>hear</em> privately. The <strong>CUE</strong>{" "}
+            button next to Play is a home marker on the song (while playing it usually stops and
+            returns). Those are different jobs.{" "}
+            <Link to="/djing/cueing">Which cues to set</Link> · <Link to="/labs/cue">CUE lab</Link>.
+          </p>
+        </section>
       </div>
 
       <p className="footer-note">
@@ -214,7 +205,7 @@ export function PreCuePage() {
         {" · "}
         <Link to="/settings">djay settings</Link>
         {" · "}
-        <Link to="/gear">Gear</Link>.
+        <Link to="/gear/box">The box</Link>.
       </p>
     </>
   );

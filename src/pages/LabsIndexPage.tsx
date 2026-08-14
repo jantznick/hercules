@@ -5,7 +5,7 @@ const LABS = [
   {
     to: "/labs/cue",
     title: "CUE button",
-    blurb: "Pause → plant. Play → return and stop. Blinking Play is not a cue.",
+    blurb: "Pause → plant. Play → return and stop.",
   },
   {
     to: "/labs/hot-cue",
@@ -19,18 +19,18 @@ const LABS = [
   },
   {
     to: "/labs/neural",
-    title: "EQ vs Neural knobs",
+    title: "HIGH / MID / LOW",
     blurb: "Center N remaps HIGH/MID/LOW to stem volumes.",
   },
   {
     to: "/labs/pads",
     title: "Pad modes",
-    blurb: "All eight modes, plus mix and remix recipes.",
+    blurb: "All eight modes: enter, TAP vs HOLD, what each pad does.",
   },
   {
     to: "/labs/neural-pads",
-    title: "Neural Mix pad lights",
-    blurb: "Extra: top = solo, bottom = mute, lit = action on.",
+    title: "Neural Mix pads",
+    blurb: "Top = solo, bottom = mute, lit = action on.",
   },
 ];
 
@@ -38,14 +38,9 @@ export function LabsIndexPage() {
   return (
     <>
       <PageHeader
-        eyebrow="4 · Practice"
-        title="Labs"
-        description="Simulators for the controls that confuse people. Do these when a tutorial’s hardware step doesn’t click yet — then go back to the Mix Ultra."
-        actions={
-          <Link to="/practice" className="text-back">
-            Practice
-          </Link>
-        }
+        eyebrow="Labs"
+        title="Click until the lights make sense"
+        description="No headphones needed. Then do the same thing on the Mix Ultra."
       />
 
       <div className="home-cards">
@@ -58,9 +53,16 @@ export function LabsIndexPage() {
       </div>
 
       <p className="footer-note">
-        Guided version of the same ideas: <Link to="/tutorials">Tutorials</Link>. Why you’d cue or
-        mix a certain way: <Link to="/djing">DJing</Link>. All practice:{" "}
-        <Link to="/practice">Labs & tutorials</Link>.
+        Matching tutorials: <Link to="/tutorials/cue-home">Plant your home CUE</Link> ·{" "}
+        <Link to="/tutorials/hot-cues">Hot cues</Link> ·{" "}
+        <Link to="/tutorials/filter-sweep">Filter sweep</Link> ·{" "}
+        <Link to="/tutorials/eq-vs-neural">EQ vs Neural Mix</Link> ·{" "}
+        <Link to="/tutorials/neural-pad-lights">Neural pad lights</Link> ·{" "}
+        <Link to="/tutorials/loop-from-cue">Loop from a cue</Link>. Pages:{" "}
+        <Link to="/djing/cueing">Cues</Link> · <Link to="/djing/eq">EQ & Filter</Link> ·{" "}
+        <Link to="/djing/remix">Remix</Link> · <Link to="/djing/looping">Looping</Link> ·{" "}
+        <Link to="/djing/filter">Filter</Link> · <Link to="/djing/pads-fx">Pads / FX</Link> ·{" "}
+        <Link to="/djing/neural">Neural Mix</Link>.
       </p>
     </>
   );

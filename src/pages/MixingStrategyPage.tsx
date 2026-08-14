@@ -12,7 +12,7 @@ export function MixingStrategyPage() {
       <PageHeader
         eyebrow="DJing · Basics"
         title="Mix in / mix out"
-        description="Which sections to overlap so energy stays up. Buttons stay the same; the length of the mix and what you stack change with the music."
+        description="When two songs play at once, overlap the incoming song’s intro with the last loud part of the one that’s already playing — so a kick stays in the room. How long that overlap lasts depends on the music."
         actions={
           <Link to="/djing" className="text-back">
             DJing
@@ -59,12 +59,13 @@ export function MixingStrategyPage() {
           <h2>Named ways to leave</h2>
           <p>
             “Which sections” is half. The other half is the <em>shape</em> of the handoff: long
-            blend, bass swap, drop mix, echo-out, crossfader cut. Full Mix Ultra steps:{" "}
-            <Link to="/djing/transitions">Same-speed mixes</Link>. What each named move is for:{" "}
-            <Link to="/djing/techniques">Named techniques</Link>. A common house window is{" "}
+            blend, bass swap, drop mix, echo-out, crossfader cut. Mix Ultra steps:{" "}
+            <Link to="/djing/transitions">Same-speed mixes</Link>. Each move:{" "}
+            <Link to="/djing/techniques">Techniques</Link>. House window:{" "}
             <Link to="/tutorials/mix-32-window">32 beats of new intro over the old chorus</Link>.
-            The order of hands around any of them: <Link to="/djing/blend">The two-deck blend</Link>.
-            Different BPMs: <Link to="/djing/jumps">When speeds don’t match</Link>.
+            Hands: <Link to="/djing/blend">The two-deck blend</Link>. Three files:{" "}
+            <Link to="/tutorials/mix-three-song-set">A three-song set</Link>. Different BPMs:{" "}
+            <Link to="/djing/jumps">When speeds don’t match</Link>.
           </p>
         </section>
       </div>
@@ -79,7 +80,7 @@ export function MixingStrategyPage() {
           </p>
           <p>{guide.countTip}</p>
           <p>
-            Drill: <Link to="/tutorials/count-phrases">Count phrases</Link>. Full counting page:{" "}
+            Tutorial: <Link to="/tutorials/count-phrases">Count phrases</Link>. Full counting page:{" "}
             <Link to="/djing/phrasing">Phrases & the One</Link>.
           </p>
         </section>
@@ -148,41 +149,33 @@ export function MixingStrategyPage() {
         </section>
 
         <section className="info-block">
-          <h2>Practice on the Mix Ultra</h2>
+          <h2>Matching drills</h2>
           <p>{guide.tutorialHint}</p>
-          <ol>
+          <ul>
             <li>
-              <Link to="/tutorials/count-phrases">Count phrases</Link>
+              <Link to="/tutorials/mix-in-mix-out">Mix in / mix out without killing energy</Link>
             </li>
             <li>
-              <Link to="/tutorials/read-waveform">Read the waveform</Link>
+              <Link to="/tutorials/mix-32-window">32-beat intro over a chorus</Link>
             </li>
             <li>
-              <Link to="/tutorials/mix-manual-beatmatch">Match BPM by hand</Link> ·{" "}
-              <Link to="/tutorials/mix-key-lock">Tempo vs how high the notes sound</Link>
+              <Link to="/tutorials/vocal-handoff">Hand off vocal tracks</Link>
             </li>
             <li>
-              <Link to="/tutorials/mix-in-mix-out">Mix in / mix out without killing energy</Link>{" "}
-              (house/techno version)
+              <Link to="/tutorials/mix-three-song-set">A three-song set</Link>
             </li>
             <li>
-              <Link to="/tutorials/vocal-handoff">Hand off vocal tracks</Link> (pop / hip-hop /
-              Disney)
+              <Link to="/tutorials/mix-gain">Gain: loudness, not EQ</Link>
             </li>
-            <li>
-              <Link to="/tutorials/mix-long-blend">Long blend</Link> ·{" "}
-              <Link to="/tutorials/mix-bass-swap">Bass swap</Link> ·{" "}
-              <Link to="/tutorials/mix-echo-out">Echo-out</Link> (beginner song sheets)
-            </li>
-            <li>
-              <Link to="/tutorials/mix-brake-cut">Echo + brake cut</Link> when speeds don’t match
-            </li>
-          </ol>
+          </ul>
+          <p>
+            <Link to="/djing/techniques">Techniques</Link> · <Link to="/tutorials">Tutorials</Link>.
+          </p>
         </section>
       </div>
 
       <p className="footer-note">
-        Why those sections exist: <Link to="/djing/songs">How songs are built</Link>. Named handoffs:{" "}
+        Song parts: <Link to="/djing/songs">How songs are built</Link>. Same-speed:{" "}
         <Link to="/djing/transitions">Same-speed mixes</Link>. Speeds don’t match:{" "}
         <Link to="/djing/jumps">When speeds don’t match</Link>. Which file:{" "}
         <Link to="/djing/choose">Pick the next song</Link>. The hands:{" "}

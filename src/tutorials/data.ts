@@ -10,23 +10,141 @@ export type TutorialStep = {
   tip?: string;
 };
 
+export type TutorialLevel = "Start here" | "Basics" | "One deck" | "Mixing" | "Advanced";
+
 export type Tutorial = {
   id: string;
   title: string;
   time: string;
-  level: "Start here" | "Basics" | "Remix" | "Mixing" | "Advanced";
+  level: TutorialLevel;
   summary: string;
   needs: string[];
   steps: TutorialStep[];
   /** Optional “pick tracks like…” framing for song-style tutorials */
   trackRecipe?: string;
+  decks?: "one" | "two";
+  needsHeadphones?: boolean;
 };
+
+/** Index groups + tutorial submenu hashes. Checklist numbers follow this order. */
+export const TUTORIAL_LEVELS: { label: TutorialLevel; slug: string }[] = [
+  { label: "Start here", slug: "start-here" },
+  { label: "Basics", slug: "basics" },
+  { label: "One deck", slug: "one-deck" },
+  { label: "Mixing", slug: "mixing" },
+  { label: "Advanced", slug: "advanced" },
+];
+
+/** Static 1…N through the grouped follow-along list (not “you are here”). */
+export function tutorialsInChecklistOrder(): Tutorial[] {
+  return TUTORIAL_LEVELS.flatMap((level) => TUTORIALS.filter((t) => t.level === level.label));
+}
+
+export function tutorialChecklistPlace(id: string): { n: number; total: number } | null {
+  const list = tutorialsInChecklistOrder();
+  const i = list.findIndex((t) => t.id === id);
+  if (i < 0) return null;
+  return { n: i + 1, total: list.length };
+}
+
+export function tutorialDecks(t: Tutorial): "one" | "two" {
+  if (t.decks) return t.decks;
+  if (t.level === "Mixing" || t.level === "Advanced") return "two";
+  const blob = `${t.summary} ${t.needs.join(" ")}`;
+  if (/Deck 2|both decks|two deck|two-deck/i.test(blob)) return "two";
+  return "one";
+}
+
+export function tutorialNeedsHeadphones(t: Tutorial): boolean {
+  if (t.needsHeadphones != null) return t.needsHeadphones;
+  const blob = `${t.summary} ${t.needs.join(" ")}`;
+  if (/headphone|pre-cue|PFL|splitter/i.test(blob)) return true;
+  return tutorialDecks(t) === "two";
+}
 
 /** Key Lock only holds this file’s notes still while the tempo fader changes speed. */
 export const KEY_LOCK_WHY =
   "Key Lock on (musical note) so this song’s notes stay put while you change speed. That is not matching two songs’ keys — there is no pitch SYNC.";
 
 export const TUTORIALS: Tutorial[] = [
+  {
+    id: "first-session",
+    title: "First session: room vs headphones",
+    time: "~12 min",
+    level: "Start here",
+    decks: "one",
+    needsHeadphones: true,
+    summary:
+      "Pair, play one song in the room, then hear a second song in headphones (PFL) without putting it on the speakers.",
+    needs: [
+      "Mix Ultra powered on + paired with djay",
+      "Speakers or laptop as the room",
+      "Headphones if you have them (Mac can use a second device as Pre-Cueing)",
+    ],
+    steps: [
+      {
+        title: "Power and pair",
+        hardware: "Turn the Mix Ultra on. Pair Bluetooth (or USB) so djay sees the deck.",
+        djay: "Library is open. You can scroll with the BROWSER knob.",
+        expect: "Lights on the box. djay is talking to Mix Ultra — not a blank MIDI device.",
+      },
+      {
+        title: "Load one song on Deck 1",
+        hardware: "BROWSER to a track you know. Left LOAD into Deck 1.",
+        expect: "Waveform on the left. Play/Pause is blinking (paused).",
+      },
+      {
+        title: "The blink is paused, not a cue",
+        hardware: "Look at Play. Don’t press CUE yet.",
+        expect: "Blink-to-the-beat while paused is normal. It does not mean a home cue is set.",
+      },
+      {
+        title: "Put Deck 1 in the room",
+        hardware: "Deck 1 channel fader up. Crossfader toward Deck 1. Press Play.",
+        listen: "The song comes from the speakers / laptop — that’s the room.",
+        expect: "One song, loud enough to talk over. You are not mixing yet.",
+      },
+      {
+        title: "Load a second song, keep it out of the room",
+        hardware:
+          "LOAD a different track on Deck 2. Channel fader on Deck 2 all the way down. Crossfader stays toward Deck 1.",
+        expect: "Deck 2 is loaded and silent in the room.",
+      },
+      {
+        title: "Headphones on the incoming deck only",
+        hardware:
+          "Light Deck 2’s headphone / monitor button. Deck 1’s headphone button off.",
+        djay: "Main output = room. Pre-cue = headphones if you’ve set that in Audio.",
+        expect: "Those buttons gate cue. They do not pick which Bluetooth gadget is the party.",
+      },
+      {
+        title: "Play Deck 2 with the fader still down",
+        hardware: "Press Play on Deck 2. Do not raise its fader. Do not move the crossfader.",
+        listen: "Headphones = Track B. Speakers still = Track A.",
+        expect: "That’s PFL / pre-cue: you hear the incoming song without the room hearing it.",
+      },
+      {
+        title: "Prove the split",
+        hardware: "Turn Deck 2’s headphone button off, then on again. Fader still down.",
+        listen: "Off = cue silent, room still A. On = B in ears again.",
+        expect: "You can mute cue without stopping the party.",
+      },
+      {
+        title: "Don’t tap CUE in time on Deck 2",
+        hardware:
+          "While Deck 2 is playing in headphones, leave the CUE button alone. CUE while playing usually stops and returns.",
+        expect: "Play keeps B running in your ears. You did not stab CUE like a pad.",
+        tip: "Hot Cue pads jump and keep playing. The CUE button next to Play is the home marker.",
+      },
+      {
+        title: "Bring B into the room on purpose, then reset",
+        hardware:
+          "Raise Deck 2’s channel fader slowly so B joins the room, then pull it back down. Stop Deck 2 if you want.",
+        listen: "B appears only when you choose — not when you pressed Play in headphones.",
+        expect: "You heard PFL vs room. That’s the first-session finish line.",
+      },
+    ],
+  },
   {
     id: "cue-home",
     title: "Plant your home CUE",
@@ -555,7 +673,7 @@ export const TUTORIALS: Tutorial[] = [
     id: "stutter-cue",
     title: "Stutter from the CUE",
     time: "~3 min",
-    level: "Remix",
+    level: "One deck",
     summary: "Use SHIFT + Play taps to stutter from your main cue — a classic one-song flare gesture.",
     needs: ["Main CUE already set on a strong hit (kick or vocal)"],
     steps: [
@@ -683,7 +801,7 @@ export const TUTORIALS: Tutorial[] = [
     id: "remix-cue-map",
     title: "Map a song for remixing",
     time: "~8 min",
-    level: "Remix",
+    level: "One deck",
     summary:
       "Plant five hot cues as a jump map, then rearrange one song live: skip ahead, replay the drop, hit the breakdown.",
     needs: [
@@ -737,7 +855,7 @@ export const TUTORIALS: Tutorial[] = [
     id: "remix-loop-replay",
     title: "Loop a hook, replay the drop",
     time: "~8 min",
-    level: "Remix",
+    level: "One deck",
     summary:
       "Extend a chorus with a 2- or 4-bar loop, exit on the One, then jump the drop again — classic one-song remix.",
     needs: [
@@ -776,7 +894,7 @@ export const TUTORIALS: Tutorial[] = [
     id: "loop-from-cue",
     title: "Loop from a cue (not late)",
     time: "~6 min",
-    level: "Remix",
+    level: "One deck",
     summary:
       "LOOP pads start from the playhead, not from the hot cue you just hit — and you have to leave HOT CUE mode to loop. Arm the loop while paused, or save a cue-loop.",
     needs: ["A hot cue already planted on a clear One (intro or chorus)", "LOOP + HOT CUE modes"],
@@ -816,7 +934,7 @@ export const TUTORIALS: Tutorial[] = [
     id: "remix-filter-own-drop",
     title: "Filter-open your own drop",
     time: "~6 min",
-    level: "Remix",
+    level: "One deck",
     summary:
       "Same filter gesture as a two-deck mix, but you open into this song’s drop — one deck, one Filter knob.",
     needs: ["Track with a breakdown then a drop/chorus", "Filter knob + a drop hot cue"],
@@ -850,7 +968,7 @@ export const TUTORIALS: Tutorial[] = [
     id: "remix-flare-kit",
     title: "A small flare kit (one song)",
     time: "~10 min",
-    level: "Remix",
+    level: "One deck",
     summary:
       "Three decorations, one at a time: echo a word, mute vocals for a phrase, optional 4-beat slicer chop — then reset.",
     needs: [
@@ -895,7 +1013,7 @@ export const TUTORIALS: Tutorial[] = [
     id: "remix-backspin-echo",
     title: "Backspin with Echo",
     time: "~6 min",
-    level: "Remix",
+    level: "One deck",
     trackRecipe:
       "SONG SHEET — one deck. Pick a song with a word or hit you can catch.\n\nDeck 1: Dua Lipa – Don’t Start Now · ~124 BPM\n• Hot cue 1 → beat 1 of a chorus (“don’t start now”)\n• Practice the spin on the last word of a line, then replay the chorus\n\nBackup: FISHER – Losing It, spin just before Drop 2, then hit the drop pad.\n\nWithout Echo, a backspin often just sounds like you bumped the platter. Hold Echo first.",
     summary:
@@ -933,7 +1051,7 @@ export const TUTORIALS: Tutorial[] = [
     id: "remix-noise-fader",
     title: "Noise chops on the empty deck",
     time: "~8 min",
-    level: "Remix",
+    level: "One deck",
     trackRecipe:
       "SONG SHEET — song on Deck 1, noise/riser on Deck 2 (or a Sampler pad).\n\nDeck 1: FISHER – Losing It · ~125 BPM\n• Hot cue 2 → the BUILD into Drop 2 (~1:40–2:00). You will chop noise during this climb.\n\nDeck 2: a DJ tool / white noise / riser / air-horn loop from djay’s Sampler or your library (search “riser”, “noise”, “sweep”). Keep it short. Watch volume — these files are often very loud.\n\nAlternate: skip Deck 2 and use Sampler pads (SHIFT + NEURAL MIX, flashing) with a riser already loaded in djay’s Sampler panel.\n\nThis is not rekordbox’s “noise color” pad FX. Mix Ultra doesn’t have that button — you load a sound and use a fader.",
     summary:
@@ -972,7 +1090,7 @@ export const TUTORIALS: Tutorial[] = [
     id: "remix-party-hook",
     title: "Remix one anthem: Can’t Stop the Feeling!",
     time: "~12 min",
-    level: "Remix",
+    level: "One deck",
     trackRecipe:
       "SONG SHEET — one deck only (no second track).\n\nJustin Timberlake – Can’t Stop the Feeling! (Trolls / radio) · ~113 BPM · ~3:56\n• Hot Cue 1 → first chorus downbeat (“I got this feeling in my body…” — often ~0:45–1:05 on radio edits)\n• Hot Cue 2 → a later chorus / last full hook (~2:30–3:00)\n• Hot Cue 3 → a quieter verse or pre-chorus you can use as a fake breakdown (~1:20–1:40)\n\nConfirm on the waveform — sing-along vs radio vs movie edits move by a few seconds.\n\nBackup one-song remix: Shakira – Try Everything, or Encanto – We Don’t Talk About Bruno (same idea: chorus replay + loop + filter).",
     summary:
@@ -2064,6 +2182,139 @@ export const TUTORIALS: Tutorial[] = [
           "Headphones Deck 2 from pad 1. FILTER right a bit, LOW down. On a One: start Deck 2, raise fader / crossfader. Over 8–16 beats, FILTER to center, LOW up, fade Shakira.",
         listen: "Try Everything → Trolls chorus bloom. Birthday-mode successful.",
         expect: "Simple, loud, on-phrase. Reset Filter/EQ.",
+      },
+    ],
+  },
+  {
+    id: "mix-gain",
+    title: "Gain: loudness, not EQ",
+    time: "~6 min",
+    level: "Basics",
+    decks: "one",
+    summary:
+      "SHIFT + HIGH is Gain — how loud that deck is before the fader. Match files; don’t clip the bedroom.",
+    needs: ["One song on Deck 1", "Channel fader and SHIFT + HIGH (Gain)"],
+    steps: [
+      {
+        title: "Fader is in the mix; Gain is before it",
+        hardware: "Deck 1 fader up, song playing at a comfortable room level. HIGH at 12 o’clock.",
+        expect: "The song is audible. You have not touched Gain yet.",
+      },
+      {
+        title: "Find Gain (SHIFT + HIGH)",
+        hardware:
+          "Hold SHIFT and turn HIGH. That’s Gain for this deck — overall loudness, not treble.",
+        listen: "The whole song gets louder or quieter. HIGH EQ did not scoop the hats by itself.",
+        expect: "You can tell Gain from HIGH. Let go of SHIFT; HIGH is EQ again.",
+      },
+      {
+        title: "Don’t win a bass fight with Gain",
+        hardware: "Turn Gain up a lot, then back to a sensible level (meters not slamming red).",
+        listen: "Too much Gain distorts. Two basslines still fight if both LOWs are up — Gain won’t fix that.",
+        expect: "Loudness is matched enough. Carve with LOW / Filter, not by clipping.",
+        tip: "Full page: EQ, bass & Filter — GAIN is not EQ.",
+      },
+      {
+        title: "Reset",
+        hardware: "Return Gain to a normal match with the other deck (or unity). HIGH at 12 o’clock.",
+        expect: "Next song won’t inherit a slammed input.",
+      },
+    ],
+  },
+  {
+    id: "mix-beat-grid",
+    title: "When the grid is wrong",
+    time: "~8 min",
+    level: "Mixing",
+    decks: "two",
+    needsHeadphones: true,
+    summary:
+      "BPM numbers can match while the kicks still walk. That’s a bad beat grid — tap or nudge it in djay. Do not press SYNC to hide it.",
+    needs: [
+      "Two songs on Deck 1 and Deck 2",
+      "Headphones on the incoming deck",
+      "Leave the SYNC button off",
+    ],
+    steps: [
+      {
+        title: "Leave SYNC off",
+        hardware:
+          "Outgoing on Deck 1 in the room. Incoming on Deck 2, fader down, headphones on Deck 2. If SYNC is lit, turn it off.",
+        expect: "You will match speed with the tempo fader, not a SYNC button.",
+      },
+      {
+        title: "Match the numbers",
+        hardware:
+          "Key Lock on (holds this song’s notes still while you change speed — not a pitch SYNC). Move Deck 2’s tempo fader until both BPM readouts agree.",
+        expect: "The numbers match. That is not the same as kicks hitting together.",
+      },
+      {
+        title: "Start Deck 2 in headphones on a kick",
+        hardware: "Play or hot cue 1 on a downbeat. Do not tap CUE in time — that usually stops and returns.",
+        listen: "If the kicks drift apart after a few bars, the grid (or the fader) is lying.",
+        expect: "You can hear walk even when the numbers look fine.",
+      },
+      {
+        title: "Nudge the jog — then check if it keeps walking",
+        hardware: "Nudge the incoming jog so kicks hit as one. Wait 8 bars.",
+        listen: "If they pull apart again, BPM still isn’t truly matched — often a wrong grid on one file.",
+        expect: "Jog is for lining up now. A wrong grid keeps slipping.",
+      },
+      {
+        title: "Fix the grid in djay, not with SYNC",
+        djay: "Tap the beat / adjust the grid on the incoming track so the downbeats sit on the kicks you hear. Recheck BPM, then the tempo fader.",
+        expect: "Kicks stay together in headphones for a phrase without SYNC on.",
+        tip: "SYNC would hide a bad grid until a mix falls apart. Full page: Match the speed yourself.",
+      },
+    ],
+  },
+  {
+    id: "mix-three-song-set",
+    title: "A three-song set",
+    time: "~15 min",
+    level: "Mixing",
+    decks: "two",
+    needsHeadphones: true,
+    summary:
+      "Three files, two transitions, reset EQ, one vocal in the room at a time. A short set — not a new mechanic.",
+    needs: [
+      "Three songs you know (A, B, C) at similar speed if you can",
+      "Headphones",
+      "Leave SYNC off; Key Lock on while you move tempo faders",
+    ],
+    trackRecipe:
+      "Pick three files you already marked (mix-in / mix-out / a vocal). Example: A in the room, B then C. Same-speed blends if they’re close; a cut or echo-out if they aren’t.\n\nLeave SYNC off. Key Lock holds pitch while you beatmatch — not a pitch SYNC.",
+    steps: [
+      {
+        title: "Mark three files",
+        hardware:
+          "Hot cues: mix-in, a loud part, a vocal if there is one, mix-out. Do this on A, B, and C before you perform.",
+        expect: "You are not hunting the waveform mid-song.",
+      },
+      {
+        title: "A in the room, B in headphones",
+        hardware:
+          "Play A. B fader down, headphones on B. Key Lock on. Tempo fader until BPM matches. Jog so kicks hit. Leave SYNC off.",
+        expect: "A is the party. B is only in your ears, matched.",
+      },
+      {
+        title: "First transition: A → B",
+        hardware:
+          "Start B on a One. One bass (LOW). Channel faders. Reset EQ and Filter on A when it’s gone.",
+        listen: "One vocal. Energy didn’t die in a quiet intro over a dying outro.",
+        expect: "B is now the room. A is reset and can be ejected.",
+      },
+      {
+        title: "Load C on the free deck",
+        hardware: "Load C where A was. Headphones on C. Match speed by hand again. Leave SYNC off.",
+        expect: "Same loop as the first mix. The box doesn’t care that this is “song three.”",
+      },
+      {
+        title: "Second transition: B → C",
+        hardware:
+          "Pick the shape (long blend, bass swap, echo-out, or cut). Reset EQ when you’re done. One vocal.",
+        listen: "Two handoffs, three files. You still have a kick unless you chose a breakdown.",
+        expect: "That’s a short set. Mixing strategy is the why; this was the drill.",
       },
     ],
   },

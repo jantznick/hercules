@@ -11,9 +11,22 @@ export type NamedTechnique = {
   goodFor: string;
   mixUltra: string;
   more?: { to: string; label: string }[];
+  labs?: { to: string; label: string }[];
   tutorials: string[];
   sourceVideos?: SourceVideoId[];
 };
+
+/** Two-song Mix index. One-song lives on `/djing/remix`. */
+export const MIX_TECHNIQUE_GROUP_IDS: TechniqueGroupId[] = [
+  "match-speed",
+  "same-speed",
+  "jump",
+  "vocal-peak",
+];
+
+export function techniquePath(tech: NamedTechnique): string {
+  return tech.group === "one-song" ? `/djing/remix#${tech.id}` : `/djing/techniques#${tech.id}`;
+}
 
 export const TECHNIQUE_GROUPS: {
   id: TechniqueGroupId;
@@ -53,7 +66,7 @@ export const TECHNIQUE_GROUPS: {
 ];
 
 export const TECHNIQUE_INTRO: Record<GenreId, string> = {
-  any: "Match speed first (hands or SYNC). Then the same-speed mixes until slow faders feel normal. When the next file can’t share a speed, stop it on purpose, walk the tempo, or loop a few bars as a bridge. Remix moves are seasoning on one song — not a second hobby mid-chorus.",
+  any: "Match speed first with the tempo fader and jog. Leave SYNC off. Then the same-speed mixes until slow faders feel normal. When the next file can’t share a speed, stop it on purpose, walk the tempo, or loop a few bars as a bridge.",
   house:
     "Long blend and bass swap are the mixes you’ll use most. A 32-beat drum intro over the last loud part (still with kick and bass) keeps energy up. Filter-open and the drop mix are for the loudest part of the night. Echo-out is an exit — not something to do every eight bars.",
   hiphop:
@@ -76,7 +89,7 @@ export const TECHNIQUES: NamedTechnique[] = [
       { to: "/djing/beatmatch", label: "Full steps" },
       { to: "/settings", label: "djay settings" },
     ],
-    tutorials: ["mix-manual-beatmatch", "two-deck-blend"],
+    tutorials: ["mix-manual-beatmatch", "mix-beat-grid", "two-deck-blend"],
     sourceVideos: ["blakey5"],
   },
   {
@@ -90,8 +103,9 @@ export const TECHNIQUES: NamedTechnique[] = [
       "Key Lock is in djay, not a labeled Mix Ultra button. Pitch Play pads jump the key of a loop — remix, not beat matching. Vinyl people call the tempo slider a “pitch fader” because speed and notes used to be glued; Key Lock unglues them.",
     more: [
       { to: "/djing/beatmatch#pitch", label: "Full steps" },
-      { to: "/labs/pads", label: "Pad modes" },
+      { to: "/djing/eq", label: "EQ, bass & filter" },
     ],
+    labs: [{ to: "/labs/pads", label: "Pad modes" }],
     tutorials: ["mix-key-lock", "mix-manual-beatmatch"],
   },
   {
@@ -120,7 +134,7 @@ export const TECHNIQUES: NamedTechnique[] = [
       { to: "/djing/transitions#bass-swap", label: "Full steps" },
       { to: "/djing/eq", label: "EQ, bass & filter" },
     ],
-    tutorials: ["mix-bass-swap", "mix-in-mix-out", "two-deck-blend"],
+    tutorials: ["mix-bass-swap", "mix-gain", "mix-in-mix-out", "two-deck-blend"],
     sourceVideos: ["blakey5", "carlo3"],
   },
   {
@@ -136,7 +150,7 @@ export const TECHNIQUES: NamedTechnique[] = [
       { to: "/djing/mixing", label: "Mix in / mix out" },
       { to: "/djing/phrasing", label: "Phrases & beat 1" },
     ],
-    tutorials: ["mix-32-window", "mix-in-mix-out"],
+    tutorials: ["mix-32-window", "mix-in-mix-out", "mix-three-song-set"],
     sourceVideos: ["carlo3"],
   },
   {
@@ -149,7 +163,8 @@ export const TECHNIQUES: NamedTechnique[] = [
     mixUltra:
       "Filter right = thinner / less bass. Filter left = muffled. 12 o’clock = leave the song alone. Reset both decks when you’re done.",
     more: [{ to: "/djing/eq", label: "EQ, bass & filter" }],
-    tutorials: ["adv-filter-open", "adv-kpdh-filter"],
+    labs: [{ to: "/labs/filter", label: "Filter" }],
+    tutorials: ["adv-filter-open", "adv-kpdh-filter", "filter-sweep"],
     sourceVideos: ["carlo3"],
   },
   {
@@ -178,6 +193,7 @@ export const TECHNIQUES: NamedTechnique[] = [
       { to: "/djing/transitions#echo-out", label: "Full steps" },
       { to: "/settings", label: "djay settings" },
     ],
+    labs: [{ to: "/labs/pads", label: "Pad modes" }],
     tutorials: ["mix-echo-out", "adv-echo-vocal", "adv-disney-bruno", "vocal-handoff"],
     sourceVideos: ["blakey5"],
   },
@@ -207,7 +223,8 @@ export const TECHNIQUES: NamedTechnique[] = [
     mixUltra:
       "Mark where each vocal starts (Neural Mix solo vocals if you need to hunt). Incoming on hot cue 1. Optional: mute vocals on the old deck (bottom Neural pad lit) for the overlap only, then all pads dark.",
     more: [{ to: "/djing/mixing", label: "Mix in / mix out" }],
-    tutorials: ["vocal-handoff", "mix-echo-out", "adv-echo-vocal"],
+    labs: [{ to: "/labs/neural-pads", label: "Neural Mix pads" }],
+    tutorials: ["vocal-handoff", "mix-echo-out", "adv-echo-vocal", "adv-kids-party"],
   },
   {
     id: "brake-cut",
@@ -251,6 +268,7 @@ export const TECHNIQUES: NamedTechnique[] = [
       { to: "/djing/jumps#loop-bridge", label: "Full steps" },
       { to: "/djing/looping", label: "Looping" },
     ],
+    labs: [{ to: "/labs/pads", label: "Pad modes" }],
     tutorials: ["mix-loop-bridge", "pads-transition", "loop-from-cue"],
     sourceVideos: ["carlo3"],
   },
@@ -264,6 +282,10 @@ export const TECHNIQUES: NamedTechnique[] = [
     mixUltra:
       "NEURAL MIX pad mode (solid LED, not flashing Sampler). Bottom pad lit = mute on. Home is all pads dark. If the wrong stem died, tap off and try the neighbor. Leave Neural mode (HOT CUE) when you’re done.",
     more: [{ to: "/djing/remix", label: "Remix one song" }],
+    labs: [
+      { to: "/labs/neural-pads", label: "Neural Mix pads" },
+      { to: "/labs/neural", label: "HIGH / MID / LOW" },
+    ],
     tutorials: ["adv-vocal-swap", "adv-kpdh-neural", "vocal-handoff"],
   },
   {
@@ -291,6 +313,7 @@ export const TECHNIQUES: NamedTechnique[] = [
       { to: "/djing/remix", label: "Remix one song" },
       { to: "/djing/cueing", label: "Which cues to set" },
     ],
+    labs: [{ to: "/labs/hot-cue", label: "Hot cues" }],
     tutorials: ["remix-cue-map", "remix-loop-replay", "remix-party-hook", "hot-cues"],
   },
   {
@@ -303,6 +326,10 @@ export const TECHNIQUES: NamedTechnique[] = [
     mixUltra:
       "LOOP starts from now. Arm it paused on beat 1 if you need that bar. Tap the lit loop pad to exit. Then HOT CUE so you’re not stuck in LOOP mode.",
     more: [{ to: "/djing/looping", label: "Looping" }],
+    labs: [
+      { to: "/labs/pads", label: "Pad modes" },
+      { to: "/labs/hot-cue", label: "Hot cues" },
+    ],
     tutorials: ["remix-loop-replay", "remix-party-hook", "loop-from-cue"],
   },
   {
@@ -314,7 +341,11 @@ export const TECHNIQUES: NamedTechnique[] = [
       "One-deck practice, or hype a build when you aren’t mixing yet. Works on house builds and on a quiet verse into a chorus.",
     mixUltra:
       "Filter left = muffled, right = thin, center = open. Easy to forget and leave it half-cut. If you also looped the breakdown, exit the loop on the same beat 1.",
-    more: [{ to: "/djing/eq", label: "EQ, bass & filter" }],
+    more: [
+      { to: "/djing/filter", label: "Filter as a performance tool" },
+      { to: "/djing/eq#filter", label: "EQ page (mixing)" },
+    ],
+    labs: [{ to: "/labs/filter", label: "Filter" }],
     tutorials: ["remix-filter-own-drop", "filter-sweep", "remix-party-hook"],
     sourceVideos: ["carlo3"],
   },
@@ -327,7 +358,8 @@ export const TECHNIQUES: NamedTechnique[] = [
       "A title line, a character name, a shouted ad-lib. One trick, then home. Doing it every phrase turns into a bit.",
     mixUltra:
       "FX mode, hold the Echo pad ~1–2 beats, release. Then press HOT CUE so you’re not stuck in FX. Post vs Pre fader matters less here because the fader stays up.",
-    more: [{ to: "/djing/remix", label: "Remix one song" }],
+    more: [{ to: "/djing/pads-fx", label: "Pads / FX" }],
+    labs: [{ to: "/labs/pads", label: "Pad modes" }],
     tutorials: ["remix-flare-kit"],
   },
   {
@@ -339,7 +371,11 @@ export const TECHNIQUES: NamedTechnique[] = [
       "A chorus the room already knows — instrumental for a moment, then the line returns. Not for hiding a mix mistake for a whole verse.",
     mixUltra:
       "NEURAL MIX solid (not Sampler). Bottom vocals pad lit = mute on. Count 8 beats, tap it dark again. All Neural pads dark before you continue. Solo drums (top row) is the same idea — spotlight, then all-dark.",
-    more: [{ to: "/djing/remix", label: "Remix one song" }],
+    more: [{ to: "/djing/neural", label: "Neural Mix" }],
+    labs: [
+      { to: "/labs/neural-pads", label: "Neural Mix pads" },
+      { to: "/labs/neural", label: "HIGH / MID / LOW" },
+    ],
     tutorials: ["remix-flare-kit", "neural-pad-lights", "eq-vs-neural"],
   },
   {
@@ -351,7 +387,11 @@ export const TECHNIQUES: NamedTechnique[] = [
       "A short buildup into a drop you marked as the home CUE. Easy to overdo. A few hits, then let it play.",
     mixUltra:
       "The CUE button plants the home marker while paused. While playing, CUE usually stops and returns — stutter uses SHIFT + Play from that marker. Confirm a cue is planted first.",
-    more: [{ to: "/djing/cueing", label: "Which cues to set" }],
+    more: [
+      { to: "/djing/pads-fx", label: "Pads / FX" },
+      { to: "/djing/cueing", label: "Which cues to set" },
+    ],
+    labs: [{ to: "/labs/cue", label: "CUE button" }],
     tutorials: ["stutter-cue", "cue-home"],
   },
   {
@@ -363,7 +403,8 @@ export const TECHNIQUES: NamedTechnique[] = [
       "Last bar of a build, then the drop. A word you can catch. Keep it short — two bars of spinning is a mistake.",
     mixUltra:
       "Touch the top of the jog. Hold Echo first, then spin, then release Echo as the wash dies. Replay from a chorus hot cue while you practice.",
-    more: [{ to: "/djing/jumps", label: "Full steps" }],
+    more: [{ to: "/djing/pads-fx", label: "Pads / FX" }],
+    labs: [{ to: "/labs/pads", label: "Pad modes" }],
     tutorials: ["remix-backspin-echo"],
     sourceVideos: ["carlo3"],
   },
@@ -376,7 +417,8 @@ export const TECHNIQUES: NamedTechnique[] = [
       "Hype a breakdown when you want more than Filter. Watch volume — these files are often very loud.",
     mixUltra:
       "No Pioneer rekordbox “noise color” pad. Load a riser or white-noise loop on the empty deck, or Sampler (SHIFT + NEURAL MIX, flashing). Turn Gain down first. Leave Sampler when done so a leftover sample doesn’t blast into the next mix.",
-    more: [{ to: "/djing/jumps", label: "Full steps" }],
+    more: [{ to: "/djing/pads-fx", label: "Pads / FX" }],
+    labs: [{ to: "/labs/pads", label: "Pad modes" }],
     tutorials: ["remix-noise-fader"],
     sourceVideos: ["carlo3"],
   },
@@ -389,11 +431,54 @@ export const TECHNIQUES: NamedTechnique[] = [
       "A drum bar in a breakdown or the last bar before a drop. Optional candy, not a personality.",
     mixUltra:
       "LOOP → 1-bar pad. SHIFT + FX enters Slicer (flashing). Hold a few slice pads, release, press FX to leave Slicer, tap the lit loop pad to exit the loop. Back to HOT CUE. Filter still at 12 o’clock.",
-    more: [{ to: "/labs/pads", label: "Pad modes" }],
+    more: [{ to: "/djing/pads-fx", label: "Pads / FX" }],
+    labs: [{ to: "/labs/pads", label: "Pad modes" }],
     tutorials: ["remix-flare-kit"],
   },
 ];
 
 export function techniquesForTutorial(tutorialId: string): NamedTechnique[] {
   return TECHNIQUES.filter((t) => t.tutorials.includes(tutorialId));
+}
+
+export type LabLink = { to: string; label: string };
+
+/** Labs that match a tutorial even when no named technique lists them. */
+const EXTRA_TUTORIAL_LABS: Record<string, LabLink[]> = {
+  "first-session": [{ to: "/labs/cue", label: "CUE button" }],
+  "cue-home": [{ to: "/labs/cue", label: "CUE button" }],
+  "hot-cues": [{ to: "/labs/hot-cue", label: "Hot cues" }],
+  "quantize-snap": [{ to: "/labs/hot-cue", label: "Hot cues" }],
+  "filter-sweep": [{ to: "/labs/filter", label: "Filter" }],
+  "eq-vs-neural": [{ to: "/labs/neural", label: "HIGH / MID / LOW" }],
+  "neural-pad-lights": [{ to: "/labs/neural-pads", label: "Neural Mix pads" }],
+  "pads-transition": [{ to: "/labs/pads", label: "Pad modes" }],
+};
+
+export function labsForTutorial(tutorialId: string): LabLink[] {
+  const seen = new Set<string>();
+  const out: LabLink[] = [];
+  for (const lab of EXTRA_TUTORIAL_LABS[tutorialId] ?? []) {
+    if (seen.has(lab.to)) continue;
+    seen.add(lab.to);
+    out.push(lab);
+  }
+  for (const tech of techniquesForTutorial(tutorialId)) {
+    for (const lab of tech.labs ?? []) {
+      if (seen.has(lab.to)) continue;
+      seen.add(lab.to);
+      out.push(lab);
+    }
+  }
+  return out;
+}
+
+export function tutorialsForLabPath(labTo: string): string[] {
+  const fromExtra = Object.entries(EXTRA_TUTORIAL_LABS)
+    .filter(([, labs]) => labs.some((l) => l.to === labTo))
+    .map(([id]) => id);
+  const fromTech = TECHNIQUES.filter((t) => t.labs?.some((l) => l.to === labTo)).flatMap(
+    (t) => t.tutorials,
+  );
+  return [...new Set([...fromExtra, ...fromTech])];
 }

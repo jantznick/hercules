@@ -13,7 +13,7 @@ export function ChoosePage() {
       <PageHeader
         eyebrow="DJing · Next"
         title="Pick the next song"
-        description="Two decks means one next file. Speed, vocals, how busy the songs are, and which version you loaded matter more than “I like both.” The style menu rewrites what “good next” usually means."
+        description="The next song has to work next to the one that’s playing: similar speed, not two singers at once, and not two busy parts stacked. Liking both songs isn’t enough."
         actions={
           <Link to="/djing" className="text-back">
             DJing

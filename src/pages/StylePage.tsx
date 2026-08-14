@@ -14,7 +14,7 @@ export function StylePage() {
         <PageHeader
           eyebrow="DJing · This music"
           title="Pick a style"
-          description="Same Mix Ultra, different music. Choose above — or tap a card — and this page (plus the other DJing pages) rewrite for that music."
+          description="Same Mix Ultra, different music. Pick house, hip-hop, pop, or drum & bass — the examples on the DJing pages change; the buttons don’t."
           actions={
             <Link to="/djing" className="text-back">
               DJing

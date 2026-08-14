@@ -12,7 +12,7 @@ export function CueingPage() {
       <PageHeader
         eyebrow="DJing · Basics"
         title="Which cues to set"
-        description="A reusable map of four hot cues: where you start the song in a mix, the loud part, the vocal or quiet middle, and where you leave. Then how to find those spots. Quantize and looping are their own pages — they come after this."
+        description="You save four places on a song with the hot-cue pads so you can jump there later: where you start mixing this song in, the loud part (the drop or chorus), singing or a quiet middle, and where you leave."
         actions={
           <Link to="/djing" className="text-back">
             DJing
@@ -22,21 +22,22 @@ export function CueingPage() {
 
       <div className="intro-grid">
         <div className="callout accent">
-          <h2>Three different “cues”</h2>
+          <h2>CUE button vs hot-cue pads</h2>
           <ul>
             <li>
-              <strong>Pre-cue</strong> — hear a deck in headphones before the room does. That’s{" "}
-              <Link to="/pre-cue">Gear → Headphones</Link>.
-            </li>
-            <li>
               <strong>CUE button</strong> — next to Play. One home marker. While playing, it usually
-              stops and returns.
+              stops and returns. Play blinking while paused is the beat clock, not a cue.{" "}
+              <Link to="/labs/cue">CUE lab</Link>.
             </li>
             <li>
               <strong>Hot cue pads</strong> — the eight rubber pads in HOT CUE mode. Jump and keep
               playing. “Hot cue 1” on these pages means the first of those pads.
             </li>
           </ul>
+          <p>
+            Hearing the next song in headphones without putting it in the room is a different job:{" "}
+            <Link to="/pre-cue">Headphones</Link>.
+          </p>
         </div>
         <div className="callout warn">
           <h2>No auto “vocal in” button</h2>
@@ -111,7 +112,10 @@ export function CueingPage() {
               : ""}
           </p>
           <p>
-            Hardware walkthrough: <Link to="/tutorials/hot-cues">Hot cues: jump map</Link>. How
+            First session: <Link to="/tutorials/first-session">First session</Link>. Home CUE:{" "}
+            <Link to="/tutorials/cue-home">Plant your home CUE</Link>. Jump map:{" "}
+            <Link to="/tutorials/hot-cues">Hot cues</Link>. Labs:{" "}
+            <Link to="/labs/cue">CUE button</Link> · <Link to="/labs/hot-cue">Hot cues</Link>. How
             phrases and beat 1 work: <Link to="/djing/phrasing">Phrases & beat 1</Link>.
           </p>
         </section>
@@ -138,7 +142,7 @@ export function CueingPage() {
             </li>
           </ul>
           <p>
-            Drill: <Link to="/tutorials/read-waveform">Read the waveform</Link>.
+            Tutorial: <Link to="/tutorials/read-waveform">Read the waveform</Link>.
           </p>
         </section>
 

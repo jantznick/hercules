@@ -8,7 +8,7 @@ export function GenreBar() {
   return (
     <div className="genre-bar">
       <label className="genre-bar-label">
-        <span>Reading as</span>
+        <span>Style</span>
         <select
           value={genre}
           onChange={(e) => setGenre(e.target.value as GenreId)}
@@ -24,12 +24,12 @@ export function GenreBar() {
       <p className="genre-bar-hint">
         {genre === "any" ? (
           <>
-            Examples stay general. Pick a style to change the examples — or open{" "}
+            Pick a style to change the examples. Mix Ultra buttons stay the same.{" "}
             <Link to="/djing/style">How this music works</Link>.
           </>
         ) : (
           <>
-            Examples on these DJing pages follow this music. More detail:{" "}
+            Examples follow this music. Mix Ultra buttons stay the same.{" "}
             <Link to="/djing/style">How this music works</Link>.
           </>
         )}

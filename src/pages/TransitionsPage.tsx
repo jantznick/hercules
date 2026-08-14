@@ -15,7 +15,7 @@ export function TransitionsPage() {
       <PageHeader
         eyebrow="DJing · Basics"
         title="Same-speed mixes"
-        description="Long blend, bass swap, skip their drop, echo-out, and a crossfader cut — with Mix Ultra steps. Short versions of these (and the rest) are on Named techniques."
+        description="When both songs are the same speed, you have a few ways to switch: a long blend, swapping the bass, skipping their drop, echoing the last word, or a quick cut on the crossfader."
         actions={
           <Link to="/djing" className="text-back">
             DJing
@@ -32,8 +32,8 @@ export function TransitionsPage() {
           Which sections to overlap:{" "}
           <Link to="/djing/mixing">Mix in / mix out</Link>. The full hand loop:{" "}
           <Link to="/djing/blend">The two-deck blend</Link>. When the next song is a different
-          speed: <Link to="/djing/jumps">When speeds don’t match</Link>. All named moves:{" "}
-          <Link to="/djing/techniques">Named techniques</Link>.
+          speed: <Link to="/djing/jumps">When speeds don’t match</Link>. Techniques:{" "}
+          <Link to="/djing/techniques">Techniques</Link>.
         </p>
       </div>
 
@@ -99,7 +99,7 @@ export function TransitionsPage() {
           </ol>
           <p>{flavor.longBlend}</p>
           <p>
-            Drill: <Link to="/tutorials/mix-long-blend">Long blend: Saving Up → Turn Off The Lights</Link>.
+            Tutorial: <Link to="/tutorials/mix-long-blend">Long blend: Saving Up → Turn Off The Lights</Link>.
           </p>
         </section>
 
@@ -124,7 +124,7 @@ export function TransitionsPage() {
           </ol>
           <p>{flavor.bassSwap}</p>
           <p>
-            Drill: <Link to="/tutorials/mix-bass-swap">Bass swap: Losing It → Ferrari</Link>.
+            Tutorial: <Link to="/tutorials/mix-bass-swap">Bass swap: Losing It → Ferrari</Link>.
           </p>
         </section>
 
@@ -153,7 +153,7 @@ export function TransitionsPage() {
           </ol>
           <p>{flavor.dropMix}</p>
           <p>
-            Drill: <Link to="/tutorials/mix-drop-mix">Drop mix: skip their payoff, land yours</Link>.
+            Tutorial: <Link to="/tutorials/mix-drop-mix">Drop mix: skip their payoff, land yours</Link>.
           </p>
         </section>
 
@@ -189,7 +189,7 @@ export function TransitionsPage() {
           <p>
             Echo on a word while the same song keeps playing is a remix decoration, not this
             transition. Remix:             <Link to="/djing/remix">Remix one song</Link>. Pad layout:{" "}
-            <Link to="/labs/pads">Pad modes</Link>. Drill:{" "}
+            <Link to="/labs/pads">Pad modes</Link>. Tutorial:{" "}
             <Link to="/tutorials/mix-echo-out">Echo-out: Don’t Start Now → Head & Heart</Link>.
           </p>
         </section>
@@ -216,7 +216,7 @@ export function TransitionsPage() {
             djay Sound settings: <strong>Crossfader curve</strong> — Cut is a sharp edge (this
             move); Default/Linear is gentler (long blend). If a paused deck suddenly starts when
             you move the crossfader, that’s <strong>Auto-play when moving crossfader</strong> —{" "}
-            <Link to="/settings">djay settings</Link>. Drill:{" "}
+            <Link to="/settings">djay settings</Link>. Tutorial:{" "}
             <Link to="/tutorials/mix-xfader-cut">Crossfader cut: Ferrari vs Turn Off The Lights</Link>.
           </p>
         </section>

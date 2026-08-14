@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { HowToUse, WhatItDoes } from "./HowToUse";
 
 type ModeId =
   | "hot"
@@ -30,7 +32,9 @@ type PadMode = {
   how: string[];
   configure: string[];
   why: string[];
-  recipe: { title: string; steps: string[] };
+  short: string;
+  mix: { title: string; steps: string[] };
+  oneSong: { title: string; steps: string[] };
 };
 
 const MODES: PadMode[] = [
@@ -67,12 +71,22 @@ const MODES: PadMode[] = [
       "Skip a boring intro without scrubbing.",
       "Rearrange one song: skip the verse, replay the drop, jump to the breakdown.",
     ],
-    recipe: {
-      title: "101 transition use",
+    short: "HOT",
+    mix: {
+      title: "Jump in on the same phrase",
       steps: [
-        "Deck 2: scrub to the entry phrase → tap pad 1 once (sets it).",
-        "Later: tap pad 1 once again to jump there and play.",
-        "Bring Deck 2 in with fader/crossfader.",
+        "Match the incoming deck’s speed with the tempo fader until the BPM numbers match.",
+        "Deck 2: pause, scrub to the mix-in One, tap pad 1 once to set the hot cue.",
+        "When the outgoing phrase ends, tap pad 1 again — it jumps and keeps playing.",
+        "Raise Deck 2’s fader (and the crossfader) to bring it in.",
+      ],
+    },
+    oneSong: {
+      title: "Replay the drop",
+      steps: [
+        "On this deck: tap pad 3 on the chorus/drop One (sets it if it was empty).",
+        "Play on. After 8–16 beats, tap pad 3 again — same song, drop again.",
+        "Land jumps on the One. SHIFT + pad erases if you planted the wrong spot.",
       ],
     },
   },
@@ -111,13 +125,22 @@ const MODES: PadMode[] = [
       "Extend a hook you love on the same song.",
       "Build tension, then exit the loop into the next phrase or track.",
     ],
-    recipe: {
+    short: "LOOP",
+    mix: {
       title: "Hold the outro, mix in",
       steps: [
-        "Deck 1 playing → LOOP mode → tap a 2- or 4-bar pad once (loop stays on).",
-        "Prep Deck 2 (hot cue, sync, lows down).",
-        "Bring Deck 2 in → tap the lit loop pad again to exit → fade Deck 1 out.",
-        "Need the loop to start on a cue? Pause on that cue first, then tap the length pad — don’t Play then LOOP.",
+        "Deck 1 playing → press LOOP → tap a 2- or 4-bar pad once (loop stays on).",
+        "Prep Deck 2: hot cue on the mix-in, tempo fader until BPM matches, lows down.",
+        "Bring Deck 2 in with the fader → tap the lit loop pad to exit → fade Deck 1 out.",
+        "Need the loop on a cue? Pause on that cue first, then tap the length pad — don’t Play then LOOP.",
+      ],
+    },
+    oneSong: {
+      title: "Loop the hook",
+      steps: [
+        "On a chorus One: press LOOP → tap a 2- or 4-bar pad once.",
+        "Ride it twice. Tap the lit pad to exit.",
+        "Optional: switch to HOT CUE and replay the drop.",
       ],
     },
   },
@@ -154,12 +177,21 @@ const MODES: PadMode[] = [
       "Short FX hit into a drop.",
       "Cover a slightly messy transition with a wash, then release.",
     ],
-    recipe: {
+    short: "FX",
+    mix: {
       title: "Echo-out handoff",
       steps: [
-        "Assign Echo to FX pad 1 in djay.",
-        "At the end of a line: HOLD pad 1, pull the channel fader down, RELEASE as the echo dies.",
-        "Incoming track should already be coming up underneath.",
+        "In djay, assign Echo to FX pad 1.",
+        "Incoming track already coming up underneath (tempo matched with the fader).",
+        "At the end of a line: HOLD pad 1, pull the outgoing channel fader down, RELEASE as the echo dies.",
+      ],
+    },
+    oneSong: {
+      title: "Echo a word (not an echo-out)",
+      steps: [
+        "Stay on this deck. FX mode.",
+        "At the end of a vocal line, HOLD the echo pad 1–2 beats, then RELEASE.",
+        "Leave the fader up — you’re decorating this track, not washing it away.",
       ],
     },
   },
@@ -206,12 +238,21 @@ const MODES: PadMode[] = [
       "Solo drums as a breakdown, then all-dark.",
       "Mashup: beat from one track, voice from another.",
     ],
-    recipe: {
+    short: "N MIX",
+    mix: {
       title: "Instrumental bridge",
       steps: [
-        "Overlap both decks quietly.",
-        "Deck 1 Neural Mix → tap bottom vocals once (lights = mute on).",
+        "Overlap both decks quietly (tempo matched with the fader).",
+        "Deck 1: NEURAL MIX solid → tap bottom vocals once (lit = mute).",
         "Let Deck 2’s vocal ride → fade Deck 1 → tap mute off (dark) when done.",
+      ],
+    },
+    oneSong: {
+      title: "8-beat instrumental",
+      steps: [
+        "All pads dark. Tap bottom vocals once (lit = mute).",
+        "Count 8 beats. Tap the same pad dark.",
+        "Solo drums (top row) is the same idea — spotlight, then home (all dark).",
       ],
     },
   },
@@ -247,12 +288,22 @@ const MODES: PadMode[] = [
       "Mini melody / fills from one hot-cued hit.",
       "Performance candy — optional for mixing.",
     ],
-    recipe: {
-      title: "Reset without leaving the mode",
+    short: "PITCH",
+    mix: {
+      title: "Pitched fill into the new track",
+      steps: [
+        "Hot-cue a short vocal or stab on the outgoing deck.",
+        "SHIFT + HOT CUE (HOT CUE flashing). Incoming deck already tempo-matched and ready.",
+        "Tap a +1 / −1 pad for a one-shot fill, then raise the incoming fader.",
+        "Tap pad 1 (Orig) if you need the normal pitch; press HOT CUE to leave the mode.",
+      ],
+    },
+    oneSong: {
+      title: "Mini melody from one cue",
       steps: [
         "Hot-cue a short vocal → SHIFT + HOT CUE.",
-        "Tap +1 / −1 pads to play around.",
-        "Tap pad 1 (Orig) for normal pitch → press HOT CUE to leave the mode.",
+        "Tap +1 / −1 pads to play around. Pad 1 is original pitch.",
+        "Press HOT CUE (solid) when you’re done so pads are jump markers again.",
       ],
     },
   },
@@ -282,12 +333,21 @@ const MODES: PadMode[] = [
       "Tension in a build without getting stuck repeating the same 4 bars forever.",
       "Exit closer to the real drop timing.",
     ],
-    recipe: {
+    short: "BNCE",
+    mix: {
+      title: "Bounce while you set up the other deck",
+      steps: [
+        "Outgoing playing: SHIFT + LOOP → tap a 1- or 2-bar pad once.",
+        "Match the incoming tempo with the fader, plant a hot cue, twist Filter if you like.",
+        "Tap the lit bounce pad off — the song has moved forward — then bring the new track in.",
+      ],
+    },
+    oneSong: {
       title: "Tension without getting stuck",
       steps: [
-        "SHIFT + LOOP → tap a 1- or 2-bar pad once during a build.",
-        "Twist Filter; prep the other deck.",
-        "Tap the lit pad again to exit bounce → finish the mix nearer the drop.",
+        "SHIFT + LOOP → tap a 1- or 2-bar pad during a build on this song.",
+        "Optional: Filter left then open.",
+        "Tap the lit pad again so you exit nearer this song’s drop, not frozen on the same 4 bars.",
       ],
     },
   },
@@ -323,12 +383,21 @@ const MODES: PadMode[] = [
       "Drum-machine-style fill before a drop — this song or the next one.",
       "High-energy moment — then get out of the way.",
     ],
-    recipe: {
-      title: "Pre-drop chop",
+    short: "SLICE",
+    mix: {
+      title: "Chop, then the new drop",
+      steps: [
+        "Outgoing: LOOP 1 bar → SHIFT + FX (FX flashing).",
+        "HOLD different slice pads for one phrase. Incoming already tempo-matched with a drop hot cue.",
+        "Release, press FX to leave Slicer, exit the loop, tap the incoming drop hot cue and bring it in.",
+      ],
+    },
+    oneSong: {
+      title: "Chop then same drop",
       steps: [
         "LOOP 1 bar → SHIFT + FX.",
-        "HOLD different slice pads for one phrase.",
-        "Release, leave Slicer (press FX), exit loop, hit the next drop.",
+        "HOLD slices for about 4 beats — keep it short.",
+        "Leave Slicer (press FX), exit the loop. Optional: Hot Cue this song’s drop.",
       ],
     },
   },
@@ -363,81 +432,57 @@ const MODES: PadMode[] = [
       "Riser into a drop (this song’s drop, or a new track).",
       "Percussion fills / party one-shots.",
     ],
-    recipe: {
-      title: "Riser into the drop",
+    short: "SMPL",
+    mix: {
+      title: "Riser into the new drop",
+      steps: [
+        "In djay, load a riser into sample pad 1.",
+        "Incoming track tempo-matched and hot-cued on the drop.",
+        "SHIFT + NEURAL MIX → tap pad 1 as the outgoing phrase ends → bring the new drop in.",
+        "Press NEURAL MIX or HOT CUE to leave Sampler so you don’t fire a sample mid-blend.",
+      ],
+    },
+    oneSong: {
+      title: "Riser into this song’s drop",
       steps: [
         "Load a riser into sample pad 1.",
-        "SHIFT + NEURAL MIX → tap pad 1 once as the phrase ends → bring the new drop in.",
+        "SHIFT + NEURAL MIX → tap pad 1 once as this song’s phrase ends into its own drop.",
         "Press NEURAL MIX / HOT CUE to leave Sampler.",
       ],
     },
   },
 ];
 
-const REMIX_RECIPES = [
-  {
-    title: "Replay the drop",
-    tags: ["Hot Cue"],
-    body: "Map pad 3 (or 1) on the chorus/drop One. Play, then tap that pad again after 8–16 beats. Same song, new arrangement. Land on the One.",
-  },
-  {
-    title: "Loop the hook",
-    tags: ["Loop", "Hot Cue"],
-    body: "On a chorus One: LOOP → tap 2- or 4-bar once. Ride it twice. Tap the lit pad to exit, then Hot Cue the drop again if you want a second hit.",
-  },
-  {
-    title: "Filter-open your own drop",
-    tags: ["Filter", "Hot Cue"],
-    body: "In the breakdown: Filter left (muffle) or right (thin). On the drop One, sweep back to 12 o’clock over 8–16 beats. Park Filter at center.",
-  },
-  {
-    title: "Echo a word (not an echo-out)",
-    tags: ["FX"],
-    body: "FX mode: at the end of a vocal line, HOLD echo 1–2 beats, RELEASE. Leave the fader up — you’re decorating this track, not washing it away.",
-  },
-  {
-    title: "8-beat instrumental",
-    tags: ["Neural Mix"],
-    body: "All pads dark. Tap bottom vocals once (lit = mute). Count 8 beats. Tap dark. Solo drums (top) is the same idea — spotlight, then home.",
-  },
-  {
-    title: "Chop then same drop",
-    tags: ["Loop", "Slicer"],
-    body: "1-bar loop → SHIFT+FX → HOLD slices for ~4 beats → leave Slicer → exit loop. Optional: Hot Cue the drop. Keep it short.",
-  },
-];
+function ModeBadge({ mode }: { mode: PadMode }) {
+  return (
+    <div className="recipe-tags">
+      <span className="pad recipe-mode-pad active" aria-hidden>
+        {mode.short}
+      </span>
+      <span className="pill">{mode.name}</span>
+    </div>
+  );
+}
 
-const TRANSITION_RECIPES = [
-  {
-    title: "Beginner: loop + crossfade",
-    tags: ["Loop", "Hot Cue", "EQ"],
-    body: "Outgoing: LOOP 4 bars (tap on, tap off later). Incoming: Hot Cue 1, lows down. Raise fader, crossfade, exit loop, fade out. No FX required.",
-  },
-  {
-    title: "Echo out",
-    tags: ["FX", "Fader"],
-    body: "FX mode: HOLD echo pad, pull outgoing fader down, RELEASE. Incoming already in. Hold ≠ tap.",
-  },
-  {
-    title: "Filter + bounce tension",
-    tags: ["Bounce Loop", "Filter"],
-    body: "SHIFT+LOOP → tap bounce 2 bars on. Filter left then open. Tap bounce off so the song has progressed. Bring new track in.",
-  },
-  {
-    title: "Stem swap mashup",
-    tags: ["Neural Mix", "Hot Cue"],
-    body: "Overlap decks. TAP mute vocals on A (lights on). Optional mute drums on B. Tap pads dark when finished.",
-  },
-  {
-    title: "Chop then drop",
-    tags: ["Loop", "Slicer", "Hot Cue"],
-    body: "Tap loop on → HOLD slicer pads for a phrase → release → exit loop → Hot Cue the incoming drop.",
-  },
-];
+function RecipeCard({ mode, recipe }: { mode: PadMode; recipe: { title: string; steps: string[] } }) {
+  return (
+    <article className="recipe-card">
+      <h3>{recipe.title}</h3>
+      <ModeBadge mode={mode} />
+      <ol className="recipe-steps">
+        {recipe.steps.map((step) => (
+          <li key={step}>{step}</li>
+        ))}
+      </ol>
+    </article>
+  );
+}
 
 export function PadModes() {
   const [active, setActive] = useState<ModeId>("hot");
+  const [showAll, setShowAll] = useState(false);
   const mode = MODES.find((m) => m.id === active)!;
+  const listed = showAll ? MODES : [mode];
 
   return (
     <div className="pad-deep">
@@ -486,50 +531,111 @@ export function PadModes() {
             </button>
           ))}
         </div>
+
+        {mode.id === "neural" ? (
+          <p className="lab-crosslink">
+            Click-around for stem solos and mutes:{" "}
+            <Link to="/labs/neural-pads">Open the Neural Mix pads lab</Link>
+          </p>
+        ) : null}
       </div>
 
-      <div className="pad-detail-grid">
-        <div className="pad-detail interaction">
-          <h3>What your finger does</h3>
-          <ul>
-            {mode.finger.map((line) => (
-              <li key={line}>{line}</li>
-            ))}
-          </ul>
+      <WhatItDoes>
+        <div className="pad-detail-grid">
+          <div className="pad-detail interaction">
+            <h3>What your finger does</h3>
+            <ul>
+              {mode.finger.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="pad-detail">
+            <h3>Extra technical notes</h3>
+            <ul>
+              {mode.how.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="pad-detail">
+            <h3>How to configure it</h3>
+            <ul>
+              {mode.configure.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="pad-detail">
+            <h3>Why you’d use it</h3>
+            <ul>
+              {mode.why.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </div>
         </div>
-        <div className="pad-detail">
-          <h3>Extra technical notes</h3>
-          <ul>
-            {mode.how.map((line) => (
-              <li key={line}>{line}</li>
-            ))}
-          </ul>
+        <div className="explain">
+          <div className="explain-panel">
+            <h3>Mode switching without getting lost</h3>
+            <ul>
+              <li>Solid mode LED = Hot Cue / Loop / FX / Neural Mix pads.</li>
+              <li>Flashing = Pitch Play / Bounce / Slicer / Sampler.</li>
+              <li>Leave a shift-mode by pressing the parent button (e.g. LOOP exits Bounce).</li>
+              <li>Habit: return to HOT CUE after a trick so pads are jump markers again.</li>
+            </ul>
+          </div>
         </div>
-        <div className="pad-detail">
-          <h3>How to configure it</h3>
-          <ul>
-            {mode.configure.map((line) => (
-              <li key={line}>{line}</li>
-            ))}
-          </ul>
+      </WhatItDoes>
+
+      <HowToUse
+        actions={
+          <button
+            type="button"
+            className={showAll ? "how-to-use-toggle on" : "how-to-use-toggle"}
+            aria-pressed={showAll}
+            onClick={() => setShowAll((v) => !v)}
+          >
+            Show all
+          </button>
+        }
+      >
+        {!showAll ? (
+          <p className="how-to-use-hint">
+            Recipes for <strong>{mode.name}</strong>. Turn on Show all to see every mode.
+          </p>
+        ) : null}
+
+        <div className="section-head how-to-use-sub">
+          <div>
+            <h3>In a mix</h3>
+            <p>
+              Two songs. Named moves: <Link to="/djing/techniques">Mix techniques</Link>. Looping:{" "}
+              <Link to="/djing/looping">Looping</Link>.
+            </p>
+          </div>
         </div>
-        <div className="pad-detail">
-          <h3>Why you’d use it</h3>
-          <ul>
-            {mode.why.map((line) => (
-              <li key={line}>{line}</li>
-            ))}
-          </ul>
+        <div className="recipe-cards" style={{ marginBottom: "1.5rem" }}>
+          {listed.map((m) => (
+            <RecipeCard key={`mix-${m.id}`} mode={m} recipe={m.mix} />
+          ))}
         </div>
-        <div className="pad-detail recipe">
-          <h3>{mode.recipe.title}</h3>
-          <ol>
-            {mode.recipe.steps.map((s) => (
-              <li key={s}>{s}</li>
-            ))}
-          </ol>
+
+        <div className="section-head how-to-use-sub">
+          <div>
+            <h3>On one song</h3>
+            <p>
+              Remix on this deck — no second BPM. Full steps: <Link to="/djing/remix">Remix</Link>.
+              Drill: <Link to="/tutorials/remix-flare-kit">A small flare kit</Link>.
+            </p>
+          </div>
         </div>
-      </div>
+        <div className="recipe-cards">
+          {listed.map((m) => (
+            <RecipeCard key={`one-${m.id}`} mode={m} recipe={m.oneSong} />
+          ))}
+        </div>
+      </HowToUse>
 
       <div className="section-head" style={{ marginTop: "1.75rem" }}>
         <div>
@@ -556,68 +662,6 @@ export function PadModes() {
             ))}
           </tbody>
         </table>
-      </div>
-
-      <div className="section-head">
-        <div>
-          <h2 style={{ fontSize: "1.2rem", margin: 0 }}>Remix recipes (one song)</h2>
-          <p style={{ margin: "0.25rem 0 0" }}>
-            Stay on Deck 1. Jump, loop, filter, or decorate — then reset. Not a second-deck mix.
-          </p>
-        </div>
-      </div>
-
-      <div className="recipe-cards" style={{ marginBottom: "1.5rem" }}>
-        {REMIX_RECIPES.map((r) => (
-          <article key={r.title} className="recipe-card">
-            <h3>{r.title}</h3>
-            <div className="recipe-tags">
-              {r.tags.map((t) => (
-                <span key={t} className="pill">
-                  {t}
-                </span>
-              ))}
-            </div>
-            <p>{r.body}</p>
-          </article>
-        ))}
-      </div>
-
-      <div className="section-head">
-        <div>
-          <h2 style={{ fontSize: "1.2rem", margin: 0 }}>Transition recipes</h2>
-          <p style={{ margin: "0.25rem 0 0" }}>
-            Learn Loop + Hot Cue + Filter first; add FX hold and Neural taps next.
-          </p>
-        </div>
-      </div>
-
-      <div className="recipe-cards">
-        {TRANSITION_RECIPES.map((r) => (
-          <article key={r.title} className="recipe-card">
-            <h3>{r.title}</h3>
-            <div className="recipe-tags">
-              {r.tags.map((t) => (
-                <span key={t} className="pill">
-                  {t}
-                </span>
-              ))}
-            </div>
-            <p>{r.body}</p>
-          </article>
-        ))}
-      </div>
-
-      <div className="explain" style={{ marginTop: "1rem" }}>
-        <details open>
-          <summary>Mode switching without getting lost</summary>
-          <ul>
-            <li>Solid mode LED = Hot Cue / Loop / FX / Neural Mix pads.</li>
-            <li>Flashing = Pitch Play / Bounce / Slicer / Sampler.</li>
-            <li>Leave a shift-mode by pressing the parent button (e.g. LOOP exits Bounce).</li>
-            <li>Habit: return to HOT CUE after a trick so pads are jump markers again.</li>
-          </ul>
-        </details>
       </div>
     </div>
   );
@@ -679,6 +723,60 @@ export function NeuralMixGuide() {
           )}
         </div>
       </div>
+
+      <WhatItDoes>
+        <div className="explain">
+          <div className="explain-panel">
+            <p>
+              Center N on Mix Ultra remaps the three mixer knobs. Off = EQ. On = stem volumes in
+              djay (Vocals / Instruments / Drums — not the same as Neural Mix pads).
+            </p>
+            <ul>
+              <li>
+                <strong>OFF</strong> — HIGH / MID / LOW trim treble, mids, bass. SHIFT + HIGH is
+                gain (loudness), not EQ.
+              </li>
+              <li>
+                <strong>ON</strong> — those knobs fade stems. Parking them low then loading a new
+                track can sound like “no vocals” until you turn N off and knobs back up.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </WhatItDoes>
+
+      <HowToUse>
+      <div className="compare">
+        <article>
+          <h3>In a mix</h3>
+          <p>
+            Leave the center N button <strong>off</strong> so HIGH / MID / LOW are EQ. Classic
+            blend: pull Low down on the incoming track so kicks don’t fight, fade it in, then bring
+            Low back as the outgoing track leaves. If N is on, those knobs are stem volumes — you’ll
+            duck vocals instead of bass by accident.
+          </p>
+          <p>
+            Full steps: <Link to="/djing/eq">EQ, Filter, HIGH / MID / LOW</Link>. Drill:{" "}
+            <Link to="/tutorials/eq-vs-neural">EQ vs Neural Mix knobs</Link> ·{" "}
+            <Link to="/tutorials/mix-gain">Gain (SHIFT+HIGH)</Link>.
+          </p>
+        </article>
+        <article>
+          <h3>On one song</h3>
+          <p>
+            Press the center N so the knobs become Vocals / Instruments / Drums volumes. Drop the
+            vocals knob for a phrase, then return it — same idea as a Neural pad mute, but a fade
+            instead of an on/off. Park knobs up when you’re done, then turn N off so the next load
+            is EQ again.
+          </p>
+          <p>
+            Pad mutes (lit = cut) live in a different control:{" "}
+            <Link to="/labs/neural-pads">Neural Mix pads lab</Link>. Full steps:{" "}
+            <Link to="/djing/neural">Neural Mix</Link>.
+          </p>
+        </article>
+      </div>
+      </HowToUse>
     </div>
   );
 }

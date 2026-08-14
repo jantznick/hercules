@@ -19,18 +19,20 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     label: "Learn",
     items: [
       { to: "/gear", label: "Gear", also: ["/pre-cue", "/settings"] },
-      { to: "/controls", label: "The controller", also: ["/cheatsheet"] },
       {
         to: "/djing",
         label: "DJing",
         also: ["/cueing", "/mixing-strategy", "/remix"],
       },
-      { to: "/practice", label: "Practice", also: ["/labs", "/tutorials"] },
+      { to: "/labs", label: "Labs" },
+      { to: "/tutorials", label: "Tutorials" },
     ],
   },
 ];
 
-const FLAT_NAV = NAV_GROUPS.flatMap((g) => g.items);
+const CHEAT_SHEET: NavItem = { to: "/cheatsheet", label: "Cheat sheet" };
+
+const FLAT_NAV = [...NAV_GROUPS.flatMap((g) => g.items), CHEAT_SHEET];
 
 function pathActive(pathname: string, item: NavItem, navIsActive: boolean) {
   if (navIsActive) return true;
@@ -45,7 +47,7 @@ export function Layout() {
       <aside className="sidebar">
         <div className="sidebar-brand">
           <span className="brand-mark">Mix Ultra Lab</span>
-          <p>Your Mix Ultra + djay — gear, buttons, craft, practice</p>
+          <p>A beginner’s guide to DJing with the Hercules Mix Ultra and djay Pro AI from Algoriddim</p>
         </div>
         <nav className="side-nav" aria-label="Main">
           {NAV_GROUPS.map((group) => (
@@ -66,10 +68,14 @@ export function Layout() {
             </div>
           ))}
         </nav>
-        <p className="sidebar-foot">
-          Gear → Controller → DJing → Practice. Technique pages (which cues, mix in/out, looping)
-          live under DJing.
-        </p>
+        <nav className="sidebar-foot" aria-label="Reference">
+          <NavLink
+            to={CHEAT_SHEET.to}
+            className={({ isActive }) => (isActive ? "side-link active" : "side-link")}
+          >
+            {CHEAT_SHEET.label}
+          </NavLink>
+        </nav>
       </aside>
 
       <div className="shell-main">

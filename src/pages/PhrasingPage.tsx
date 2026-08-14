@@ -11,7 +11,7 @@ export function PhrasingPage() {
       <PageHeader
         eyebrow="DJing · Basics"
         title="Phrases & the One"
-        description="The counting that makes mixes feel musical. Matching speed lines up kicks; starting on beat 1 lines up the song structure."
+        description="Songs count in groups of four: 1-2-3-4. Matching speed lines up the kicks. Starting on beat 1 (the first beat of a bar) lines up the sections so the mix feels musical."
         actions={
           <Link to="/djing" className="text-back">
             DJing
@@ -45,7 +45,7 @@ export function PhrasingPage() {
             Eight bars is also <strong>32 beats</strong> (4 beats × 8 bars). If a video says “start
             at the end of the 32-beat phrase,” that’s the same moment: beat 1 of the next chunk.
             Named mixes that depend on that timing:{" "}
-            <Link to="/djing/transitions">Same-speed mixes</Link>. Drill:{" "}
+            <Link to="/djing/transitions">Same-speed mixes</Link>. Tutorial:{" "}
             <Link to="/tutorials/mix-32-window">32-beat intro over a chorus</Link>.
           </p>
           <p>{guide.phraseLen}</p>
@@ -59,7 +59,7 @@ export function PhrasingPage() {
           <h2>How to count</h2>
           <p>{guide.countTip}</p>
           <p>
-            Drill: <Link to="/tutorials/count-phrases">Count phrases</Link>.
+            Tutorial: <Link to="/tutorials/count-phrases">Count phrases</Link>.
           </p>
         </section>
       </div>

@@ -11,7 +11,7 @@ export function EqMixingPage() {
       <PageHeader
         eyebrow="DJing · Basics"
         title="EQ, Filter, HIGH / MID / LOW"
-        description="What those three knobs actually change in the song, how Filter is different, and the Mix Ultra trap: the same knobs become stem volumes when Neural Mix is on."
+        description="The three knobs HIGH, MID, and LOW change treble, mids, and bass on that deck. The Filter knob muffles or thins the whole song. On Mix Ultra, Neural Mix turns those same three knobs into stem volumes (vocals, drums, and the rest)."
         actions={
           <Link to="/djing" className="text-back">
             DJing
@@ -91,7 +91,7 @@ export function EqMixingPage() {
           <p>{guide.eq}</p>
         </section>
 
-        <section className="info-block">
+        <section className="info-block" id="filter">
           <h2>Filter — one knob, whole song</h2>
           <p>
             Filter is not a fourth EQ band. It’s one control that sweeps brightness of the{" "}
@@ -121,7 +121,9 @@ export function EqMixingPage() {
             why the next song sounds wrong.
           </p>
           <p>
-            Feel it: <Link to="/labs/filter">Filter lab</Link> (the curve moves as you drag).
+            Feel it: <Link to="/labs/filter">Filter lab</Link> (the curve moves as you drag). One
+            song — close the breakdown, open your own drop:{" "}
+            <Link to="/djing/filter">Filter as a performance tool</Link>.
           </p>
         </section>
       </div>
@@ -154,18 +156,22 @@ export function EqMixingPage() {
           </p>
           <p>
             Neural Mix <em>pads</em> (top = solo, bottom = mute) are a different control — same
-            idea, buttons instead of knobs. Lab: <Link to="/labs/neural">EQ vs Neural Mix knobs</Link>
+            idea, buttons instead of knobs. Lab: <Link to="/labs/neural">HIGH / MID / LOW</Link>
             .
           </p>
         </section>
 
-        <section className="info-block">
+        <section className="info-block" id="gain">
           <h2>GAIN is not EQ</h2>
           <p>
             <strong>SHIFT + HIGH</strong> is Gain — overall loudness of that deck{" "}
             <em>before</em> the channel fader. Use it if one song is recorded quieter than the
             other. It is not HIGH EQ. Don’t turn Gain up to “win” a bass fight; you’ll distort.
-            Match loudness roughly, then use LOW / Filter to carve.
+            Match loudness roughly, then use LOW / Filter to carve. Don’t clip the bedroom — if the
+            meters slam red, turn Gain down, not the speakers up forever.
+          </p>
+          <p>
+            Tutorial: <Link to="/tutorials/mix-gain">Gain: loudness, not EQ</Link>.
           </p>
         </section>
 
@@ -199,7 +205,7 @@ export function EqMixingPage() {
           <p>
             Short pop/hip-hop mixes: you may skip the long trade and just cut, or only Filter for a
             few seconds.             That bass trade is transition #2:{" "}
-            <Link to="/djing/transitions#bass-swap">Same-speed mixes</Link>. Drill:{" "}
+            <Link to="/djing/transitions#bass-swap">Same-speed mixes</Link>. Tutorial:{" "}
             <Link to="/tutorials/mix-bass-swap">Bass swap: Losing It → Ferrari</Link>. The whole hand loop
             (headphones, faders, reset): <Link to="/djing/blend">The two-deck blend</Link>. Which
             sections to overlap: <Link to="/djing/mixing">Mix in / mix out</Link>.
@@ -267,8 +273,9 @@ export function EqMixingPage() {
           <p>
             Hands-on: <Link to="/labs/filter">Filter lab</Link> ·{" "}
             <Link to="/labs/neural">HIGH / MID / LOW lab</Link> ·{" "}
-            <Link to="/tutorials/eq-vs-neural">EQ vs Neural Mix tutorial</Link> ·{" "}
-            <Link to="/tutorials/two-deck-blend">First two-deck blend</Link>.
+            <Link to="/tutorials/eq-vs-neural">EQ vs Neural Mix</Link> ·{" "}
+            <Link to="/tutorials/mix-gain">Gain</Link> ·{" "}
+            <Link to="/tutorials/mix-bass-swap">Bass swap</Link>.
           </p>
         </section>
       </div>

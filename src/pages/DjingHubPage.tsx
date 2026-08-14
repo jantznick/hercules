@@ -1,23 +1,32 @@
 import { Link } from "react-router-dom";
 import { SectionCards } from "../components/SectionCards";
+import { DJING_GROUPS } from "../spine";
 import { PageHeader } from "./HomePage";
+
+const GROUP_BLURB: Record<string, string> = {
+  hear: "Count the 1-2-3-4. See the parts of a song. Mark four pads you can jump to.",
+  match: "Where you bring a song in and where you leave it. Match speed by hand. Use EQ and Filter so two songs don’t fight.",
+  mix: "Two songs: named mix moves, same speed, different speed, pick the next file, then the blend.",
+  remix: "One song: named moves, looping, Filter as performance, pad/FX fills, Neural mute.",
+  "this-music": "House, hip-hop, pop, and drum & bass use the same Mix Ultra. Only the examples change.",
+};
 
 export function DjingHubPage() {
   return (
     <>
       <PageHeader
-        eyebrow="3 · DJing"
+        eyebrow="2 · DJing"
         title="How DJs think"
-        description="How DJs usually think — not which Mix Ultra button to press. Tabs above are every topic. Named moves live on Techniques. The style menu rewrites examples for house, hip-hop, pop/kids, or drum & bass."
+        description="How you mix on this controller: hear a song, match speed, then blend two tracks — or remix one."
       />
 
       <div className="callout accent" style={{ marginBottom: "1.25rem" }}>
-        <h2>Words these pages keep using</h2>
+        <h2>Words you’ll see</h2>
         <ul>
           <li>
             <strong>Hot cue 1, 2, 3, 4</strong> — the rubber pads in HOT CUE mode. Saved jumps that
             keep playing. Not the CUE button next to Play (that one usually stops and returns).{" "}
-            <Link to="/djing/cueing">Which cues to set</Link> is the map.
+            <Link to="/djing/cueing">Which cues to set</Link>.
           </li>
           <li>
             <strong>Beat 1</strong> — the first beat of a bar (count “1” in 1-2-3-4). Mixes that
@@ -30,120 +39,26 @@ export function DjingHubPage() {
           </li>
           <li>
             <strong>LOW</strong> — that deck’s bass knob. “Turn LOW left” means less kick and bass
-            on that deck only. <Link to="/djing/eq">EQ, bass & filter</Link>.
+            on that deck only. <Link to="/djing/eq">EQ, bass & Filter</Link>.
           </li>
         </ul>
       </div>
 
-      <h2 className="home-section-title">Basics</h2>
       <SectionCards
-        items={[
-          {
-            to: "/djing/phrasing",
-            pill: "1",
-            title: "Phrases & the One",
-            blurb: "Beats, bars, 8-counts, and why a mix can be in time and still feel wrong.",
-          },
-          {
-            to: "/djing/songs",
-            pill: "2",
-            title: "How songs are built",
-            blurb: "Intro, verse, chorus, drop, breakdown — and which parts mix well together.",
-          },
-          {
-            to: "/djing/waveform",
-            pill: "3",
-            title: "Read the waveform",
-            blurb: "Tall vs thin — find mix-in, drop, vocal, mix-out on the overview.",
-          },
-          {
-            to: "/djing/cueing",
-            pill: "4",
-            title: "Which cues to set",
-            blurb: "The hot-cue map for this style: mix-in, loud part, vocal or break, mix-out.",
-          },
-          {
-            to: "/djing/mixing",
-            pill: "5",
-            title: "Mix in / mix out",
-            blurb: "Which sections to overlap so energy stays up. What goes wrong depends on the music.",
-          },
-          {
-            to: "/djing/beatmatch",
-            pill: "6",
-            title: "Match the speed yourself",
-            blurb: "Tempo fader + jog. SYNC is optional. Pitch isn’t a SYNC button.",
-          },
-          {
-            to: "/djing/eq",
-            pill: "7",
-            title: "EQ, bass & filter",
-            blurb: "What HIGH / MID / LOW actually change, Filter vs EQ, Neural Mix, Gain.",
-          },
-          {
-            to: "/djing/techniques",
-            pill: "8",
-            title: "Named techniques",
-            blurb: "Short list of each move — what it’s for, then full steps and tutorials.",
-          },
-        ]}
+        items={DJING_GROUPS.map((group) => ({
+          to: group.items[0].to,
+          pill: group.label,
+          title: group.label,
+          blurb: GROUP_BLURB[group.id] ?? group.items.map((i) => i.label).join(" · "),
+        }))}
       />
 
-      <h2 className="home-section-title" style={{ marginTop: "1.5rem" }}>
-        Next
-      </h2>
-      <SectionCards
-        items={[
-          {
-            to: "/djing/transitions",
-            pill: "9",
-            title: "Same-speed mixes",
-            blurb: "Long blend, bass swap, drop mix, echo-out, crossfader cut — Mix Ultra steps.",
-          },
-          {
-            to: "/djing/jumps",
-            pill: "10",
-            title: "When speeds don’t match",
-            blurb: "Echo + stop, walk the tempo, loop-bridge — plus Filter / backspin / noise to hype a build.",
-          },
-          {
-            to: "/djing/choose",
-            pill: "11",
-            title: "Pick the next song",
-            blurb: "Songs that can sit next to each other: speed, vocals, how busy they are, which version you loaded.",
-          },
-          {
-            to: "/djing/blend",
-            pill: "12",
-            title: "The two-deck blend",
-            blurb: "Headphones, match speed, faders, then the room. Named mixes sit on top of this loop.",
-          },
-          {
-            to: "/djing/quantize",
-            pill: "13",
-            title: "Quantize",
-            blurb: "Snap to the beat — sometimes. Tap vs hold; Mix Ultra has no Q button.",
-          },
-          {
-            to: "/djing/looping",
-            pill: "14",
-            title: "Looping",
-            blurb: "Buy time or extend a hook. Why Play-then-LOOP starts late.",
-          },
-          {
-            to: "/djing/remix",
-            pill: "15",
-            title: "Remix one song",
-            blurb: "Jump the drop, mute a vocal, filter-open — performing without a second deck.",
-          },
-          {
-            to: "/djing/style",
-            pill: "16",
-            title: "How this music works",
-            blurb: "Structure, cues, and mixing for whatever’s in the menu above.",
-          },
-        ]}
-      />
+      <p className="layer-links">
+        <Link to="/djing/techniques">Mix techniques</Link> — two-song named moves.{" "}
+        <Link to="/djing/remix">Remix techniques</Link> — one-song named moves.{" "}
+        <Link to="/labs">Labs</Link> — click-around.{" "}
+        <Link to="/tutorials">Tutorials</Link> — drills on the Mix Ultra.
+      </p>
 
       <div className="info-stack" style={{ marginTop: "1.5rem" }}>
         <section className="info-block">
@@ -152,12 +67,12 @@ export function DjingHubPage() {
             <strong>Outgoing</strong> = what’s in the room now. <strong>Incoming</strong> = what
             you’re bringing in (often in headphones first). Channel faders are each deck’s volume.
             The crossfader blends left ↔ right. EQ and Filter carve space so two basslines don’t
-            fight. The whole loop with your hands: <Link to="/djing/blend">The two-deck blend</Link>.
-            Which file to load: <Link to="/djing/choose">Pick the next song</Link>.
+            fight. Hands: <Link to="/djing/blend">The two-deck blend</Link>. Which file:{" "}
+            <Link to="/djing/choose">Pick the next song</Link>.
           </p>
         </section>
         <section className="info-block">
-          <h2>What “good” sounds like at 101</h2>
+          <h2>What “good” sounds like</h2>
           <ul>
             <li>Beats stay together (or you recover quickly)</li>
             <li>You enter on a phrase, not mid-word by accident</li>
@@ -170,8 +85,8 @@ export function DjingHubPage() {
       </div>
 
       <p className="footer-note">
-        Buttons for this deck: <Link to="/controls">The controller</Link>. Then do it:{" "}
-        <Link to="/practice">Labs & tutorials</Link>.
+        Button names: <Link to="/cheatsheet">Cheat sheet</Link>. Hands on:{" "}
+        <Link to="/labs">Labs</Link> · <Link to="/tutorials">Tutorials</Link>.
       </p>
     </>
   );

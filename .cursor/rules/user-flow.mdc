@@ -1,0 +1,16 @@
+---
+description: Mix Ultra Lab user flow — sequence over more tabs; follow docs/user-flow-plan.md
+alwaysApply: true
+---
+
+# User flow
+
+The encyclopedia is fine. **Expected next action** is the product. Full plan: `docs/user-flow-plan.md`.
+
+- Sidebar: Home, Gear, DJing, Labs, Tutorials (Cheat sheet at the bottom). Do not nest Labs and Tutorials under Practice. `/practice` redirects to `/tutorials`.
+- DJing is **grouped tabs** (Hear / Match / Mix / Remix / This music), not 16 equal peers. Do not add more peer tabs.
+- Layers: long page = why; Techniques = named-move index; tutorial = drill; lab = click-around. Link Full steps vs Drill vs Lab; don’t clone the whole syllabus on Home and the DJing hub.
+- Spine is a **static plan to follow** (Sound → Hear structure → One deck → Match + first blend → Same-speed mixes → BPM won’t share → Three-song set → optional recipes), not inferred “you are here” and not localStorage progress. Remix **before** two-deck mixing is OK if labeled one-deck practice.
+- Do not use Tonight’s path or Practice Continue from tutorial progress as primary UX. Cross-device use is expected.
+- Tutorials: no SYNC button in steps; Key Lock holds pitch while beatmatching, not a pitch SYNC.
+- Skip troubleshooting work unless asked. Prefer regrouping existing pages over deleting them.

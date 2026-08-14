@@ -11,9 +11,9 @@ export function CueLabPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Interactive lab"
+        eyebrow="Labs"
         title="The CUE button"
-        description="Pause → scrub → CUE to plant. Play → CUE to snap back and stop. Compare with the blinking Play LED."
+        description="Pause → scrub → CUE to plant. Play → CUE to snap back and stop."
         actions={
           <Link to="/labs" className="text-back">
             All labs
@@ -23,6 +23,11 @@ export function CueLabPage() {
       <CueLab />
       <RelatedExtras
         links={[
+          {
+            to: "/tutorials/first-session",
+            label: "Tutorial: First session",
+            blurb: "Pair Mix Ultra, play one song in the room",
+          },
           {
             to: "/tutorials/cue-home",
             label: "Tutorial: Plant your home CUE",
@@ -48,7 +53,7 @@ export function HotCueLabPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Interactive lab"
+        eyebrow="Labs"
         title="Hot cues"
         description="Press HOT CUE on the controller first. Empty pad = set. Lit pad = jump + play. SHIFT + pad = erase."
         actions={
@@ -71,6 +76,11 @@ export function HotCueLabPage() {
             blurb: "Snap to the beat without hunting djay’s Q switch",
           },
           {
+            to: "/tutorials/mix-beat-grid",
+            label: "Tutorial: When the grid is wrong",
+            blurb: "Numbers match, kicks still walk — tap/adjust in djay, don’t press SYNC",
+          },
+          {
             to: "/djing/remix",
             label: "Remix one song",
             blurb: "Why those jump points matter on one song",
@@ -90,7 +100,7 @@ export function FilterLabPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Interactive lab"
+        eyebrow="Labs"
         title="Filter"
         description="Left muffles (low-pass). Right thins (high-pass). Center is open. Different from High/Mid/Low EQ."
         actions={
@@ -118,6 +128,11 @@ export function FilterLabPage() {
             blurb: "Song-style transition recipe",
           },
           {
+            to: "/djing/filter",
+            label: "Filter as a performance tool",
+            blurb: "One-song: close the breakdown, open your drop",
+          },
+          {
             to: "/djing/eq",
             label: "EQ, Filter, HIGH / MID / LOW",
             blurb: "What the knobs change in the song — not just the lab",
@@ -132,8 +147,8 @@ export function NeuralLabPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Interactive lab"
-        title="EQ vs Neural Mix knobs"
+        eyebrow="Labs"
+        title="HIGH / MID / LOW"
         description="Center N button: HIGH/MID/LOW become stem volumes. Different from Neural Mix pad mode."
         actions={
           <Link to="/labs" className="text-back">
@@ -155,6 +170,16 @@ export function NeuralLabPage() {
             blurb: "Do it on the hardware",
           },
           {
+            to: "/tutorials/mix-gain",
+            label: "Tutorial: Gain (loudness, not EQ)",
+            blurb: "SHIFT+HIGH — don’t clip the bedroom",
+          },
+          {
+            to: "/djing/neural",
+            label: "Neural Mix (remix)",
+            blurb: "Mute vocals for a phrase on one song",
+          },
+          {
             to: "/djing/eq",
             label: "EQ, Filter, HIGH / MID / LOW",
             blurb: "What the three knobs mean, and the Neural Mix trap",
@@ -169,9 +194,9 @@ export function NeuralPadsLabPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Extra lab"
-        title="Neural Mix pads & lights"
-        description="Not in the main menu on purpose — it’s a deep dive when pad LEDs feel backwards. Top = solo, bottom = mute; lit = action ON."
+        eyebrow="Labs"
+        title="Neural Mix pads"
+        description="Top = solo, bottom = mute; lit = action ON. Deep dive when pad LEDs feel backwards."
         actions={
           <Link to="/labs" className="text-back">
             All labs
@@ -198,8 +223,13 @@ export function NeuralPadsLabPage() {
           },
           {
             to: "/labs/neural",
-            label: "Neural knobs",
+            label: "HIGH / MID / LOW",
             blurb: "Center N button / stem volumes",
+          },
+          {
+            to: "/djing/neural",
+            label: "Neural Mix (remix)",
+            blurb: "One-song mute as a performance trick",
           },
         ]}
       />
@@ -211,9 +241,9 @@ export function PadsLabPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Deep dive"
+        eyebrow="Labs"
         title="Pad modes"
-        description="All 8 modes: how to enter, configure in djay, why you’d use them, plus remix (one song) and transition recipes."
+        description="All 8 modes: how to enter, what each pad does, TAP vs HOLD, how to leave."
         actions={
           <Link to="/labs" className="text-back">
             All labs
@@ -244,6 +274,11 @@ export function PadsLabPage() {
             blurb: "Echo, vocal mute, optional chop — one song",
           },
           {
+            to: "/djing/pads-fx",
+            label: "Pads / FX",
+            blurb: "Stutter, slicer, echo, backspin, noise",
+          },
+          {
             to: "/djing/remix",
             label: "Remix one song",
             blurb: "One-song jumps and decorations",
@@ -258,12 +293,12 @@ export function CheatSheetPage() {
   return (
     <>
       <PageHeader
-        eyebrow="The controller"
+        eyebrow="Mix Ultra"
         title="Cheat sheet"
-        description="Controls that trip people up on Mix Ultra + djay."
+        description="What each Mix Ultra control does in djay."
         actions={
-          <Link to="/controls" className="text-back">
-            The controller
+          <Link to="/labs" className="text-back">
+            Labs
           </Link>
         }
       />

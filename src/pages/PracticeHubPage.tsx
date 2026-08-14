@@ -6,31 +6,40 @@ export function PracticeHubPage() {
   return (
     <>
       <PageHeader
-        eyebrow="4 · Practice"
+        eyebrow="3 · Practice"
         title="Labs & tutorials"
-        description="Labs are click-around simulators. Tutorials are do-this-on-the-Mix-Ultra walkthroughs. Tabs above switch between them."
+        description="If a button still confuses you, click a lab first. Then do the tutorials on the Mix Ultra."
       />
 
       <SectionCards
         items={[
           {
             to: "/labs",
-            pill: "Click",
+            pill: "1",
             title: "Labs",
-            blurb: "Cue, hot cue, filter, Neural Mix, pad modes — until the lights make sense.",
+            blurb: "CUE, hot cues, Filter, Neural Mix, pads — click until the lights make sense.",
           },
           {
             to: "/tutorials",
-            pill: "Hardware",
+            pill: "2",
             title: "Tutorials",
-            blurb: "Start here → Basics → Remix → Mixing → Advanced, with song sheets on the hard ones.",
+            blurb: "Do these on the Mix Ultra, in order. Leave the SYNC button off.",
           },
         ]}
       />
 
+      <div className="callout accent" style={{ marginTop: "1.5rem" }}>
+        <h2>Learn a new move</h2>
+        <p>
+          After <Link to="/tutorials">Start here</Link> and Basics, pick a named move. Two songs:{" "}
+          <Link to="/djing/techniques">Mix techniques</Link>. One song:{" "}
+          <Link to="/djing/remix">Remix</Link>. Open Full steps, then the linked tutorial or lab.
+        </p>
+      </div>
+
       <p className="footer-note">
-        Why you’d do a move: <Link to="/djing">DJing</Link>. What the button is:{" "}
-        <Link to="/controls">The controller</Link>.
+        Why you’d do a move: <Link to="/djing">DJing</Link>. What each button is:{" "}
+        <Link to="/cheatsheet">Cheat sheet</Link>.
       </p>
     </>
   );

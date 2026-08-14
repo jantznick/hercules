@@ -14,7 +14,7 @@ export function BlendPage() {
       <PageHeader
         eyebrow="DJing · Next"
         title="The two-deck blend"
-        description="Headphones, match speed, faders, then the room. Mix in / mix out is which sections to stack. This is the order of hands on Mix Ultra — and when to skip the long version and just cut."
+        description="Hear the next song in headphones, match its speed, then bring it into the room with the faders. A long blend is one option — you can also just cut."
         actions={
           <Link to="/djing" className="text-back">
             DJing
@@ -123,12 +123,14 @@ export function BlendPage() {
           <p>
             Loop 2–4 bars on the <em>old</em> song so you don’t run out of music while the new one
             isn’t ready. Exit on beat 1. That’s looping as a mix tool, not a remix.{" "}
-            <Link to="/djing/looping">Looping</Link>. Drill:{" "}
+            <Link to="/djing/looping">Looping</Link>. Tutorial:{" "}
             <Link to="/tutorials/mix-loop-bridge">Loop-bridge into the next intro</Link>.
             Different BPMs: <Link to="/djing/jumps">When speeds don’t match</Link>.
           </p>
           <p>
             Hands-on: <Link to="/tutorials/two-deck-blend">First two-deck blend</Link> ·{" "}
+            <Link to="/tutorials/mix-manual-beatmatch">Match BPM by hand</Link> ·{" "}
+            <Link to="/tutorials/mix-gain">Gain</Link> ·{" "}
             <Link to="/tutorials/pre-cue-hear-first">Hear it first</Link>. Picking the file:{" "}
             <Link to="/djing/choose">Pick the next song</Link>.
           </p>

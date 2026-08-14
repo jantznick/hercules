@@ -9,7 +9,7 @@ export function BeatmatchPage() {
       <PageHeader
         eyebrow="DJing · Basics"
         title="Match the speed yourself"
-        description="SYNC is a shortcut. The real skill is matching BPM with the tempo fader, then lining up the kicks with the jog wheel. Key Lock only keeps this song’s notes from going thin and high while you change speed. There is no pitch SYNC."
+        description="Leave the SYNC button off. Move the tempo fader until both songs run at the same speed, then nudge the jog wheel so the kicks hit together. Key Lock keeps this song’s notes from going thin and high while you change speed."
         actions={
           <Link to="/djing" className="text-back">
             DJing
@@ -133,22 +133,41 @@ export function BeatmatchPage() {
             on load). A leftover +4% is how the next song comes in already fast.
           </p>
         </section>
+
+        <section className="info-block" id="beat-grid">
+          <h2>When the numbers match but the kicks walk</h2>
+          <p>
+            djay guesses a <strong>beat grid</strong> so the BPM readout and the Play blink have
+            something to follow. If that guess is wrong, the numbers can agree after you move the
+            tempo fader while the kicks still drift. That’s a grid problem, not a reason to press
+            SYNC.
+          </p>
+          <ol>
+            <li>Leave SYNC off. Match BPM with the incoming tempo fader. Key Lock on so you’re judging speed, not chipmunks.</li>
+            <li>Start the incoming song in headphones on a kick. Wait a phrase.</li>
+            <li>If kicks walk, nudge the jog. If they keep walking, tap or adjust the grid in djay on that file, then match again.</li>
+          </ol>
+          <p>
+            Tutorial: <Link to="/tutorials/mix-beat-grid">When the grid is wrong</Link>.
+          </p>
+        </section>
       </div>
 
       <LevelBand>Practice</LevelBand>
       <div className="info-stack">
         <section className="info-block">
-          <h2>Drills</h2>
+          <h2>Tutorials</h2>
           <p>
             Match BPM by hand: <Link to="/tutorials/mix-manual-beatmatch">Match BPM by hand</Link>
             . Hear what Key Lock is for:{" "}
-            <Link to="/tutorials/mix-key-lock">Tempo vs how high the notes sound</Link>. Then a mix
+            <Link to="/tutorials/mix-key-lock">Tempo vs how high the notes sound</Link>. Grid vs
+            numbers: <Link to="/tutorials/mix-beat-grid">When the grid is wrong</Link>. Then a mix
             that uses matching: <Link to="/tutorials/mix-long-blend">Long blend</Link>.
           </p>
           <p>
             Same-speed mix pages still mention SYNC as the fast path. Skip that button and do this
             page’s loop instead. <Link to="/djing/transitions">Same-speed mixes</Link> ·{" "}
-            <Link to="/djing/techniques">Named techniques</Link>.
+            <Link to="/djing/techniques">Techniques</Link>.
           </p>
         </section>
       </div>

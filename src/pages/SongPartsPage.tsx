@@ -14,7 +14,7 @@ export function SongPartsPage() {
       <PageHeader
         eyebrow="DJing · Basics"
         title="How songs are built"
-        description="The pieces a track is made of, why they’re in that order, and which pieces to put on top of each other when you mix. The style menu above changes the typical map."
+        description="Songs are built from parts — intro, verse, chorus, drop. Some parts sit next to each other well when two songs play at once; others clash."
         actions={
           <Link to="/djing" className="text-back">
             DJing
@@ -25,9 +25,9 @@ export function SongPartsPage() {
       <div className="callout accent" style={{ marginBottom: "1rem" }}>
         <h2>You’re not producing</h2>
         <p>
-          The file is already arranged. Your job is to pick a slice for the room, and pick a slice
-          of the next file to put on top of it. Names (verse, chorus, drop) are just so you and the
-          waveform are talking about the same blocks.
+          The file is already arranged. Your job is to pick which part of this song plays in the
+          room, and which part of the next song to bring in next to it. Names (verse, chorus, drop)
+          are just so you and the waveform are talking about the same blocks.
         </p>
       </div>
 
@@ -236,8 +236,8 @@ export function SongPartsPage() {
         <section className="info-block">
           <h2>Two different kinds of song in one mix</h2>
           <p>
-            The style menu is one typical map. Real nights jump. The section names still work —
-            the runway length and the tempo don’t.
+            House into hip-hop still uses verse, chorus, drop. What changes is how long you overlap
+            and whether the speeds even match.
           </p>
           <div className="table-wrap" style={{ margin: "0.75rem 0" }}>
             <table>
