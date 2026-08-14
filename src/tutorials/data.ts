@@ -398,171 +398,415 @@ export const TUTORIALS: Tutorial[] = [
   },
   {
     id: "adv-filter-open",
-    title: "Song recipe: filter-open into a drop",
-    time: "~12 min",
+    title: "Filter-open: Losing It → Ferrari",
+    time: "~15 min",
     level: "Advanced",
     trackRecipe:
-      "Pick Track A (outgoing) with a clear 8–16 bar build before a drop. Track B (incoming) same genre, BPM within ~3, with a strong drop. Electronic / house / pop-EDM work great.",
+      "SONG SHEET (use these exact titles in Apple Music / TIDAL / Beatport inside djay — prefer Original/Extended when both exist; times below are for the common ~3–4 min streaming masters — always confirm on the waveform).\n\nDeck 1 (outgoing): FISHER – Losing It · ~125 BPM\n• Hot Cue 1 → first kick of DROP 1 (~0:58–1:05) — big bass enters after the “whoa” tease\n• Hot Cue 2 → first kick of DROP 2 (~1:55–2:05)\n• Practice zone: the 8–16 bar build into Drop 2 (~1:40–2:00)\n\nDeck 2 (incoming): James Hype & Miggy Dela Rosa – Ferrari · ~125–126 BPM\n• Hot Cue 1 → first kick of the MAIN DROP (often ~0:48–1:05 after the “Ferrari” vocal hook — zoom the waveform and land on beat 1 of that phrase)\n\nBackup pair if you can’t find those: Dom Dolla – Saving Up (A) → Chris Lake – Turn Off The Lights (feat. stef) (B), same idea (build → thin filter → open on B’s drop).",
     summary:
-      "Buy time with a loop, thin the incoming track with Filter, then open the filter as B’s drop hits — a club-style energy lift.",
+      "Concrete club move: hold Losing It’s build, bring Ferrari in thin, open the filter as Ferrari’s drop hits.",
     needs: [
-      "Comfortable with Hot Cue, Loop, Filter, crossfader",
-      "Two similar-energy dance tracks",
-      "Headphones recommended",
+      "Hot Cue + Loop + Filter + crossfader",
+      "Headphones + split output strongly recommended",
+      "Both tracks loaded from a streaming service djay supports",
     ],
     steps: [
       {
-        title: "Cast your two songs",
-        djay: "Load A on Deck 1, B on Deck 2. Note BPMs — SYNC Deck 2 if needed.",
-        expect: "Same-ish tempo. You’re aiming for a phrase-aligned handoff, not a trainwreck.",
-        tip: "Follow the track recipe at the top of this tutorial when picking A and B.",
+        title: "Load the exact tracks",
+        djay: "Deck 1: FISHER – Losing It. Deck 2: James Hype – Ferrari. Check BPM readouts (~125). Turn Key Lock on (musical note) so SYNC doesn’t wreck the key.",
+        hardware: "Browser → load left, then right. Crossfader hard LEFT. Deck 1 channel up, Deck 2 channel down.",
+        expect: "Two tech/house bangers, nearly the same tempo.",
       },
       {
-        title: "Mark the moments",
+        title: "Plant Losing It cues (Deck 1)",
         hardware:
-          "Deck 1 HOT CUE: pad 1 = start of build, pad 2 = drop. Deck 2 HOT CUE: pad 1 = first beat of B’s drop (or the bar before if you like a runaway).",
-        expect: "You can restart either climax without scrubbing.",
+          "HOT CUE mode. Scrub/jog to ~1:00 — find the first fat kick of Drop 1 → tap pad 1. Scrub to ~2:00 — first kick of Drop 2 → tap pad 2. Play from pad 1 once to verify it slams on the One.",
+        djay: "You should see two hot-cue markers. If your edit’s times differ, trust the waveform peaks, not the clock.",
+        expect: "Pad 1 = Drop 1, Pad 2 = Drop 2.",
       },
       {
-        title: "Play A into the build; freeze if you need time",
+        title: "Plant Ferrari’s drop (Deck 2)",
         hardware:
-          "Deck 1 playing toward the build. If you’re not ready, LOOP a 2- or 4-bar pad during the build groove.",
-        expect: "A is stable. Crossfader still favoring Deck 1.",
+          "Deck 2 HOT CUE. Find the main drop (after the vocal says “Ferrari” / energy jumps). Land on beat 1 of that bar → tap pad 1. Press SYNC on Deck 2.",
+        expect: "Deck 2 Hot Cue 1 is a nuclear drop button. BPMs matched.",
       },
       {
-        title: "Prep B thin",
+        title: "Ride Losing It into the Drop-2 build",
         hardware:
-          "Deck 2: from Hot Cue 1, start in headphones. Turn FILTER clockwise a bit (high-pass / thin). Pull LOW down slightly. Channel fader ready but not blasting.",
-        listen: "B should sound lighter — less bass clash when it enters.",
-        expect: "B is cued on the drop phrase, EQ/filter making room.",
+          "Crossfader left. Play Deck 1 from somewhere before Drop 2 (e.g. after Drop 1, ~1:30). When you hit the build (~1:40+), if you need time: LOOP → tap the 2-bar or 4-bar pad once and hold the groove.",
+        listen: "Energy rising, still only Losing It in the room.",
+        expect: "You’re parked in the build (or looping it). Don’t go into Drop 2 yet unless you’re ready.",
       },
       {
-        title: "Handoff on the phrase",
+        title: "Prep Ferrari thin in headphones",
         hardware:
-          "On A’s phrase boundary (or exit loop on the One), start/bring B. Ease crossfader toward Deck 2 over 8–16 beats while slowly returning B’s FILTER to center and LOW up. Fade/EQ out A.",
-        listen: "B “opens up” into the drop as the filter clears — energy rises.",
-        expect: "Drop feels intentional. Reset Filter/EQ on both decks to center afterward.",
+          "Headphones on Deck 2. From Hot Cue 1, start Ferrari. FILTER: turn clockwise ~1/4–1/3 (high-pass / thin). LOW: turn down a bit. Keep Deck 2 channel fader low / crossfader left so the room doesn’t hear it yet.",
+        listen: "In cans: Ferrari sounds lighter — kick/bass reduced. That’s intentional.",
+        expect: "B is armed on the drop, EQ/filter making room for a bass handoff.",
+      },
+      {
+        title: "Open the filter into Ferrari’s drop (8–16 beats)",
+        hardware:
+          "On a phrase boundary (exit the Losing It loop on a One if you used one): hit Deck 2 Hot Cue 1 + raise Deck 2 channel / ease crossfader toward center→right. Over the next 8–16 beats: slowly return FILTER to 12 o’clock and bring LOW back up. Fade Deck 1 out (or kill Deck 1 LOW first).",
+        listen: "Ferrari “blooms” from thin → full as the drop lands. Losing It leaves without a bass fight.",
+        expect: "Clean energy lift. Reset both decks’ Filter + EQ to center. Press HOT CUE so you’re not stuck in LOOP.",
+        tip: "If the drops felt early/late, only move Hot Cue 1 on Ferrari by a beat and retry from Losing It pad 2’s build — don’t change ten things at once.",
       },
     ],
   },
   {
     id: "adv-echo-vocal",
-    title: "Song recipe: echo out a vocal into the next hook",
-    time: "~10 min",
+    title: "Echo-out: One Kiss → Head & Heart",
+    time: "~12 min",
     level: "Advanced",
     trackRecipe:
-      "Track A: song with a sung last line or catchphrase before an outro. Track B: another song whose hook/vocal can start cleanly. Hip-hop, pop, and R&B shine here.",
+      "SONG SHEET (common radio/streaming edits — confirm lines on the waveform).\n\nDeck 1 (outgoing): Calvin Harris & Dua Lipa – One Kiss · ~124 BPM · ~3:40\n• Find the LAST full chorus before the outro (often ~2:30–3:10). Landmark lyric: “One kiss is all it takes”\n• Hot Cue 1 → downbeat (beat 1) of that final chorus phrase you want to echo out of\n• Hot Cue 2 (optional) → start of the outro / last “one kiss…” if you want a shorter sting\n\nDeck 2 (incoming): Joel Corry x MNEK – Head & Heart · ~123 BPM\n• Hot Cue 1 → downbeat of the FIRST chorus (the “Oh na-na…” / “head and my heart” hook — often ~0:45–1:05 on radio edits; Extended mixes place it later)\n\nBackup: Dua Lipa – Don’t Start Now (A, last “don’t start now” chorus) → The Weeknd – Blinding Lights (B, chorus downbeat) — use SYNC + Key Lock; BPMs differ more.",
     summary:
-      "End A on a memorable line, wash it with echo while fading, and land B’s vocal/hook so the room never sits in silence.",
-    needs: ["FX pad assigned to Echo in djay", "Two vocal-led tracks", "Main cues/hot cues on both hooks"],
+      "Wash Dua Lipa’s last “One kiss…” with echo while Head & Heart’s chorus takes the room.",
+    needs: [
+      "FX mode with Echo assigned to pad 1 in djay",
+      "Headphones recommended",
+      "Comfortable with Hot Cue + channel fader",
+    ],
     steps: [
       {
-        title: "Assign Echo",
-        djay: "Landscape → FX → put Echo on Deck 1’s FX pad 1 (remember which pad).",
-        hardware: "Press FX mode (solid). You’ll hold pad 1 later.",
-        expect: "You know which pad is echo before the mix gets busy.",
+        title: "Assign Echo to FX pad 1",
+        djay: "Rotate to landscape → open FX → set Deck 1 slot 1 to Echo (or Delay). Remember: pad 1 = echo.",
+        hardware: "Press FX (solid LED). Tap-hold pad 1 once briefly to confirm you hear echo, then release.",
+        expect: "You know which pad is echo before the mix.",
       },
       {
-        title: "Mark the last line + the next hook",
+        title: "Mark One Kiss’s last chorus",
         hardware:
-          "Deck 1: Hot Cue or CUE on the downbeat of A’s final vocal line. Deck 2: Hot Cue 1 on B’s hook/chorus downbeat.",
-        expect: "Both moments are one pad away.",
+          "Deck 1 HOT CUE. Scrub until you hear the late chorus “One kiss is all it takes” that leads toward the end. Jog to beat 1 of that bar → tap pad 1. Play from pad 1 to confirm Dua’s line starts on the One.",
+        expect: "Pad 1 always restarts that last-chorus phrase.",
+        tip: "If you grabbed a mid-song chorus by mistake, keep scrubbing later — you want the one that doesn’t have a full drop after it.",
       },
       {
-        title: "Ride A to the line",
-        hardware: "Deck 1 in the room. Deck 2 ready in headphones, synced, lows tucked a little.",
-        expect: "You’re counting phrases so the last line isn’t a surprise.",
-      },
-      {
-        title: "Echo + fade A, start B",
+        title: "Mark Head & Heart’s chorus",
         hardware:
-          "As the last syllable hits: hold FX Echo on Deck 1, pull Deck 1 channel fader down, release echo as it dies. Hit Deck 2 Hot Cue 1 / bring fader up so B’s hook takes the space.",
-        listen: "A’s vocal trails into space; B’s hook arrives in the pocket.",
-        expect: "No awkward mute hole. Leave FX mode (press HOT CUE) so you don’t echo by accident next song.",
+          "Deck 2 HOT CUE. Find first chorus hook → beat 1 → tap pad 1. Press SYNC. Key Lock on.",
+        djay: "BPMs should read close (~123–124). Headphones cue Deck 2.",
+        expect: "Deck 2 pad 1 = chorus nuclear button.",
+      },
+      {
+        title: "Practice the echo gesture alone",
+        hardware:
+          "Only Deck 1 in the room. From Hot Cue 1, play the line. At the end of “takes” (or end of the phrase): HOLD FX pad 1, pull Deck 1 channel fader down smoothly, RELEASE echo as trails die. Don’t bring Deck 2 in yet.",
+        listen: "Vocal should wash into space, not cut like a mute button.",
+        expect: "Echo timing feels natural. Reset fader up, leave FX mode only after you’re happy.",
+      },
+      {
+        title: "Full handoff into Head & Heart",
+        hardware:
+          "Deck 1 playing the last chorus in the room. Deck 2 waiting on Hot Cue 1 in headphones, channel ready, LOW slightly down. When the echo-out starts: HOLD echo → fade Deck 1 → RELEASE. Almost simultaneously tap Deck 2 Hot Cue 1 and raise Deck 2 so MNEK’s chorus enters in the hole.",
+        listen: "“One kiss…” trails → “head and my heart” / na-na hook arrives. No silent gap.",
+        expect: "Radio-style vocal handoff. Press HOT CUE on Deck 1 so you’re not stuck in FX. Reset EQ.",
       },
     ],
   },
   {
     id: "adv-vocal-swap",
-    title: "Song recipe: Neural vocal swap mashup",
-    time: "~12 min",
+    title: "Neural mashup: Head & Heart × One Kiss",
+    time: "~15 min",
     level: "Advanced",
     trackRecipe:
-      "Two songs in related keys/BPM if possible — or just practice with anything and forgive the clashes. Best: Track A instrumental-friendly beat, Track B strong vocal. Or two choruses you wish existed as a mashup.",
+      "SONG SHEET — same two vocals as the echo tutorial, different technique.\n\nDeck 1 (bed / beat): Joel Corry x MNEK – Head & Heart · ~123 BPM\n• Hot Cue 1 → downbeat of a CHORUS (same landmark as before, ~0:45–1:05 on many radio edits)\n• You’ll MUTE VOCALS on this deck (bottom Neural pad lit) so the groove stays\n\nDeck 2 (guest vocal): Calvin Harris & Dua Lipa – One Kiss · ~124 BPM\n• Hot Cue 1 → downbeat of a CHORUS (“One kiss is all it takes”)\n• Keep vocals; optionally MUTE DRUMS on Deck 2 so Head & Heart’s kick leads\n\nSYNC Deck 2 to Deck 1, Key Lock on. Practice 8–16 bars of overlap, not a whole song.\n\nBackup mashup: Meduza – Piece Of Your Heart (bed, mute vocals) × Meduza / Goodboys – Lose Control (keep vocals).",
     summary:
-      "Overlap both decks, mute vocals on one with Neural Mix pads, and let the other voice ride — live mashup without prep stems.",
+      "Mute MNEK’s vocal, ride Dua Lipa over Head & Heart’s beat — live mashup with Neural Mix pads.",
     needs: [
-      "Neural Mix pad mode understood (lit = mute ON on bottom row)",
-      "Two tracks that can tolerate a few bars together",
+      "Neural Mix pad mode (solid LED) — know bottom lit = mute ON",
+      "Optional: /labs/neural-pads first",
+      "Both tracks available in djay",
     ],
     steps: [
       {
-        title: "Get both drops/hooks under hot cues",
-        hardware: "Hot Cue 1 on each deck at the section you’ll mash (chorus/drop).",
-        expect: "Instant restarts while you experiment.",
-        lab: "Optional: /labs/neural-pads to rehearse mute lights first.",
+        title: "Load + cue the choruses",
+        hardware:
+          "Deck 1: Head & Heart → Hot Cue 1 on chorus One. Deck 2: One Kiss → Hot Cue 1 on chorus One. SYNC Deck 2. Crossfader center-ish for practice, or keep 2 low until ready.",
+        expect: "Both pads restart chorus downbeats. Tempos locked.",
+        lab: "Skim /labs/neural-pads if mute lights still feel backwards.",
       },
       {
-        title: "Start the bed",
+        title: "Start the bed (full mix, all Neural pads dark)",
         hardware:
-          "Play Deck 1 full mix (Neural pads all dark). Bring Deck 2 in softly with lows down so it doesn’t explode.",
-        expect: "Both audible enough to judge the mash — volumes careful.",
+          "Deck 1 Neural pads: all dark. Play from Hot Cue 1 — full Head & Heart chorus in the room. Deck 2 still down.",
+        expect: "Normal chorus. Home base = all pads dark.",
       },
       {
-        title: "Mute A’s vocals",
+        title: "Mute Head & Heart vocals",
         hardware:
-          "Deck 1 → NEURAL MIX mode (solid). Press bottom vocals pad so it lights. A becomes instrumental-ish.",
-        listen: "B’s vocal (or full B) sits over A’s beat/instruments.",
-        expect: "Bottom pad LIT = mute on. You’re not hunting for ‘all pads lit.’",
+          "Deck 1 → NEURAL MIX (solid, not flashing). Tap the bottom VOCALS pad once so it LIGHTS. (If stem order is 3-part, vocals are usually the rightmost bottom pad — watch djay’s stem labels.)",
+        listen: "MNEK’s vocal drops out; drums/music continue. If the wrong stem died, tap that pad off and try the neighboring bottom pad.",
+        expect: "Bottom vocals LIT = mute on. Instrumental-ish bed.",
       },
       {
-        title: "Optional: mute B’s drums",
+        title: "Bring One Kiss vocals over the bed",
         hardware:
-          "Deck 2 Neural Mix → mute drums (bottom drums lit) so A’s kick leads while B’s voice/melody stays.",
-        expect: "Classic ‘beat from A, voice from B’ bed. Tweak channel faders until it feels like one record.",
+          "Deck 2 from Hot Cue 1 on the One. Raise channel / ease in. Optional: Deck 2 NEURAL MIX → tap bottom DRUMS so it LIGHTS (mute Deck 2 kick) so you don’t get double kick.",
+        listen: "Dua Lipa over Joel Corry’s groove. Adjust channel faders until it feels like one record.",
+        expect: "Mashup pocket for ~8–16 bars. If keys clash badly, bail earlier — still good practice.",
       },
       {
-        title: "Exit clean",
+        title: "Exit clean (don’t leave mutes on)",
         hardware:
-          "Decide a winner: fade the other deck out, turn every Neural pad dark on both decks, restore EQ/Filter, load the next track.",
-        expect: "No stuck mutes next song. Mashup was a moment, not a permanent setting.",
+          "Pick a winner (usually fade Deck 1). On BOTH decks: tap every lit Neural pad until ALL DARK. Restore LOW/Filter. Leave Neural mode (HOT CUE).",
+        expect: "Next song won’t mysteriously miss vocals/drums. Mashup was a moment.",
       },
     ],
   },
   {
     id: "adv-double-drop",
-    title: "Song recipe: double-drop with hot cues",
-    time: "~10 min",
+    title: "Double-drop: Losing It × Drugs From Amsterdam",
+    time: "~12 min",
     level: "Advanced",
     trackRecipe:
-      "Two big electronic/pop drops at nearly the same BPM. Think festival energy — both kicks hit together on purpose for 8–16 beats, then you peel one away.",
+      "SONG SHEET — peak-time tech house stunt (loud — watch gain).\n\nDeck 1: FISHER – Losing It · ~125 BPM\n• Hot Cue 1 → first kick of DROP 1 (~0:58–1:05)\n• Hot Cue 2 → ~8–16 bars BEFORE that drop (start of the build / last “whoa” section) so you can ride the build live\n\nDeck 2: Mau P – Drugs From Amsterdam · ~126 BPM (Original/Extended if available)\n• Hot Cue 1 → first kick of the MAIN DROP (commonly ~0:55–1:10 — find the moment the bassline fully locks in; Extended mixes shift later)\n\nSYNC Deck 2, Key Lock on. You’re aiming for both drop kicks on the same One for 8–16 beats only.\n\nBackup pair: Martin Garrix – Animals (A, drop ~1:00–1:05) × R3HAB – Soundwave or another ~128 BPM big-room drop (B).",
     summary:
-      "Line up both drops on Hot Cue 1, hit them together, ride the chaos briefly, then EQ one out so it feels huge instead of messy.",
-    needs: ["Solid beatmatching/SYNC", "Hot cues on both drops", "Willingness to practice timing"],
+      "Line up two famous drops on Hot Cue 1, slam them together for a phrase, then peel one away.",
+    needs: [
+      "SYNC + Hot Cue confidence",
+      "Headphones",
+      "Willingness to retry timing 5–10 times",
+    ],
     steps: [
       {
-        title: "Mark both drops",
-        hardware: "Deck 1 & 2: HOT CUE pad 1 exactly on the first kick of each drop.",
-        expect: "Pad 1 = nuclear button for each climax.",
+        title: "Mark both drop kicks",
+        hardware:
+          "Deck 1: Losing It Hot Cue 1 on Drop 1’s first kick; Hot Cue 2 on the build before it. Deck 2: Drugs From Amsterdam Hot Cue 1 on main drop’s first kick. SYNC Deck 2.",
+        djay: "Zoom waveforms — the cue triangle/marker should sit on a transient peak, not a soft lead-in.",
+        expect: "Each pad 1 is a drop detonator.",
       },
       {
-        title: "Build with A; standby B",
+        title: "Rehearse each drop alone",
         hardware:
-          "A playing the build in the room. B paused/cued on Hot Cue 1 in headphones, synced, fader down or crossfader left.",
-        expect: "You’re waiting for A’s One into the drop.",
+          "Tap Deck 1 pad 1 — confirm Losing It explodes on the One. Tap Deck 2 pad 1 in headphones — same. If either feels early, nudge the cue one beat later and retest.",
+        expect: "Solo drops feel locked before you combine them.",
       },
       {
-        title: "Trigger together",
+        title: "Ride the Losing It build",
         hardware:
-          "On the drop: hit Deck 1 if needed to be on the drop, and Deck 2 Hot Cue 1 + raise fader / move crossfader so both drops slam.",
-        listen: "Double impact — exciting if aligned, messy if a beat off. Retry from cues until it’s tight.",
-        expect: "Both kicks on the One. Keep it short (8–16 beats).",
+          "Room = Deck 1 only (crossfader left). Start from Hot Cue 2 (build). Deck 2 paused on Hot Cue 1 in headphones, channel fader down, finger ready on pad 1 + fader.",
+        listen: "Build tension. Count 1–2–3–4 into the drop.",
+        expect: "You’re waiting for Losing It’s Drop 1 One — not guessing.",
       },
       {
-        title: "Peel out of the double",
+        title: "Detonate together (8–16 beats max)",
         hardware:
-          "Kill LOW on the deck you’re removing (or mute its drums via Neural), fade that channel, leave the keeper’s drop running.",
-        expect: "Crowd (or you) gets the stunt, then clarity returns. Reset EQ/Neural pads.",
+          "On the One into Losing It’s drop: Deck 1 is already hitting pad 1 / natural drop. Simultaneously tap Deck 2 Hot Cue 1 and slam Deck 2 channel up (or crossfader to center). Ride BOTH for only 8–16 beats (2–4 bars × 2).",
+        listen: "Double kick impact. If it’s a flammed mess, kill Deck 2, fix cue by ±1 beat, retry from Hot Cue 2.",
+        expect: "Tight double for a short phrase — then get out. Longer = muddy.",
+      },
+      {
+        title: "Peel to one drop",
+        hardware:
+          "Choose a keeper (usually Deck 2 for the fresher track). On the outgoing deck: turn LOW fully down or Neural-mute drums, then fade that channel. Leave the keeper’s drop running. Reset EQ/Neural; back to HOT CUE.",
+        listen: "Stunt → clarity. One bassline returns.",
+        expect: "Festival toy used with taste. Practice until the double is tight before showing anyone.",
+      },
+    ],
+  },
+  {
+    id: "adv-kpdh-filter",
+    title: "KPop Demon Hunters: Soda Pop → Golden",
+    time: "~15 min",
+    level: "Advanced",
+    trackRecipe:
+      "SONG SHEET — search the KPop Demon Hunters soundtrack in Apple Music / TIDAL (not always on every service).\n\nDeck 1 (outgoing): Saja Boys – Soda Pop · ~126 BPM · ~2:30\n• Hot Cue 1 → first chorus downbeat (the big “soda pop” hook — often ~0:28–0:40)\n• Hot Cue 2 → second chorus / last full hook before the end (~1:20–1:40)\n• Practice from Cue 2 so you have a short runway\n\nDeck 2 (incoming): HUNTR/X – Golden · ~123 BPM · ~3:14\n• Hot Cue 1 → first chorus / “golden” hook downbeat (often ~0:40–0:55 — land on beat 1 of the phrase, not the pre-chorus)\n• Hot Cue 2 (optional) → drop/energy jump if your edit has a clearer second hit (~1:30–1:50)\n\nSYNC Deck 2 to Deck 1. Key Lock ON. Times move around by a few seconds on sing-along vs original — trust the waveform peak.\n\nBackup: HUNTR/X – Takedown (~140 BPM) as Deck 2 if Golden isn’t in your library (SYNC will stretch more).",
+    summary:
+      "Party soundtrack mix: loop Soda Pop’s hook, bring Golden in thin, open the filter as the HUNTR/X chorus hits.",
+    needs: [
+      "KPop Demon Hunters OST in djay",
+      "Hot Cue + Loop + Filter + SYNC",
+      "Headphones recommended",
+    ],
+    steps: [
+      {
+        title: "Load Soda Pop and Golden",
+        djay: "Search “KPop Demon Hunters”. Deck 1: Soda Pop (Saja Boys). Deck 2: Golden (HUNTR/X). Key Lock on. Note BPMs (~126 vs ~123).",
+        hardware: "Load left then right. Crossfader LEFT. Deck 1 up, Deck 2 down.",
+        expect: "Two OST bangers, close enough for SYNC.",
+      },
+      {
+        title: "Mark Soda Pop’s hooks",
+        hardware:
+          "Deck 1 HOT CUE. Scrub to the first big chorus (~0:30) → tap pad 1 on beat 1. Scrub to the later chorus (~1:30) → tap pad 2. Play pad 1 to confirm the hook starts on the One.",
+        expect: "Pad 1 = first hook, Pad 2 = later hook (your mix-out).",
+      },
+      {
+        title: "Mark Golden’s chorus",
+        hardware:
+          "Deck 2 HOT CUE. Find the first “golden” chorus downbeat → tap pad 1. Press SYNC. Play pad 1 in headphones — it should slam on the One.",
+        expect: "Deck 2 pad 1 is Golden’s chorus detonator.",
+      },
+      {
+        title: "Ride Soda Pop; loop if you need time",
+        hardware:
+          "Play Deck 1 from pad 2 (later hook). LOOP → tap the 2-bar or 4-bar pad once if you need extra bars of “soda pop” groove.",
+        listen: "Kids/party energy, still only Saja Boys in the room.",
+        expect: "Stable hook. Crossfader still left.",
+      },
+      {
+        title: "Prep Golden thin in headphones",
+        hardware:
+          "Cue Deck 2 headphones. From Hot Cue 1, start Golden. FILTER clockwise ~1/4 (thin). LOW down a little. Channel still down.",
+        listen: "In cans: Golden sounds lighter so two choruses don’t fight on bass.",
+        expect: "Armed on the chorus, filter/EQ making space.",
+      },
+      {
+        title: "Open into Golden (8–16 beats)",
+        hardware:
+          "On a One (exit Soda Pop loop if you used one): tap Deck 2 pad 1, raise Deck 2 / ease crossfader right. Over 8–16 beats, FILTER back to center and LOW up. Fade Soda Pop out.",
+        listen: "Saja Boys groove → HUNTR/X chorus blooms. Soundtrack-set energy lift.",
+        expect: "Clean OST handoff. Reset Filter/EQ. Back to HOT CUE.",
+        tip: "If Golden felt late, your chorus cue is probably in the pre-chorus — nudge pad 1 later onto the first chorus kick.",
+      },
+    ],
+  },
+  {
+    id: "adv-kpdh-neural",
+    title: "KPop Demon Hunters mashup: Golden × Soda Pop",
+    time: "~15 min",
+    level: "Advanced",
+    trackRecipe:
+      "SONG SHEET — same two KPDH tracks, Neural Mix this time.\n\nDeck 1 (bed): HUNTR/X – Golden · ~123 BPM\n• Hot Cue 1 → chorus downbeat (~0:40–0:55)\n• You will MUTE VOCALS (bottom Neural pad LIT) so the instrumental/groove stays\n\nDeck 2 (guest vocal): Saja Boys – Soda Pop · ~126 BPM\n• Hot Cue 1 → chorus downbeat (~0:28–0:40)\n• Keep vocals; optionally MUTE DRUMS on Deck 2 so Golden’s beat leads\n\nSYNC Soda Pop to Golden. Key Lock ON. Mash only 8–16 bars — keys may clash; that’s OK for practice.\n\nBonus if you have instrumentals: the OST includes Golden / Soda Pop instrumentals — even cleaner beds.\n\nBackup: mute vocals on How It’s Done (~160 BPM) and ride Golden (~123) — wider BPM stretch; SYNC + Key Lock required.",
+    summary:
+      "Mute HUNTR/X vocals, ride Saja Boys’ hook over Golden’s beat — live OST mashup.",
+    needs: [
+      "Neural Mix pads (bottom lit = mute ON)",
+      "Golden + Soda Pop in djay",
+    ],
+    steps: [
+      {
+        title: "Cue both choruses",
+        hardware:
+          "Deck 1 Golden Hot Cue 1 on chorus One. Deck 2 Soda Pop Hot Cue 1 on chorus One. SYNC Deck 2.",
+        expect: "Both pads restart hooks. Tempos locked.",
+        lab: "/labs/neural-pads if mute lights still feel backwards.",
+      },
+      {
+        title: "Play Golden full (all pads dark)",
+        hardware:
+          "Deck 1 Neural pads dark. Play Golden from pad 1. Deck 2 down. Crossfader left or center-low.",
+        expect: "Normal Golden chorus. Home = all dark.",
+      },
+      {
+        title: "Mute Golden vocals",
+        hardware:
+          "Deck 1 NEURAL MIX (solid). Tap bottom VOCALS once so it LIGHTS. Watch djay stem labels if the wrong part vanished.",
+        listen: "Golden continues as a bed; lead vocal gone.",
+        expect: "Instrumental-ish HUNTR/X groove.",
+      },
+      {
+        title: "Bring Soda Pop vocals over it",
+        hardware:
+          "Deck 2 from Hot Cue 1 on the One. Raise in. Optional: Deck 2 Neural Mix → tap bottom DRUMS LIT so you don’t get two kicks.",
+        listen: "Saja Boys hook over Golden’s production. Ride faders 8–16 bars.",
+        expect: "Silly/fun mashup pocket. Bail if it turns to soup.",
+      },
+      {
+        title: "Exit — all Neural pads dark",
+        hardware:
+          "Fade one deck. Tap every lit Neural pad on BOTH decks until dark. HOT CUE mode. Reset EQ.",
+        expect: "Next song has vocals and drums again.",
+      },
+    ],
+  },
+  {
+    id: "adv-disney-bruno",
+    title: "Disney Encanto: Bruno echo → Surface Pressure",
+    time: "~12 min",
+    level: "Advanced",
+    trackRecipe:
+      "SONG SHEET — Encanto soundtrack (search “From Encanto”).\n\nDeck 1 (outgoing): Encanto Cast – We Don’t Talk About Bruno · ~103 BPM · ~3:36\n• Landmark: the group chorus “We don’t talk about Bruno, no, no, no…”\n• Hot Cue 1 → downbeat of a MID-SONG chorus (often ~0:50–1:10 after Pepa’s verse)\n• Hot Cue 2 → a LATE chorus before the ending pile-up (~2:20–2:50) — use this for the echo-out\n• Don’t cue the spoken/theatrical intro — you want the sung hook on beat 1\n\nDeck 2 (incoming): Jessica Darrow – Surface Pressure · ~90–91 BPM · ~3:20\n• Landmark: first big “pressure like a drip, drip, drip…” chorus\n• Hot Cue 1 → chorus downbeat (often ~0:45–1:05)\n\nBPM gap is real (~103 → ~91). SYNC Deck 2 + Key Lock ON so Surface Pressure doesn’t chipmunk/slow-warble more than needed. Practice the echo on Bruno alone first.\n\nBackup same-movie: Bruno → The Family Madrigal (closer energy, still theatrical).",
+    summary:
+      "Echo out Encanto’s Bruno hook, then land Surface Pressure’s chorus — Disney-night vocal handoff.",
+    needs: [
+      "Encanto OST in djay",
+      "FX Echo on pad 1",
+      "SYNC + Key Lock (BPM gap)",
+    ],
+    steps: [
+      {
+        title: "Load Encanto tracks + Echo",
+        djay: "Deck 1: We Don’t Talk About Bruno. Deck 2: Surface Pressure. Landscape → FX → Echo on Deck 1 slot 1. Key Lock on.",
+        hardware: "Crossfader left. Confirm FX pad 1 with a short HOLD (you should hear echo), then release.",
+        expect: "Echo assigned. Two Encanto bangers loaded.",
+      },
+      {
+        title: "Mark Bruno’s late chorus",
+        hardware:
+          "Deck 1 HOT CUE. Scrub until the full-cast “We don’t talk about Bruno, no, no, no” that sits late (not the first tiny hit). Jog to beat 1 → tap pad 2. Earlier chorus → pad 1 for practice.",
+        expect: "Pad 2 = mix-out chorus. Pad 1 = easier rehearsal chorus.",
+        tip: "If you landed on dialogue, keep jogging — you want sung downbeat, not a spoken pickup.",
+      },
+      {
+        title: "Mark Surface Pressure’s chorus",
+        hardware:
+          "Deck 2 HOT CUE. Find the first full “pressure” chorus → beat 1 → tap pad 1. Press SYNC.",
+        expect: "Deck 2 pad 1 = Luisa’s chorus. BPM pulled toward Bruno.",
+      },
+      {
+        title: "Practice echo-out on Bruno only",
+        hardware:
+          "Play Deck 1 from pad 2. At the end of “no, no, no”: HOLD FX pad 1, pull Deck 1 fader down, RELEASE as the trail dies. Don’t bring Deck 2 yet.",
+        listen: "Hook washes away instead of a hard mute — very “end of the number.”",
+        expect: "Echo timing feels theatrical-on-purpose.",
+      },
+      {
+        title: "Handoff into Surface Pressure",
+        hardware:
+          "Deck 1 on the late chorus in the room. Deck 2 waiting on pad 1 in headphones, LOW a bit down. Echo-out Bruno → tap Deck 2 pad 1 and raise fader so Luisa’s chorus fills the space.",
+        listen: "Bruno trail → Surface Pressure chorus. Family-movie DJ night.",
+        expect: "No silent hole. Leave FX (press HOT CUE). Reset EQ. Expect a little tempo stretch — that’s the Encanto tax.",
+      },
+    ],
+  },
+  {
+    id: "adv-kids-party",
+    title: "Kids party: Try Everything → Can’t Stop the Feeling!",
+    time: "~12 min",
+    level: "Advanced",
+    trackRecipe:
+      "SONG SHEET — easy BPM pair for a birthday / Disney-adjacent set.\n\nDeck 1 (outgoing): Shakira – Try Everything (Zootopia) · ~115 BPM · ~3:16\n• Landmark: chorus “I won’t give up, no I won’t give in…” / title hook\n• Hot Cue 1 → first chorus downbeat (often ~0:40–0:55)\n• Hot Cue 2 → last full chorus before the end (~2:20–2:40)\n\nDeck 2 (incoming): Justin Timberlake – Can’t Stop the Feeling! (Trolls / radio) · ~113 BPM · ~3:56\n• Landmark: “I got this feeling in my body…” chorus\n• Hot Cue 1 → first chorus downbeat (often ~0:45–1:05 on radio edits)\n\nSYNC Deck 2. Key Lock ON. Filter-open or simple EQ blend — both are upbeat kids-floor tracks.\n\nBackup: Try Everything → Moana – You’re Welcome (~97 BPM, bigger stretch) or Encanto – We Don’t Talk About Bruno (~103).",
+    summary:
+      "Zootopia into Trolls: last Try Everything chorus, thin-filter Can’t Stop the Feeling, open as the hook hits.",
+    needs: [
+      "Both songs in djay (very common on Apple Music)",
+      "Hot Cue + Filter + SYNC",
+    ],
+    steps: [
+      {
+        title: "Load the party pair",
+        djay: "Deck 1: Try Everything (Zootopia). Deck 2: Can’t Stop the Feeling! Key Lock on. BPMs ~115 and ~113.",
+        hardware: "Crossfader left. Deck 1 up.",
+        expect: "Two “kids will scream” choruses, almost the same tempo.",
+      },
+      {
+        title: "Plant Shakira’s choruses",
+        hardware:
+          "Deck 1 HOT CUE. First chorus (~0:45) → pad 1 on beat 1. Last full chorus (~2:30) → pad 2.",
+        expect: "Pad 2 is your mix-out.",
+      },
+      {
+        title: "Plant Timberlake’s chorus",
+        hardware:
+          "Deck 2 HOT CUE. First “feeling in my body” chorus → pad 1. SYNC.",
+        expect: "Deck 2 pad 1 = party detonator.",
+      },
+      {
+        title: "Ride Try Everything into the last chorus",
+        hardware:
+          "Play from pad 2. Optional: LOOP 4 bars on the chorus if you need time to cue Deck 2.",
+        listen: "Room is still Zootopia. Count phrases (8 or 16 bars).",
+        expect: "You’re not mixing from a verse by accident.",
+      },
+      {
+        title: "Bring in Can’t Stop the Feeling thin, then open",
+        hardware:
+          "Headphones Deck 2 from pad 1. FILTER right a bit, LOW down. On a One: start Deck 2, raise fader / crossfader. Over 8–16 beats, FILTER to center, LOW up, fade Shakira.",
+        listen: "Try Everything → Trolls chorus bloom. Birthday-mode successful.",
+        expect: "Simple, loud, on-phrase. Reset Filter/EQ.",
       },
     ],
   },

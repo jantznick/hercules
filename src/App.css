@@ -1458,3 +1458,12 @@ tr:last-child td {
 .tutorial-level-block {
   margin-bottom: 1.5rem;
 }
+
+.song-sheet-body {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: var(--font);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ink);
+}

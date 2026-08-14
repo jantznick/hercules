@@ -35,7 +35,7 @@ export function TutorialsIndexPage() {
       <PageHeader
         eyebrow="Guided"
         title="Tutorials"
-        description="Hardware + djay first. Work Start here → Basics → Mixing, then Advanced song recipes with tracks you choose."
+        description="Hardware + djay first. Work Start here → Basics → Mixing, then Advanced recipes — club tracks, KPop Demon Hunters, and Disney/kids party mixes."
       />
 
       <div className="callout accent" style={{ marginBottom: "1rem" }}>
@@ -43,7 +43,10 @@ export function TutorialsIndexPage() {
         <p>
           Do the moves on the <strong>hardware</strong>. Tap <em>I did it — next</em> when you’ve
           done that step. Progress saves in this browser. New to phrases/EQ? Skim{" "}
-          <Link to="/dj-basics">DJ basics</Link> first.
+          <Link to="/dj-basics">DJ basics</Link> first. Advanced tutorials include a{" "}
+          <strong>song sheet</strong> with exact titles, rough timestamps, and backup pairs — always
+          confirm cues on the waveform (radio vs extended vs sing-along edits differ). Soundtrack
+          mixes (KPop Demon Hunters, Encanto, Zootopia/Trolls) are in Advanced.
         </p>
       </div>
 
@@ -115,9 +118,9 @@ function TutorialRunner({ tutorial }: { tutorial: Tutorial }) {
       />
 
       {tutorial.trackRecipe && (
-        <div className="callout warn" style={{ marginBottom: "1rem" }}>
-          <h2>Pick your tracks</h2>
-          <p>{tutorial.trackRecipe}</p>
+        <div className="callout warn song-sheet" style={{ marginBottom: "1rem" }}>
+          <h2>Song sheet</h2>
+          <pre className="song-sheet-body">{tutorial.trackRecipe}</pre>
         </div>
       )}
 
