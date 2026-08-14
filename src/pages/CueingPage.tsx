@@ -280,6 +280,8 @@ export function CueingPage() {
       <p className="footer-note">
         Next: <Link to="/djing/waveform">Read the waveform</Link> ·{" "}
         <Link to="/djing/mixing">Mix in / mix out</Link> ·{" "}
+        <Link to="/djing/transitions">Same-speed mixes</Link> ·{" "}
+        <Link to="/djing/jumps">When speeds don’t match</Link> ·{" "}
         <Link to="/djing/blend">The two-deck blend</Link>. Hands-on:{" "}
         <Link to="/tutorials/hot-cues">Hot cues</Link> ·{" "}
         <Link to="/tutorials/quantize-snap">Quantize: tap vs hold</Link> ·{" "}

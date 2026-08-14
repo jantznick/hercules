@@ -339,7 +339,7 @@ export function CheatSheetPage() {
             </tr>
             <tr>
               <td>Headphones (PFL)</td>
-              <td>Preview a deck in cans</td>
+              <td>Preview a deck in headphones</td>
               <td>Needs splitter cable + “split output” in djay</td>
             </tr>
             <tr>

@@ -1,6 +1,7 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { TUTORIALS, type Tutorial } from "../tutorials/data";
+import { techniquesForTutorial } from "../djing/techniques";
 import { PageHeader } from "./HomePage";
 
 const STORAGE_KEY = "mix-ultra-tutorial-progress";
@@ -48,8 +49,9 @@ export function TutorialsIndexPage() {
         <p>
           Do the moves on the <strong>hardware</strong>. Tap <em>I did it — next</em> when you’ve
           done that step. Progress saves in this browser. Setup:{" "}
-          <Link to="/pre-cue">Pre-cue</Link> · <Link to="/settings">djay settings</Link>. Ideas:{" "}
-          <Link to="/djing">DJing</Link> (cues, mix-in, remix). Click-around:{" "}
+          <Link to="/pre-cue">Pre-cue</Link> · <Link to="/settings">djay settings</Link>.           Ideas:{" "}
+          <Link to="/djing">DJing</Link> (cues, mix-in, remix). Named moves:{" "}
+          <Link to="/djing/techniques">Techniques</Link>. Click-around:{" "}
           <Link to="/labs">Labs</Link>. Advanced tutorials include a <strong>song sheet</strong> —
           always confirm cues on the waveform (radio vs extended vs sing-along edits differ).
         </p>
@@ -105,6 +107,7 @@ function TutorialRunner({ tutorial }: { tutorial: Tutorial }) {
   const done = stepIndex >= tutorial.steps.length;
   const safeIndex = Math.min(stepIndex, tutorial.steps.length - 1);
   const step = done ? null : tutorial.steps[safeIndex];
+  const relatedTechniques = techniquesForTutorial(tutorial.id);
   const idx = TUTORIALS.findIndex((t) => t.id === tutorial.id);
   const prevTut = idx > 0 ? TUTORIALS[idx - 1] : null;
   const nextTut = idx >= 0 && idx < TUTORIALS.length - 1 ? TUTORIALS[idx + 1] : null;
@@ -127,6 +130,17 @@ function TutorialRunner({ tutorial }: { tutorial: Tutorial }) {
           <h2>Song sheet</h2>
           <pre className="song-sheet-body">{tutorial.trackRecipe}</pre>
         </div>
+      )}
+
+      {relatedTechniques.length > 0 && (
+        <p className="technique-links" style={{ marginBottom: "1rem" }}>
+          <span className="technique-links-label">Technique</span>
+          {relatedTechniques.map((tech) => (
+            <Link key={tech.id} to={`/djing/techniques#${tech.id}`}>
+              {tech.title}
+            </Link>
+          ))}
+        </p>
       )}
 
       <div className="tutorial-needs panel">

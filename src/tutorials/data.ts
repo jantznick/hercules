@@ -22,6 +22,10 @@ export type Tutorial = {
   trackRecipe?: string;
 };
 
+/** Key Lock only holds this file’s notes still while the tempo fader changes speed. */
+export const KEY_LOCK_WHY =
+  "Key Lock on (musical note) so this song’s notes stay put while you change speed. That is not matching two songs’ keys — there is no pitch SYNC.";
+
 export const TUTORIALS: Tutorial[] = [
   {
     id: "cue-home",
@@ -119,7 +123,7 @@ export const TUTORIALS: Tutorial[] = [
       {
         title: "Both headphone buttons on, then off",
         hardware:
-          "Light Deck 1’s headphone button too — both decks in cans so you can check if they’re lined up. Then turn both off.",
+          "Light Deck 1’s headphone button too — both decks in headphones so you can check if they’re lined up. Then turn both off.",
         listen: "Both on = A+B in ears. Both off = cue silent; room still plays A.",
         expect: "Cue can go fully quiet without stopping the party.",
       },
@@ -219,6 +223,45 @@ export const TUTORIALS: Tutorial[] = [
     ],
   },
   {
+    id: "mix-key-lock",
+    title: "Tempo vs how high the notes sound",
+    time: "~6 min",
+    level: "Basics",
+    trackRecipe:
+      "One vocal song you know. A pop chorus makes the pitch change obvious.\n\nDeck 1: Dua Lipa – Don’t Start Now · ~124 BPM (or any sung chorus).\n\nYou will move the tempo fader with Key Lock off, then on. No second song. You are not matching anything to another deck.",
+    summary:
+      "Beatmatching is speed (tempo fader + jog). Key Lock only keeps this song’s notes from going thin and high while you change that speed. There is no pitch SYNC and no button that matches two songs’ keys.",
+    needs: ["One vocal track on Deck 1", "Tempo fader + Key Lock (musical note) in djay"],
+    steps: [
+      {
+        title: "There is nothing to “pitch-sync”",
+        djay: "The musical-note control is Key Lock. Off for this first pass. Note the BPM number.",
+        hardware:
+          "Deck 1 playing a chorus, channel fader up. Tempo fader at center (original speed). One song only — nothing to match.",
+        expect: "You know where Key Lock is. Its job is this one file, not lining two songs up.",
+      },
+      {
+        title: "Speed up with Key Lock off",
+        hardware:
+          "Push the tempo fader so BPM climbs a few numbers (toward +6% or whatever you can hear). Let a sung line play.",
+        listen: "The singer went thinner and higher as well as faster. That’s speed and how-high-the-notes-are glued together — old vinyl behavior. People still call the tempo slider a “pitch fader.” It is still a speed control.",
+        expect: "You heard why changing BPM without Key Lock sounds weird.",
+      },
+      {
+        title: "Same move with Key Lock on — this is the whole job",
+        djay: "Turn Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). Return the tempo fader to center, then push it the same amount again.",
+        listen: "Faster, but the notes still sound like that singer. That’s all Key Lock does: hold this song’s pitch still so you can beatmatch with the tempo fader.",
+        expect: "Leave Key Lock on whenever you move a tempo fader. It does not match this song to another song’s key.",
+      },
+      {
+        title: "Matching keys is picking files, not a SYNC",
+        djay: "Look for a key readout on the deck (often a letter like A minor). That’s the musical key of the file. Two songs in related keys can sit together more smoothly. No Mix Ultra button does that — you pick the next file, or you ignore it.",
+        expect: "BPM matching ≠ key matching. Pitch Play pads (remix) jump a loop’s key — also not beatmatching.",
+        tip: "Full page: Match the speed yourself. Next: match two songs’ BPM by hand, with Key Lock on so you’re judging kicks, not chipmunks.",
+      },
+    ],
+  },
+  {
     id: "eq-vs-neural",
     title: "EQ vs Neural Mix knobs",
     time: "~5 min",
@@ -281,10 +324,10 @@ export const TUTORIALS: Tutorial[] = [
         expect: "Only Deck 1 in the room / master.",
       },
       {
-        title: "Load Deck 2 and sync",
+        title: "Load Deck 2 and match speed",
         hardware:
-          "Load Track B on Deck 2. Press SYNC on Deck 2 (or sync in djay) so BPMs match. Keep Deck 2 channel fader down or crossfader left so B isn’t in the mix yet.",
-        djay: "BPMs should look matched. Fine-tune with the tempo fader if needed.",
+          "Load Track B on Deck 2. Leave SYNC off (the button exists; skip it in these drills). Match Deck 2 to Deck 1 by hand: Key Lock on (holds pitch while you beatmatch — not a pitch SYNC), tempo fader until the BPM numbers agree, start B in headphones, nudge the jog so the kicks hit together. Keep Deck 2 channel fader down or crossfader left so B isn’t in the mix yet.",
+        djay: "BPMs should look matched. If they drift, the tempo fader isn’t done — then nudge the jog. Don’t tap CUE while Deck 2 is playing.",
         expect: "Two tracks ready; only A is audible on master.",
       },
       {
@@ -292,7 +335,7 @@ export const TUTORIALS: Tutorial[] = [
         hardware:
           "If using the splitter: headphones in green, speakers in black. Press Deck 2’s headphone (PFL/monitor) button.",
         djay: "Settings → enable Split output for pre-cueing with audio adapter.",
-        expect: "You hear B in headphones while A plays to the room. Skip this step if you’re practicing without cans — just keep B’s fader down.",
+        expect: "You hear B in headphones while A plays to the room. Skip this step if you’re practicing without headphones — just keep B’s fader down.",
         tip: "No splitter? Practice the motions silently on B, then bring volume carefully.",
       },
       {
@@ -320,6 +363,59 @@ export const TUTORIALS: Tutorial[] = [
           "Turn Deck 1 LOW down, move crossfader fully to Deck 2, pause/stop Deck 1, reset Deck 1’s EQ/Filter to center, load the next track.",
         expect: "Clean exit. You’re ready to repeat the other direction.",
         tip: "Next skill: don’t wait for the dying outro — Mix in / mix out without killing energy.",
+      },
+    ],
+  },
+  {
+    id: "mix-manual-beatmatch",
+    title: "Match BPM by hand",
+    time: "~12 min",
+    level: "Mixing",
+    trackRecipe:
+      "SONG SHEET — two house tracks a few BPM apart so you have to move the fader. Leave the SYNC button off the whole time.\n\nDeck 1 (room): FISHER – Losing It · ~125 BPM\n• Hot cue 1 → first useful kick / a fat groove you can loop in your ears\n\nDeck 2 (headphones): Dom Dolla – Saving Up · ~128 BPM\n• Hot cue 1 → first useful kick / DJ intro\n\nKey Lock on both so you’re judging speed, not “did the singer get higher.” Key Lock does not match two songs’ keys — it only holds each file’s notes still while you change BPM.\n\nBackup: Ferrari (~125–126) in the room, Turn Off The Lights (~126–128) in headphones.",
+    summary:
+      "Tempo fader until the BPM matches, jog until the kicks hit together. Key Lock on so notes don’t go thin and high while you do that — it is not pitch-matching. Leave the SYNC button off.",
+    needs: [
+      "Two house tracks a few BPM apart",
+      "Headphones (incoming deck only)",
+      "Key Lock on (holds pitch while you beatmatch) — leave SYNC off",
+    ],
+    steps: [
+      {
+        title: "Leave the SYNC button off",
+        hardware:
+          "Losing It on Deck 1, fader up, playing. Saving Up on Deck 2, channel fader down. Leave the SYNC button off. Tempo faders at center.",
+        djay: `${KEY_LOCK_WHY} Note both BPM readouts (~125 vs ~128). If SYNC is lit, turn it off on Deck 2.`,
+        expect: "Two different speeds. Room = Losing It only. Key Lock is already on so slowing Saving Up won’t chipmunk it.",
+      },
+      {
+        title: "Headphones on Deck 2 only",
+        hardware:
+          "Press Deck 2’s headphone button. From hot cue 1, start Saving Up in your ears. You should hear it drifting against Losing It.",
+        listen: "Kicks walking apart. That’s the problem you’re about to fix.",
+        expect: "You can hear both: room on Deck 1, headphones on Deck 2. Don’t tap CUE while Deck 2 is playing — that stops it on Mix Ultra.",
+      },
+      {
+        title: "Move Deck 2’s tempo fader until the numbers (and ears) match",
+        hardware:
+          "Slowly move Deck 2’s tempo fader toward Losing It’s BPM. Watch djay’s numbers get closer, then stop looking and listen. If the fader runs out of travel, widen the tempo range in djay.",
+        listen: "When the speeds match, the kicks stay together instead of stretching apart. If the singer went thin and high, Key Lock is off.",
+        expect: "Same BPM, still maybe a little early or late on the kick.",
+      },
+      {
+        title: "Nudge the jog so the kicks hit as one",
+        hardware:
+          "With Deck 2 playing in headphones: a small twist of the jog top, forward if Deck 2 feels late, back if it feels early. Tiny moves. Restart from hot cue 1 if you get lost.",
+        listen: "One kick. If they lock for a bar then drift, the BPMs still aren’t matched — back to the tempo fader.",
+        expect: "It holds for several bars in headphones. That’s a match.",
+      },
+      {
+        title: "Start on beat 1 and keep it",
+        hardware:
+          "Pause Deck 2 on beat 1 of hot cue 1 (or sit paused there). When Losing It hits beat 1 of a phrase, Play or tap hot cue 1. Nudge if the first kick is off. Ride it 8 bars. Optional: raise Deck 2’s fader a little and do a tiny long blend, still matching by hand.",
+        listen: "Together on beat 1, then they stay together because the speeds match.",
+        expect: "You matched speed by hand. Center Deck 2’s tempo fader when you load the next file (or let djay reset tempo on load).",
+        tip: "The Mix Ultra has a SYNC button. These drills don’t use it. Full page: Match the speed yourself.",
       },
     ],
   },
@@ -364,7 +460,7 @@ export const TUTORIALS: Tutorial[] = [
       {
         title: "Toggle Deck 1 phones",
         hardware:
-          "Press Deck 1’s headphone button too. Both on = both decks in cans so you can check if they’re lined up. Turn Deck 2 phones off: cans should follow Deck 1 / master-ish cue.",
+          "Press Deck 1’s headphone button too. Both on = both decks in headphones so you can check if they’re lined up. Turn Deck 2 phones off: headphones should follow Deck 1 / the main mix cue.",
         expect: "Buttons are PFL selects. They don’t route to two wireless devices.",
       },
       {
@@ -419,7 +515,7 @@ export const TUTORIALS: Tutorial[] = [
       {
         title: "When you’d still use the splitter",
         djay:
-          "One analog jack (Mac headphone port or USB dongle): Main = that output, Pre-Cueing = Split Output, green = cans, black = speakers.",
+          "One analog jack (Mac headphone port or USB dongle): Main = that output, Pre-Cueing = Split Output, green = headphones, black = speakers.",
         expect: "Same PFL idea, different wire. Phone/tablet almost always needs this for a real split.",
       },
     ],
@@ -438,7 +534,7 @@ export const TUTORIALS: Tutorial[] = [
         hardware:
           "Light only Deck 2’s headphone button. Slowly move the crossfader from left to right and back.",
         expect:
-          "If Auto Select is on, the lights (and what you hear in cans) may flip by themselves. That’s djay, not a broken controller.",
+          "If Auto Select is on, the lights (and what you hear in headphones) may flip by themselves. That’s djay, not a broken controller.",
       },
       {
         title: "Turn Auto Select off",
@@ -509,7 +605,7 @@ export const TUTORIALS: Tutorial[] = [
       {
         title: "Line up Deck 2 from the hot cue",
         hardware:
-          "Stay in HOT CUE on Deck 2 (press HOT CUE if you left it). Headphones on Deck 2 if you have them. Hit pad 1 so it starts on the phrase. SYNC if needed. Lows down a little on Deck 2.",
+          "Stay in HOT CUE on Deck 2 (press HOT CUE if you left it). Headphones on Deck 2 if you have them. Hit pad 1 so it starts on the phrase. Match speed by hand (tempo fader + jog). Leave SYNC off. Lows down a little on Deck 2.",
         expect: "Deck 2 is ready; Deck 1 still looping in the room.",
       },
       {
@@ -796,6 +892,83 @@ export const TUTORIALS: Tutorial[] = [
     ],
   },
   {
+    id: "remix-backspin-echo",
+    title: "Backspin with Echo",
+    time: "~6 min",
+    level: "Remix",
+    trackRecipe:
+      "SONG SHEET — one deck. Pick a song with a word or hit you can catch.\n\nDeck 1: Dua Lipa – Don’t Start Now · ~124 BPM\n• Hot cue 1 → beat 1 of a chorus (“don’t start now”)\n• Practice the spin on the last word of a line, then replay the chorus\n\nBackup: FISHER – Losing It, spin just before Drop 2, then hit the drop pad.\n\nWithout Echo, a backspin often just sounds like you bumped the platter. Hold Echo first.",
+    summary:
+      "Hold Echo, spin the jog wheel backward, let go. A short rewind into the next phrase — not a two-deck mix.",
+    needs: [
+      "FX Echo assigned to a pad",
+      "Jog wheel + one song you know",
+      "A chorus or drop hot cue so you can retry",
+    ],
+    steps: [
+      {
+        title: "Arm Echo and a replay button",
+        djay: "Deck 1 only. FX slot 1 = Echo. Post fader is fine (you’re not pulling the fader for this).",
+        hardware: "HOT CUE: hot cue pad 1 on a chorus beat 1. Press FX so that mode is on. Channel fader up.",
+        expect: "You can restart the phrase after each attempt.",
+      },
+      {
+        title: "Hear why Echo has to come first",
+        hardware:
+          "Play from hot cue 1. At the end of a line, spin the top of the jog wheel backward a half-turn to a full turn, then let go — no Echo yet.",
+        listen: "Usually a scratchy bump, then the song continues awkwardly. That’s the version to avoid.",
+        expect: "You heard the dry backspin. Next pass adds Echo.",
+      },
+      {
+        title: "Hold Echo, then spin",
+        hardware:
+          "Same spot. HOLD the Echo pad, spin the jog backward, let go of the wheel, then RELEASE Echo as the wash dies. Don’t keep spinning for two bars.",
+        listen: "The word/hit rewinds inside a wash, then the beat continues. Short = a fill. Long = a mistake.",
+        expect: "Echo made it sound like a move. Press HOT CUE when you’re done so you’re not stuck in FX.",
+        tip: "Into a drop: do this in the last bar of a build, then tap your drop hot cue on the next beat 1.",
+      },
+    ],
+  },
+  {
+    id: "remix-noise-fader",
+    title: "Noise chops on the empty deck",
+    time: "~8 min",
+    level: "Remix",
+    trackRecipe:
+      "SONG SHEET — song on Deck 1, noise/riser on Deck 2 (or a Sampler pad).\n\nDeck 1: FISHER – Losing It · ~125 BPM\n• Hot cue 2 → the BUILD into Drop 2 (~1:40–2:00). You will chop noise during this climb.\n\nDeck 2: a DJ tool / white noise / riser / air-horn loop from djay’s Sampler or your library (search “riser”, “noise”, “sweep”). Keep it short. Watch volume — these files are often very loud.\n\nAlternate: skip Deck 2 and use Sampler pads (SHIFT + NEURAL MIX, flashing) with a riser already loaded in djay’s Sampler panel.\n\nThis is not rekordbox’s “noise color” pad FX. Mix Ultra doesn’t have that button — you load a sound and use a fader.",
+    summary:
+      "During a build, chop a riser or noise with the empty deck’s channel fader (or a Sampler pad). Watch the volume.",
+    needs: [
+      "A song with a clear build",
+      "A noise/riser sample in djay, or Sampler pads loaded",
+      "Channel fader control — these hits can spike",
+    ],
+    steps: [
+      {
+        title: "Park in the build on Deck 1",
+        hardware:
+          "Losing It on Deck 1, channel fader up. Hot cue 2 on the Drop-2 build, beat 1. Play from pad 2. Crossfader in the middle or toward Deck 1.",
+        listen: "Energy climbing, still only Losing It. This is when a riser earns its keep.",
+        expect: "You’re in the tease, not the drop yet.",
+      },
+      {
+        title: "Load noise on the empty deck (or arm Sampler)",
+        djay: "Deck 2: search a short riser / white noise / sweep. If you use Sampler instead: landscape → Sampler, load a one-shot or loop into a pad. Gain down a bit on that deck or sample — they clip easily.",
+        hardware:
+          "If Deck 2: channel fader down, headphone-check once at low volume. If Sampler: hold SHIFT and press NEURAL MIX (flashing = Sampler). Don’t stay in Sampler after the move.",
+        expect: "A noise source ready, quieter than you think you need.",
+      },
+      {
+        title: "Chop the fader in time, then get out",
+        hardware:
+          "During the last 8–16 beats of the build: raise Deck 2’s channel fader in short bursts on the beat (or tap the Sampler pad in time). On the drop’s beat 1: fader down (or release the sample), tap Losing It’s drop if you marked one, Filter at 12 o’clock if you touched it.",
+        listen: "Hiss/rise climbing with the build, then the drop is clean. If the room jumped in volume, the noise file was too hot — lower Gain (SHIFT+HIGH) or the sample slot.",
+        expect: "Decoration, then gone. Leave Sampler (press NEURAL MIX for solid, or HOT CUE). Empty-deck fader down so the next song doesn’t surprise you.",
+        tip: "One trick. Don’t also echo, filter, and loop the same build. Technique page: When speeds don’t match (hype section).",
+      },
+    ],
+  },
+  {
     id: "remix-party-hook",
     title: "Remix one anthem: Can’t Stop the Feeling!",
     time: "~12 min",
@@ -811,7 +984,7 @@ export const TUTORIALS: Tutorial[] = [
     steps: [
       {
         title: "Load only this track",
-        djay: "Deck 1: Can’t Stop the Feeling! Ignore Deck 2. Key Lock on is fine but you won’t SYNC anyone.",
+        djay: "Deck 1: Can’t Stop the Feeling! Ignore Deck 2. Key Lock on is fine (holds this song’s notes if you bump the tempo fader) — one song only.",
         hardware: "Crossfader toward Deck 1. Channel up.",
         expect: "Party anthem, one deck. Times below are radio-ish — trust the chorus downbeat.",
       },
@@ -994,7 +1167,7 @@ export const TUTORIALS: Tutorial[] = [
       "The r/Beatmatch lesson: intro-over-dying-outro stacks two empty sections. Mix the new intro over the last full groove — or over a breakdown — so a kick stays in the room.",
     needs: [
       "Two similar-BPM house/techno tracks (DJ/extended if you have them)",
-      "Hot Cue + SYNC + LOW EQ + headphones strongly recommended",
+      "Hot Cue + match speed by hand (tempo fader + jog) + LOW EQ + headphones strongly recommended",
       "You can already do a basic two-deck blend",
     ],
     steps: [
@@ -1015,11 +1188,11 @@ export const TUTORIALS: Tutorial[] = [
       {
         title: "Mark incoming intro and first drop",
         hardware:
-          "Deck 2 HOT CUE: pad 1 = first useful kick / DJ intro. Pad 2 = first drop (first fat kick of the payoff). SYNC Deck 2. Lows down a bit on Deck 2.",
+          "Deck 2 HOT CUE: pad 1 = first useful kick / DJ intro. Pad 2 = first drop (first fat kick of the payoff). Match Deck 2 by hand (tempo fader + jog; leave SYNC off). Lows down a bit on Deck 2.",
         expect: "Pad 1 is mix-in (sparse). Pad 2 is the new busy section you’ll time toward.",
       },
       {
-        title: "Blend: sparse over busy (the workhorse)",
+        title: "Blend: sparse over busy (the usual mix)",
         hardware:
           "Room = Deck 1 playing toward pad 4’s groove (crossfader left). Headphones on Deck 2. On Deck 1’s mix-out One: start Deck 2 from pad 1, raise channel / ease crossfader. Keep Deck 1 LOW up at first; Deck 2 LOW still down.",
         listen: "New hats/groove over a still-moving bass. Kick never left. This is intro-over-groove, not intro-over-outro.",
@@ -1041,11 +1214,11 @@ export const TUTORIALS: Tutorial[] = [
     time: "~10 min",
     level: "Mixing",
     trackRecipe:
-      "Two songs people actually sing — pop, vocal house, Disney, kids party. Radio edits are fine; intros will be short.\n\nExample pair (or any two you know):\nDeck 1: Calvin Harris & Dua Lipa – One Kiss (or Shakira – Try Everything)\nDeck 2: Joel Corry – Head & Heart (or Justin Timberlake – Can’t Stop the Feeling!)\n\nMark:\n• Deck 1 last chorus downbeat (mix-out) and the lyric you might echo\n• Deck 2 first chorus downbeat (mix-in for a cut) AND the first vocal if it starts earlier\n\nSYNC + Key Lock. This is not a 32-bar techno blend.",
+      "Two songs people actually sing — pop, vocal house, Disney, kids party. Radio edits are fine; intros will be short.\n\nExample pair (or any two you know):\nDeck 1: Calvin Harris & Dua Lipa – One Kiss (or Shakira – Try Everything)\nDeck 2: Joel Corry – Head & Heart (or Justin Timberlake – Can’t Stop the Feeling!)\n\nMark:\n• Deck 1 last chorus downbeat (mix-out) and the lyric you might echo\n• Deck 2 first chorus downbeat (mix-in for a cut) AND the first vocal if it starts earlier\n\nMatch speed by hand. Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). This is not a 32-bar techno blend.",
     summary:
       "Pop, hip-hop, and kids bangers don’t get house-length overlays. Protect the chorus, don’t mix two lead vocals, and leave on a short phrase — cut or echo.",
     needs: [
-      "Two vocal-heavy tracks close-ish in BPM (or accept SYNC stretch + Key Lock)",
+      "Two vocal-heavy tracks close-ish in BPM (or stretch with the tempo fader; Key Lock holds pitch while you stretch — it does not match keys)",
       "Hot Cue + channel fader; optional FX Echo",
       "Headphones recommended",
     ],
@@ -1082,6 +1255,405 @@ export const TUTORIALS: Tutorial[] = [
     ],
   },
   {
+    id: "mix-long-blend",
+    title: "Long blend: Saving Up → Turn Off The Lights",
+    time: "~10 min",
+    level: "Mixing",
+    trackRecipe:
+      "SONG SHEET — faders only. Prefer Original / Extended mixes so you have drums to blend (radio edits run out of intro too fast).\n\nDeck 1 (outgoing): Dom Dolla – Saving Up · ~128 BPM\n• Hot cue 1 → first useful kick / DJ intro (often the opening drums)\n• Hot cue 4 → last FULL groove still with kick+bass (not the dying last 20 seconds)\n\nDeck 2 (incoming): Chris Lake – Turn Off The Lights (feat. stef) · ~126–128 BPM\n• Hot cue 1 → first useful kick / DJ intro\n\nMatch Deck 2 by hand (tempo fader + jog; leave SYNC off). Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). Do not touch LOW, Filter, or Echo on this drill — channel faders only.\n\nBackup: two similar-BPM house tracks you already own. Same idea: fat groove on A, drum intro on B.",
+    summary:
+      "The first named transition: one song becomes the other using only the two channel faders. Slow hands, no EQ, no Echo.",
+    needs: [
+      "Two house tracks close in BPM (DJ/extended if you have them)",
+      "Headphones + match speed by hand",
+      "You can already start a song from hot cue 1",
+    ],
+    steps: [
+      {
+        title: "Load and leave the extras alone",
+        djay: "Deck 1: Saving Up. Deck 2: Turn Off The Lights. Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). HIGH / MID / LOW at 12 o’clock on both decks. Filter at 12. Crossfader in the middle or ignore it — this drill is channel faders.",
+        hardware: "Load left, then right. Deck 1 channel fader up. Deck 2 channel fader all the way down.",
+        expect: "Two house files. Only Deck 1 can be heard in the room.",
+      },
+      {
+        title: "Mark leave-now and the new intro",
+        hardware:
+          "Deck 1 HOT CUE: find the last fat groove (waveform still tall) → hot cue pad 4 on beat 1 of that phrase. Deck 2 HOT CUE: first useful kick → hot cue pad 1 on beat 1. Leave SYNC off. Match Deck 2 by hand: Key Lock on (holds pitch while you beatmatch — not a pitch SYNC), tempo fader until BPMs agree, headphones, nudge the jog so the kicks hit together.",
+        listen: "Pad 4 should still have a kick. Pad 1 should be drums, not a surprise vocal.",
+        expect: "You know where to leave and where the new song starts. BPMs matched.",
+      },
+      {
+        title: "Hear the incoming song in headphones only",
+        hardware:
+          "Press Deck 2’s headphone button. Keep Deck 2’s channel fader down. From hot cue 1, start Deck 2 in your ears. Confirm it feels in time with Saving Up.",
+        djay: "If you have the Hercules splitter: headphones in green, speakers in black. Split output on.",
+        expect: "Room = Saving Up. Headphones = Turn Off The Lights. Do not tap CUE while Deck 2 is playing — that stops it on Mix Ultra.",
+      },
+      {
+        title: "Start together on beat 1, then raise slowly",
+        hardware:
+          "Room still on Deck 1, playing toward pad 4. On beat 1 of that phrase: tap Deck 2 hot cue 1 (or Play if it’s already sitting there paused). Raise Deck 2’s channel fader gradually over many bars — think 8–16 bars, not two seconds.",
+        listen: "Hats and groove from the new song sneak in. If you slam the fader, everyone hears a mix. Slow = one song turning into the other.",
+        expect: "Both songs audible. Saving Up still louder at first.",
+      },
+      {
+        title: "Ease the old fader down while the new one finishes coming up",
+        hardware:
+          "Over the next 8-bar chunk (32 beats): keep raising Deck 2 if it isn’t fully up, and ease Deck 1’s channel fader down. Leave while Saving Up still has a kick — do not wait for the skinny outro.",
+        listen: "Turn Off The Lights takes the room. No bass fight to fix because you never touched LOW — if it got muddy, your overlap was too long or both files are very bass-heavy. Next tutorial is the bass swap.",
+        expect: "Clean-ish handoff with two sliders. Pause Deck 1. Reset its fader up for the next load.",
+        tip: "If the kicks drifted, you started off beat 1 or the tempo fader still isn’t matched. Nudge Deck 2’s jog; don’t tap CUE.",
+      },
+    ],
+  },
+  {
+    id: "mix-bass-swap",
+    title: "Bass swap: Losing It → Ferrari",
+    time: "~10 min",
+    level: "Mixing",
+    trackRecipe:
+      "SONG SHEET — this is the LOW-knob drill, not the filter-open Advanced recipe.\n\nDeck 1 (outgoing): FISHER – Losing It · ~125 BPM\n• Hot cue 4 → last FULL groove (kick+bass still there)\n\nDeck 2 (incoming): James Hype & Miggy Dela Rosa – Ferrari · ~125–126 BPM\n• Hot cue 1 → first useful kick / DJ intro (not the drop — you want drums to blend)\n\nMatch Deck 2 by hand (tempo fader + jog; leave SYNC off). Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). Channel faders can both be up; only one LOW sits at 12 o’clock.\n\nBackup: Saving Up (A) → Turn Off The Lights (B), same LOW trade.",
+    summary:
+      "Same pair energy as a house blend, but you keep one bassline: incoming LOW turned left, then swap on beat 1.",
+    needs: [
+      "Two ~125 house tracks",
+      "LOW knobs + headphones + match speed by hand",
+      "Comfortable with the long blend",
+    ],
+    steps: [
+      {
+        title: "Load and plant the same mix-out / mix-in",
+        djay: "Deck 1: Losing It. Deck 2: Ferrari. Key Lock on (holds pitch while you beatmatch — not a pitch SYNC).",
+        hardware:
+          "Deck 1 hot cue 4 = last full groove, beat 1. Deck 2 hot cue 1 = intro kick, beat 1. Match Deck 2 by hand (tempo fader + jog; leave SYNC off). Deck 1 fader up, Deck 2 fader down. Both LOW at 12 o’clock for now.",
+        expect: "You can restart the blend from the same bars every time.",
+      },
+      {
+        title: "Turn the new song’s bass down before anyone hears it",
+        hardware:
+          "On Deck 2 only: turn LOW left (less kick and bass). Leave HIGH and MID near center. Optional: Filter a little to the right instead — pick one, not both, while you learn.",
+        listen: "In headphones from hot cue 1: Ferrari sounds thinner. That’s the point.",
+        expect: "Incoming bass is already out of the way. Room still hasn’t heard Deck 2.",
+      },
+      {
+        title: "Bring Ferrari in; Losing It still owns the bass",
+        hardware:
+          "On beat 1 at Deck 1’s pad 4: tap Deck 2 hot cue 1, raise Deck 2’s channel fader. Keep Deck 1 LOW at 12 o’clock.",
+        listen: "New hats/groove over Losing It’s kick. If it got muddy immediately, Deck 2 LOW wasn’t left enough — turn it further left and retry.",
+        expect: "Two songs, one bassline. That is the whole trick.",
+      },
+      {
+        title: "Swap on a later beat 1",
+        hardware:
+          "Count one 8-bar chunk (32 beats). On the next beat 1: Deck 1 LOW left and Deck 2 LOW back to 12 o’clock, together. Then ease Deck 1’s channel fader down.",
+        listen: "The kick ‘belongs’ to Ferrari now. Losing It leaves without a hole if you swapped on beat 1.",
+        expect: "One bass the whole time. Reset both LOW knobs to 12 o’clock. Pause Deck 1.",
+        tip: "djay Sound → EQ type Isolator makes LOW-left a real bass kill. Classic still leaks a little. See djay settings.",
+      },
+    ],
+  },
+  {
+    id: "mix-drop-mix",
+    title: "Drop mix: skip their payoff, land yours",
+    time: "~12 min",
+    level: "Mixing",
+    trackRecipe:
+      "SONG SHEET — you will NOT let Deck 1’s drop hit. Different job from the Advanced filter-open (that one rides a build and blooms into the new drop).\n\nDeck 1 (outgoing): Chris Lake – Turn Off The Lights (feat. stef) · ~126–128 BPM\n• Hot cue 2 → start of the BUILD / last quiet bars BEFORE the main drop (waveform getting busier, drop not yet)\n• You are leaving on the beat 1 where their drop would have hit\n\nDeck 2 (incoming): Dom Dolla – Saving Up · ~128 BPM\n• Hot cue 2 → first kick of the MAIN DROP (the fat payoff, not the intro)\n\nMatch Deck 2 by hand (tempo fader + jog; leave SYNC off). Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). Timing has to be exact — late by two beats feels drunk even when the BPMs match.\n\nBackup: Ferrari build (A) → Losing It drop (B).",
+    summary:
+      "The room thinks the old drop is coming. You pull that fader down on beat 1 and start the new song on its drop instead.",
+    needs: [
+      "Two house tracks with a clear build and a clear drop",
+      "Hot cue + match speed by hand + headphones",
+      "You can already land hot cue 2 on beat 1",
+    ],
+    steps: [
+      {
+        title: "Mark the old build and the new drop",
+        djay: "Deck 1: Turn Off The Lights. Deck 2: Saving Up. Key Lock on (holds pitch while you beatmatch — not a pitch SYNC).",
+        hardware:
+          "Deck 1 HOT CUE: find the bars that climb toward the drop (taller hats, less bass, ‘something is coming’) → hot cue pad 2 on beat 1 of that build. Deck 2 HOT CUE: first fat kick of Saving Up’s drop → hot cue pad 2 on beat 1. Match Deck 2 by hand (tempo fader + jog; leave SYNC off).",
+        listen: "Deck 1 pad 2 should still be the tease, not the slam. Deck 2 pad 2 should slam.",
+        expect: "Two pads, two jobs: ‘almost’ vs ‘now.’",
+      },
+      {
+        title: "Rehearse the new drop alone",
+        hardware:
+          "Deck 2 fader down. Headphones on Deck 2. Tap hot cue 2 a few times. If it feels early or late, nudge the pad by a beat and tap again. Trust the waveform peak, not the clock.",
+        expect: "Saving Up’s drop always starts on beat 1 from that pad. You will hit it once, on time.",
+      },
+      {
+        title: "Ride the old build in the room",
+        hardware:
+          "Crossfader toward Deck 1 (or ignore it). Deck 1 channel up, Deck 2 channel down. Play from Deck 1 hot cue 2. Count 8 bars if you can — you are waiting for the beat 1 where Turn Off The Lights would drop.",
+        listen: "Tension. Do not let that drop play this time.",
+        expect: "Finger on Deck 1’s channel fader and Deck 2’s hot cue 2.",
+      },
+      {
+        title: "Skip theirs, land yours",
+        hardware:
+          "On that beat 1: pull Deck 1’s channel fader down and tap Deck 2 hot cue 2 while raising Deck 2’s fader (almost together). You skipped their climax and landed yours.",
+        listen: "The room got Saving Up’s drop instead of Chris Lake’s. If it felt late, you waited for the old drop to start — leave on the One, not after it.",
+        expect: "Hard energy handoff. Reset faders. Retry from Deck 1 pad 2 until the One is obvious.",
+        tip: "This is not a long blend. If you faded over 16 bars you did a different transition. Here the old song is gone on that beat 1.",
+      },
+    ],
+  },
+  {
+    id: "mix-echo-out",
+    title: "Echo-out: Don’t Start Now → Head & Heart",
+    time: "~10 min",
+    level: "Mixing",
+    trackRecipe:
+      "SONG SHEET — beginner echo-out (the Advanced One Kiss version adds a tighter last-line catch).\n\nDeck 1 (outgoing): Dua Lipa – Don’t Start Now · ~124 BPM · ~3:03 radio\n• Landmark lyric: the last full “don’t start now” chorus before the song winds down\n• Hot cue 1 → beat 1 of that last chorus phrase\n\nDeck 2 (incoming): Joel Corry x MNEK – Head & Heart · ~123 BPM\n• Hot cue 1 → beat 1 of the FIRST chorus (the “head and my heart” / na-na hook — often ~0:45–1:05 on radio edits)\n\nMatch Deck 2 by hand (tempo fader + jog; leave SYNC off). Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). FX: Echo on a pad, Post fader.\n\nBackup: One Kiss last chorus (A) → Head & Heart chorus (B) — then try the Advanced echo tutorial when this feels easy.",
+    summary:
+      "Hold Echo, pull the old fader, start the new chorus in the hole. Works even when you don’t want a long blend.",
+    needs: [
+      "FX Echo assigned to a pad in djay",
+      "Hot cue + channel fader + headphones",
+      "djay: FX routing = Post fader",
+    ],
+    steps: [
+      {
+        title: "Put Echo on a pad and check Post fader",
+        djay: "Landscape → FX → Deck 1 slot 1 = Echo (or Delay). Sound settings: FX routing = Post fader so the echo dies as you pull the fader. A 1-beat echo is a longer tail; 1/2-beat is snappier.",
+        hardware: "Press FX (solid LED). Hold pad 1 briefly on a playing track, release. You should hear a wash, then it stops when you let go.",
+        expect: "You know which pad is Echo. Mix Ultra does not print the word Echo on the hardware.",
+      },
+      {
+        title: "Mark the last chorus and the new chorus",
+        hardware:
+          "Deck 1 HOT CUE: last “don’t start now” chorus → hot cue pad 1 on beat 1. Deck 2 HOT CUE: first Head & Heart chorus → hot cue pad 1 on beat 1. Match Deck 2 by hand (tempo fader + jog; leave SYNC off). Key Lock on (holds pitch while you beatmatch — not a pitch SYNC).",
+        expect: "Pad 1 on each deck is a chorus button.",
+      },
+      {
+        title: "Practice Echo alone (no second song yet)",
+        hardware:
+          "Only Deck 1 in the room. Play from hot cue 1. At the end of a line (after “now”): HOLD the Echo pad, pull Deck 1’s channel fader down, RELEASE as the tail fades. Do not bring Deck 2 in yet.",
+        listen: "The word washes into space. If Echo keeps ringing with the fader down, routing is still Pre fader.",
+        expect: "The gesture is hold → fade → release. Tap-and-forget does almost nothing.",
+      },
+      {
+        title: "Full handoff into Head & Heart",
+        hardware:
+          "Deck 1 playing that last chorus. Deck 2 waiting on hot cue 1 in headphones, channel fader down. When you start the echo-out: HOLD Echo → fade Deck 1 → RELEASE. Then tap Deck 2 hot cue 1 and raise Deck 2 so the new chorus enters in the hole.",
+        listen: "“Don’t start now” trails → Head & Heart’s hook. No long silent gap, no two singers stacked.",
+        expect: "Clean vocal exit. Press HOT CUE so you’re not stuck in FX. Reset the fader.",
+        tip: "If Deck 2 felt late, start it a beat earlier while the echo is still washing — the tail covers the join.",
+      },
+    ],
+  },
+  {
+    id: "mix-xfader-cut",
+    title: "Crossfader cut: Ferrari vs Turn Off The Lights",
+    time: "~8 min",
+    level: "Mixing",
+    trackRecipe:
+      "SONG SHEET — two drops, one slider. Not the Advanced double-drop (that one layers both kicks).\n\nDeck 1: James Hype & Miggy Dela Rosa – Ferrari · ~125–126 BPM\n• Hot cue 2 → first kick of the MAIN DROP\n\nDeck 2: Chris Lake – Turn Off The Lights (feat. stef) · ~126–128 BPM\n• Hot cue 2 → first kick of the MAIN DROP\n\nMatch Deck 2 by hand (tempo fader + jog; leave SYNC off). Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). Both channel faders UP. HIGH / MID / LOW at 12 o’clock. The crossfader does the work.\n\ndjay Sound: Crossfader curve = Cut (sharp). If a paused deck starts when you move the crossfader, turn off Auto-play when moving crossfader.\n\nBackup: Losing It drop (A) × Saving Up drop (B).",
+    summary:
+      "Both drops already running. Throw or chop the crossfader from the old side to the new side — a few bars, not a whole song.",
+    needs: [
+      "Two house drops you can land on beat 1",
+      "Match speed by hand + both channel faders",
+      "Crossfader curve set to Cut if you want a hard edge",
+    ],
+    steps: [
+      {
+        title: "Arm both drops and match speed",
+        djay: "Ferrari left, Turn Off The Lights right. Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). Crossfader curve: Cut.",
+        hardware:
+          "Each deck HOT CUE: hot cue pad 2 = drop kick on beat 1. Match Deck 2 by hand (tempo fader + jog; leave SYNC off). Both LOW/Filter at 12 o’clock. Both channel faders fully up.",
+        expect: "Volume is already decided. The long slider between the decks is the only mix control.",
+      },
+      {
+        title: "Park the crossfader on the old song",
+        hardware:
+          "Move the crossfader all the way LEFT (Deck 1). Play Ferrari from hot cue 2. You should hear only Ferrari even though Deck 2’s channel fader is up.",
+        listen: "If you hear both, the crossfader is in the middle. All the way to a side = that deck only.",
+        expect: "Room = Ferrari’s drop. Deck 2 is playing or ready, but silent on master.",
+      },
+      {
+        title: "Start the new drop in time, still silent",
+        hardware:
+          "Headphones on Deck 2. On a beat 1 while Ferrari’s drop is running: tap Deck 2 hot cue 2 so both drops are aligned. Keep the crossfader left so the room still hears only Ferrari.",
+        expect: "Two drops stacked in time; only one in the room. This is the setup the cut needs.",
+      },
+      {
+        title: "Throw, then try a few chops",
+        hardware:
+          "On a beat 1 (or even on a beat): throw the crossfader all the way RIGHT. That’s a hard cut. Reset, retry: chop left-right-left-right for 4 beats, then park it on Deck 2.",
+        listen: "Hard cut = new drop owns the room instantly. Chops = both songs as one moment, then you pick a winner.",
+        expect: "A few bars of this is plenty. Park on the new song, pause Deck 1, reset the crossfader for the next load.",
+        tip: "If it sounded like a mistake, you cut mid-phrase. Wait for beat 1. If both basslines roared in the middle, you lingered in the center — Cut curve helps you spend less time there.",
+      },
+    ],
+  },
+  {
+    id: "mix-32-window",
+    title: "32-beat intro over a chorus",
+    time: "~12 min",
+    level: "Mixing",
+    trackRecipe:
+      "SONG SHEET — you need a real drum intro on the incoming file. Radio edits often skip this; use Extended / Original when both exist.\n\nDeck 1 (outgoing): FISHER – Losing It · ~125 BPM\n• Hot cue 2 → beat 1 of a DROP / fat chorus-like groove you will leave from (Drop 1 is fine)\n• You will mix OUT of this loud part, not after it dies\n\nDeck 2 (incoming): Chris Lake – Turn Off The Lights (feat. stef) · Extended if you have it · ~126–128 BPM\n• Hot cue 1 → first useful kick of the DJ intro (drums, little or no vocal)\n• Count: 8 bars = 32 beats. That’s the window the intro should cover the old chorus.\n\nMatch Deck 2 by hand (tempo fader + jog; leave SYNC off). Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). Finish with a bass swap, or Echo / Filter-right the old song away.\n\nBackup: Saving Up last groove (A) → Ferrari extended intro (B).",
+    summary:
+      "Plan the overlap: 32 beats of new drums over the old loud part, then get the old song out of the way. The everyday house mix.",
+    needs: [
+      "Incoming track with a drum intro (extended mix)",
+      "Headphones + match speed by hand + LOW or Filter",
+      "You can count 8 bars (32 beats)",
+    ],
+    steps: [
+      {
+        title: "Confirm the incoming file actually has an intro",
+        djay: "On Deck 2, look at the overview waveform. You want a stretch of drums before the first vocal or drop — often 32–64 bars on a club mix. If the vocal starts in the first 8 bars, this tutorial will feel rushed; pick an Extended, or use echo-out instead.",
+        hardware: "Deck 2 hot cue 1 on the first useful intro kick, beat 1. Deck 1 hot cue 2 on a fat drop/groove, beat 1. Match Deck 2 by hand (tempo fader + jog; leave SYNC off).",
+        expect: "You have ~32 beats of new drums to work with. Phrases: 8 bars = 32 beats.",
+      },
+      {
+        title: "Start the intro on beat 1 of the old loud part",
+        hardware:
+          "Room = Losing It playing from hot cue 2 (drop). Headphones = Deck 2. Incoming LOW a bit left (or Filter a little right). On beat 1: tap Deck 2 hot cue 1, raise Deck 2’s channel fader. Count 1–2–3–4, eight times.",
+        listen: "New drums over a still-moving bass. Kick never left. This is intro-over-chorus, not intro-over-outro.",
+        expect: "Both songs for those 32 beats. If you started mid-bar, stop and retry — the window only works on beat 1.",
+      },
+      {
+        title: "Get the old song out as the 32 beats end",
+        hardware:
+          "Around beat 32 (the next beat 1): bass swap (old LOW left, new LOW to 12) and/or Filter the old deck to the right, then fade Deck 1. Optional: HOLD Echo as you pull Deck 1 if you want a tail.",
+        listen: "Turn Off The Lights owns the room as its intro is about to get busier. Losing It is gone while it still had dignity.",
+        expect: "You used a planned window, not ‘whenever the outro started.’ Reset EQ / Filter / FX.",
+        tip: "If 32 beats felt too short, your incoming intro is a radio edit. If it felt endless, you started too early in Losing It’s drop — leave from a later phrase.",
+      },
+    ],
+  },
+  {
+    id: "mix-brake-cut",
+    title: "Echo + brake cut",
+    time: "~10 min",
+    level: "Mixing",
+    trackRecipe:
+      "SONG SHEET — speeds do not have to match. This is not the Advanced Bruno tutorial (that one uses Key Lock + match speed by hand).\n\nDeck 1 (outgoing): Encanto Cast – We Don’t Talk About Bruno · ~103 BPM\n• Landmark: a late group chorus “We don’t talk about Bruno, no, no, no…”\n• Hot cue 2 → beat 1 of that LATE chorus (often ~2:20–2:50). Echo the last “no.”\n\nDeck 2 (incoming): Jessica Darrow – Surface Pressure · ~90–91 BPM\n• Hot cue 1 → beat 1 of the first big chorus (“pressure like a drip…” — often ~0:45–1:05)\n\nDon’t match speeds — you will stop Bruno on purpose, then start Surface Pressure on its chorus.\n\nBackup: any two songs that don’t share a BPM — a ballad into a banger, 90 hip-hop into 124 house.",
+    summary:
+      "When speeds don’t match: hold Echo, pause so it spins down, start the next chorus. No beat matching required.",
+    needs: [
+      "FX Echo on a pad, Post fader",
+      "djay Start / stop time above 0 for the spin-down",
+      "Two songs you know — BPMs can be far apart",
+    ],
+    steps: [
+      {
+        title: "Turn on a little vinyl-style stop",
+        djay: "Settings → Play / Pause: set Start / stop time above 0 (a fraction of a second to about a second). 0 is an instant pause — Mix Ultra’s usual default. Put it back to 0 when you’re done practicing, or every pause will drag.",
+        hardware: "Nothing yet. This setting lives in djay, not on a Mix Ultra knob.",
+        expect: "Pause will spin down a little instead of cutting dead.",
+      },
+      {
+        title: "Mark the last chorus and the new chorus",
+        hardware:
+          "Deck 1 hot cue 2 = late Bruno chorus, beat 1. Deck 2 hot cue 1 = Surface Pressure chorus, beat 1. Leave the SYNC button off. Deck 1 fader up, Deck 2 fader down.",
+        djay: "BPMs will read ~103 vs ~91. That is fine. You are not blending kicks.",
+        expect: "Two chorus buttons. Incoming is not locked to the old speed.",
+      },
+      {
+        title: "Echo, pause, then the new chorus",
+        hardware:
+          "Play Bruno from hot cue 2 in the room. FX mode. At the last ‘no’ you care about: HOLD Echo, press Pause on Deck 1 (let it spin down), raise Deck 2’s channel fader and tap hot cue 1 (or Play).",
+        listen: "Bruno washes and stops. Surface Pressure’s chorus starts. It should feel like the song ended and the next one began — which is what this mix is.",
+        expect: "Clean stop. If Pause was instant, start/stop time is still 0. If Echo kept ringing with the fader down, routing is Pre fader.",
+        tip: "Kids-party files forgive this more than a 32-bar house blend. You gave up the long mix on purpose.",
+      },
+      {
+        title: "Reset so the next pause is normal",
+        djay: "Start / stop time back to 0 unless you want every pause to brake. Press HOT CUE so you’re not stuck in FX.",
+        hardware: "Pause Deck 2 if you’re done. Reset both channel faders.",
+        expect: "Normal Mix Ultra pauses again. Technique page: When speeds don’t match.",
+      },
+    ],
+  },
+  {
+    id: "mix-bpm-stretch",
+    title: "Walk the tempo: Soda Pop → Takedown",
+    time: "~12 min",
+    level: "Mixing",
+    trackRecipe:
+      "SONG SHEET — modest BPM jump. Match speed by hand. Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). Search “KPop Demon Hunters”.\n\nDeck 1 (outgoing): Saja Boys – Soda Pop · ~126 BPM · ~2:30\n• Hot cue 2 → second chorus / last full hook (~1:20–1:40) so you have a short stretch of song left\n\nDeck 2 (incoming): HUNTR/X – Takedown · ~140 BPM\n• Hot cue 1 → first chorus / hook downbeat (land on beat 1 of the phrase)\n\nKey Lock ON so voices don’t go thin and high while you change speed (not a pitch SYNC — it does not match two songs’ keys). Match Deck 2 down to Soda Pop by hand (tempo fader + jog; leave SYNC off). While they overlap, walk both tempo faders toward Takedown’s native BPM, then echo or Filter Soda Pop away.\n\nIf the tempo fader can’t reach, widen the tempo range in djay (the fader’s % range). Mix Ultra has no Pioneer-style wide/plus/minus button — it’s software.\n\nBackup: Golden (~123) → Takedown (~140), or any two songs a handful of BPM apart. A 90-to-170 leap is a brake cut, not this.",
+    summary:
+      "Match them by hand, keep Key Lock on (holds pitch while you change speed — not a pitch SYNC), and walk both tempo faders toward the new song’s real BPM before you leave.",
+    needs: [
+      "Key Lock + both tempo faders (no SYNC)",
+      "Headphones",
+      "Two songs close enough that stretching still sounds like music",
+    ],
+    steps: [
+      {
+        title: "Key Lock and a reachable tempo range",
+        djay: "Deck 1: Soda Pop. Deck 2: Takedown. Key Lock on both (holds pitch while you beatmatch — not a pitch SYNC). Widen the tempo range if ~126→~140 doesn’t fit the fader. Note both BPM readouts.",
+        hardware: "Hot cue 2 on Soda Pop’s late chorus, beat 1. Hot cue 1 on Takedown’s chorus, beat 1. Leave SYNC off. Match Deck 2 by hand: Key Lock on (holds pitch while you beatmatch — not a pitch SYNC), tempo fader until BPMs agree, headphones, nudge the jog so the kicks hit together. Deck 2 fader down.",
+        expect: "Deck 2 is running at Soda Pop’s speed for now. Voices should still sound like voices (Key Lock).",
+      },
+      {
+        title: "Overlap on beat 1",
+        hardware:
+          "Room = Soda Pop from hot cue 2. Headphones = Takedown. Incoming LOW a bit left. On beat 1: tap Deck 2 hot cue 1, raise its channel fader. Keep the overlap short — a chorus, not a minute.",
+        listen: "Two hooks at one speed. If a singer went thin and high, Key Lock is off.",
+        expect: "Both in the room, matched. Now you walk the speed.",
+      },
+      {
+        title: "Ease the old tempo fader toward the new BPM",
+        hardware:
+          "Slowly walk both tempo faders toward Takedown’s native ~140 so the two BPM numbers stay together. Nudge the jogs if the kicks drift. Don’t slam either fader. Leave SYNC off — you’re holding the match with your hands.",
+        listen: "The whole mix speeds up together. That’s the point — then Takedown can keep 140 when you leave.",
+        expect: "You’re near Takedown’s real speed while both still play.",
+      },
+      {
+        title: "Echo or Filter the old song away",
+        hardware:
+          "HOLD Echo on Deck 1 and/or Filter Deck 1 to the right, pull Deck 1’s channel fader down. Let Takedown run at ~140. Center Deck 1’s tempo fader when you load the next file.",
+        listen: "Soda Pop leaves. Takedown is at a party tempo, not stuck at 126.",
+        expect: "BPM jump without a brake. Reset tempo faders / EQ / Filter. Technique page: When speeds don’t match.",
+        tip: "If it sounded like a different night, the gap is too wide. Use the brake cut, or a song in between.",
+      },
+    ],
+  },
+  {
+    id: "mix-loop-bridge",
+    title: "Loop-bridge: 4 bars, then the next intro",
+    time: "~10 min",
+    level: "Mixing",
+    trackRecipe:
+      "SONG SHEET — the old file is about to run out, or you need a steady bar while the new intro arrives.\n\nDeck 1 (outgoing): FISHER – Losing It · ~125 BPM\n• Hot cue 4 → last FULL groove (or a breakdown bar with a kick). You will LOOP 4 bars here.\n\nDeck 2 (incoming): James Hype & Miggy Dela Rosa – Ferrari · ~125–126 BPM\n• Hot cue 1 → first useful intro kick (not the drop)\n\nMatch Deck 2 by hand (tempo fader + jog; leave SYNC off). Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). LOOP pads start from the playhead now — pause on beat 1 first if you need that bar exactly.\n\nBackup: Saving Up last groove looped (A) → Turn Off The Lights intro (B).",
+    summary:
+      "Loop 4 bars of the old song, blend the new intro over that loop, then echo and Filter the loop away.",
+    needs: [
+      "LOOP pads + match speed by hand + headphones",
+      "Echo and/or Filter to exit the loop",
+      "A groove worth repeating (not a whole vocal verse)",
+    ],
+    steps: [
+      {
+        title: "Park on beat 1, then loop 4 bars",
+        hardware:
+          "Deck 1 playing toward the last groove. Pause on beat 1 of that phrase if you need the loop to start exactly there. Press LOOP, tap the 4-bar pad once. Play. You should hear the same 4 bars repeat.",
+        djay: "A loop flag/region should show on the waveform. If it started late, you tapped LOOP while the playhead was already past beat 1 — that’s how Mix Ultra works. Pause and arm, or wait for the next beat 1.",
+        expect: "A steady 4-bar bed. Pressing Play then LOOP mid-bar is why loops feel ‘off.’",
+      },
+      {
+        title: "Bring the new intro over the loop",
+        hardware:
+          "Deck 2 matched by hand, hot cue 1 = intro kick. Incoming LOW a bit left. On beat 1 of the loop: tap Deck 2 hot cue 1, raise Deck 2’s channel fader.",
+        listen: "Ferrari’s drums over a repeating Losing It bar. You bought time; you still want one bass.",
+        expect: "Incoming is in. The loop is a bridge, not a new song.",
+      },
+      {
+        title: "Echo and Filter the loop away",
+        hardware:
+          "On a beat 1: HOLD Echo on Deck 1 and/or Filter Deck 1 to the right, pull Deck 1’s channel fader down. Tap the lit loop pad (or leave LOOP mode) so you’re not still repeating if anything leaks. Raise Deck 2 LOW to 12 o’clock.",
+        listen: "The repeating bar washes out. Ferrari continues. If the loop kept going in the room, the fader didn’t make it down or Echo was Pre fader.",
+        expect: "Bridge done. Back to HOT CUE. Reset Filter / EQ / loop.",
+        tip: "Looping a whole vocal verse sounds like you’re stuck. 1 or 4 bars of beat is the usual length.",
+      },
+    ],
+  },
+  {
     id: "adv-filter-open",
     title: "Filter-open: Losing It → Ferrari",
     time: "~15 min",
@@ -1098,7 +1670,7 @@ export const TUTORIALS: Tutorial[] = [
     steps: [
       {
         title: "Load the exact tracks",
-        djay: "Deck 1: FISHER – Losing It. Deck 2: James Hype – Ferrari. Check BPM readouts (~125). Turn Key Lock on (musical note) so SYNC doesn’t wreck the key.",
+        djay: "Deck 1: FISHER – Losing It. Deck 2: James Hype – Ferrari. Check BPM readouts (~125). Turn Key Lock on so changing speed doesn’t make voices go thin and high. That is not matching two songs’ keys — there is no pitch SYNC.",
         hardware: "Browser → load left, then right. Crossfader hard LEFT. Deck 1 channel up, Deck 2 channel down.",
         expect: "Two tech/house bangers, nearly the same tempo.",
       },
@@ -1112,7 +1684,7 @@ export const TUTORIALS: Tutorial[] = [
       {
         title: "Plant Ferrari’s drop (Deck 2)",
         hardware:
-          "Deck 2 HOT CUE. Find the main drop (after the vocal says “Ferrari” / energy jumps). Land on beat 1 of that bar → tap pad 1. Press SYNC on Deck 2.",
+          "Deck 2 HOT CUE. Find the main drop (after the vocal says “Ferrari” / energy jumps). Land on beat 1 of that bar → tap pad 1. Leave SYNC off. Match Deck 2 by hand: Key Lock on (holds pitch while you beatmatch — not a pitch SYNC), tempo fader until BPMs agree, headphones, nudge the jog so the kicks hit together.",
         expect: "Deck 2 Hot Cue 1 is a nuclear drop button. BPMs matched.",
       },
       {
@@ -1126,7 +1698,7 @@ export const TUTORIALS: Tutorial[] = [
         title: "Prep Ferrari thin in headphones",
         hardware:
           "Headphones on Deck 2. From Hot Cue 1, start Ferrari. FILTER: turn clockwise ~1/4–1/3 (high-pass / thin). LOW: turn down a bit. Keep Deck 2 channel fader low / crossfader left so the room doesn’t hear it yet.",
-        listen: "In cans: Ferrari sounds lighter — kick/bass reduced. That’s intentional.",
+        listen: "In headphones: Ferrari sounds lighter — kick/bass reduced. That’s intentional.",
         expect: "B is armed on the drop, EQ/filter making room for a bass handoff.",
       },
       {
@@ -1145,7 +1717,7 @@ export const TUTORIALS: Tutorial[] = [
     time: "~12 min",
     level: "Advanced",
     trackRecipe:
-      "SONG SHEET (common radio/streaming edits — confirm lines on the waveform).\n\nDeck 1 (outgoing): Calvin Harris & Dua Lipa – One Kiss · ~124 BPM · ~3:40\n• Find the LAST full chorus before the outro (often ~2:30–3:10). Landmark lyric: “One kiss is all it takes”\n• Hot Cue 1 → downbeat (beat 1) of that final chorus phrase you want to echo out of\n• Hot Cue 2 (optional) → start of the outro / last “one kiss…” if you want a shorter sting\n\nDeck 2 (incoming): Joel Corry x MNEK – Head & Heart · ~123 BPM\n• Hot Cue 1 → downbeat of the FIRST chorus (the “Oh na-na…” / “head and my heart” hook — often ~0:45–1:05 on radio edits; Extended mixes place it later)\n\nBackup: Dua Lipa – Don’t Start Now (A, last “don’t start now” chorus) → The Weeknd – Blinding Lights (B, chorus downbeat) — use SYNC + Key Lock; BPMs differ more.",
+      "SONG SHEET (common radio/streaming edits — confirm lines on the waveform).\n\nDeck 1 (outgoing): Calvin Harris & Dua Lipa – One Kiss · ~124 BPM · ~3:40\n• Find the LAST full chorus before the outro (often ~2:30–3:10). Landmark lyric: “One kiss is all it takes”\n• Hot Cue 1 → downbeat (beat 1) of that final chorus phrase you want to echo out of\n• Hot Cue 2 (optional) → start of the outro / last “one kiss…” if you want a shorter sting\n\nDeck 2 (incoming): Joel Corry x MNEK – Head & Heart · ~123 BPM\n• Hot Cue 1 → downbeat of the FIRST chorus (the “Oh na-na…” / “head and my heart” hook — often ~0:45–1:05 on radio edits; Extended mixes place it later)\n\nBackup: Dua Lipa – Don’t Start Now (A, last “don’t start now” chorus) → The Weeknd – Blinding Lights (B, chorus downbeat) — use Key Lock + match speed by hand; BPMs differ more.",
     summary:
       "Wash Dua Lipa’s last “One kiss…” with echo while Head & Heart’s chorus takes the room.",
     needs: [
@@ -1170,7 +1742,7 @@ export const TUTORIALS: Tutorial[] = [
       {
         title: "Mark Head & Heart’s chorus",
         hardware:
-          "Deck 2 HOT CUE. Find first chorus hook → beat 1 → tap pad 1. Press SYNC. Key Lock on.",
+          "Deck 2 HOT CUE. Find first chorus hook → beat 1 → tap pad 1. Leave SYNC off. Match Deck 2 by hand (tempo fader + jog). Key Lock on (holds pitch while you beatmatch — not a pitch SYNC).",
         djay: "BPMs should read close (~123–124). Headphones cue Deck 2.",
         expect: "Deck 2 pad 1 = chorus nuclear button.",
       },
@@ -1196,7 +1768,7 @@ export const TUTORIALS: Tutorial[] = [
     time: "~15 min",
     level: "Advanced",
     trackRecipe:
-      "SONG SHEET — same two vocals as the echo tutorial, different technique.\n\nDeck 1 (bed / beat): Joel Corry x MNEK – Head & Heart · ~123 BPM\n• Hot Cue 1 → downbeat of a CHORUS (same landmark as before, ~0:45–1:05 on many radio edits)\n• You’ll MUTE VOCALS on this deck (bottom Neural pad lit) so the groove stays\n\nDeck 2 (guest vocal): Calvin Harris & Dua Lipa – One Kiss · ~124 BPM\n• Hot Cue 1 → downbeat of a CHORUS (“One kiss is all it takes”)\n• Keep vocals; optionally MUTE DRUMS on Deck 2 so Head & Heart’s kick leads\n\nSYNC Deck 2 to Deck 1, Key Lock on. Practice 8–16 bars of overlap, not a whole song.\n\nBackup mashup: Meduza – Piece Of Your Heart (bed, mute vocals) × Meduza / Goodboys – Lose Control (keep vocals).",
+      "SONG SHEET — same two vocals as the echo tutorial, different technique.\n\nDeck 1 (bed / beat): Joel Corry x MNEK – Head & Heart · ~123 BPM\n• Hot Cue 1 → downbeat of a CHORUS (same landmark as before, ~0:45–1:05 on many radio edits)\n• You’ll MUTE VOCALS on this deck (bottom Neural pad lit) so the groove stays\n\nDeck 2 (guest vocal): Calvin Harris & Dua Lipa – One Kiss · ~124 BPM\n• Hot Cue 1 → downbeat of a CHORUS (“One kiss is all it takes”)\n• Keep vocals; optionally MUTE DRUMS on Deck 2 so Head & Heart’s kick leads\n\nMatch Deck 2 to Deck 1 by hand (tempo fader + jog; leave SYNC off). Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). Practice 8–16 bars of overlap, not a whole song.\n\nBackup mashup: Meduza – Piece Of Your Heart (bed, mute vocals) × Meduza / Goodboys – Lose Control (keep vocals).",
     summary:
       "Mute MNEK’s vocal, ride Dua Lipa over Head & Heart’s beat — live mashup with Neural Mix pads.",
     needs: [
@@ -1208,8 +1780,8 @@ export const TUTORIALS: Tutorial[] = [
       {
         title: "Load + cue the choruses",
         hardware:
-          "Deck 1: Head & Heart → Hot Cue 1 on chorus One. Deck 2: One Kiss → Hot Cue 1 on chorus One. SYNC Deck 2. Crossfader center-ish for practice, or keep 2 low until ready.",
-        expect: "Both pads restart chorus downbeats. Tempos locked.",
+          "Deck 1: Head & Heart → Hot Cue 1 on chorus One. Deck 2: One Kiss → Hot Cue 1 on chorus One. Match Deck 2 by hand (tempo fader + jog; leave SYNC off). Crossfader center-ish for practice, or keep 2 low until ready.",
+        expect: "Both pads restart chorus downbeats. Speeds matched by hand.",
         lab: "Skim /labs/neural-pads if mute lights still feel backwards.",
       },
       {
@@ -1246,11 +1818,11 @@ export const TUTORIALS: Tutorial[] = [
     time: "~12 min",
     level: "Advanced",
     trackRecipe:
-      "SONG SHEET — peak-time tech house stunt (loud — watch gain).\n\nDeck 1: FISHER – Losing It · ~125 BPM\n• Hot Cue 1 → first kick of DROP 1 (~0:58–1:05)\n• Hot Cue 2 → ~8–16 bars BEFORE that drop (start of the build / last “whoa” section) so you can ride the build live\n\nDeck 2: Mau P – Drugs From Amsterdam · ~126 BPM (Original/Extended if available)\n• Hot Cue 1 → first kick of the MAIN DROP (commonly ~0:55–1:10 — find the moment the bassline fully locks in; Extended mixes shift later)\n\nSYNC Deck 2, Key Lock on. You’re aiming for both drop kicks on the same One for 8–16 beats only.\n\nBackup pair: Martin Garrix – Animals (A, drop ~1:00–1:05) × R3HAB – Soundwave or another ~128 BPM big-room drop (B).",
+      "SONG SHEET — peak-time tech house stunt (loud — watch gain).\n\nDeck 1: FISHER – Losing It · ~125 BPM\n• Hot Cue 1 → first kick of DROP 1 (~0:58–1:05)\n• Hot Cue 2 → ~8–16 bars BEFORE that drop (start of the build / last “whoa” section) so you can ride the build live\n\nDeck 2: Mau P – Drugs From Amsterdam · ~126 BPM (Original/Extended if available)\n• Hot Cue 1 → first kick of the MAIN DROP (commonly ~0:55–1:10 — find the moment the bassline fully locks in; Extended mixes shift later)\n\nMatch Deck 2 by hand (tempo fader + jog; leave SYNC off). Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). You’re aiming for both drop kicks on the same One for 8–16 beats only.\n\nBackup pair: Martin Garrix – Animals (A, drop ~1:00–1:05) × R3HAB – Soundwave or another ~128 BPM big-room drop (B).",
     summary:
       "Line up two famous drops on Hot Cue 1, slam them together for a phrase, then peel one away.",
     needs: [
-      "SYNC + Hot Cue confidence",
+      "Match speed by hand + Hot Cue confidence",
       "Headphones",
       "Willingness to retry timing 5–10 times",
     ],
@@ -1258,7 +1830,7 @@ export const TUTORIALS: Tutorial[] = [
       {
         title: "Mark both drop kicks",
         hardware:
-          "Deck 1: Losing It Hot Cue 1 on Drop 1’s first kick; Hot Cue 2 on the build before it. Deck 2: Drugs From Amsterdam Hot Cue 1 on main drop’s first kick. SYNC Deck 2.",
+          "Deck 1: Losing It Hot Cue 1 on Drop 1’s first kick; Hot Cue 2 on the build before it. Deck 2: Drugs From Amsterdam Hot Cue 1 on main drop’s first kick. Match Deck 2 by hand (tempo fader + jog; leave SYNC off).",
         djay: "Zoom waveforms — the cue triangle/marker should sit on a transient peak, not a soft lead-in.",
         expect: "Each pad 1 is a drop detonator.",
       },
@@ -1297,20 +1869,20 @@ export const TUTORIALS: Tutorial[] = [
     time: "~15 min",
     level: "Advanced",
     trackRecipe:
-      "SONG SHEET — search the KPop Demon Hunters soundtrack in Apple Music / TIDAL (not always on every service).\n\nDeck 1 (outgoing): Saja Boys – Soda Pop · ~126 BPM · ~2:30\n• Hot Cue 1 → first chorus downbeat (the big “soda pop” hook — often ~0:28–0:40)\n• Hot Cue 2 → second chorus / last full hook before the end (~1:20–1:40)\n• Practice from Cue 2 so you have a short runway\n\nDeck 2 (incoming): HUNTR/X – Golden · ~123 BPM · ~3:14\n• Hot Cue 1 → first chorus / “golden” hook downbeat (often ~0:40–0:55 — land on beat 1 of the phrase, not the pre-chorus)\n• Hot Cue 2 (optional) → drop/energy jump if your edit has a clearer second hit (~1:30–1:50)\n\nSYNC Deck 2 to Deck 1. Key Lock ON. Times move around by a few seconds on sing-along vs original — trust the waveform peak.\n\nBackup: HUNTR/X – Takedown (~140 BPM) as Deck 2 if Golden isn’t in your library (SYNC will stretch more).",
+      "SONG SHEET — search the KPop Demon Hunters soundtrack in Apple Music / TIDAL (not always on every service).\n\nDeck 1 (outgoing): Saja Boys – Soda Pop · ~126 BPM · ~2:30\n• Hot Cue 1 → first chorus downbeat (the big “soda pop” hook — often ~0:28–0:40)\n• Hot Cue 2 → second chorus / last full hook before the end (~1:20–1:40)\n• Practice from Cue 2 so you have a short runway\n\nDeck 2 (incoming): HUNTR/X – Golden · ~123 BPM · ~3:14\n• Hot Cue 1 → first chorus / “golden” hook downbeat (often ~0:40–0:55 — land on beat 1 of the phrase, not the pre-chorus)\n• Hot Cue 2 (optional) → drop/energy jump if your edit has a clearer second hit (~1:30–1:50)\n\nMatch Deck 2 to Deck 1 by hand (tempo fader + jog; leave SYNC off). Key Lock ON (holds pitch while you beatmatch — not a pitch SYNC). Times move around by a few seconds on sing-along vs original — trust the waveform peak.\n\nBackup: HUNTR/X – Takedown (~140 BPM) as Deck 2 if Golden isn’t in your library (the tempo fader will stretch more).",
     summary:
       "Party soundtrack mix: loop Soda Pop’s hook, bring Golden in thin, open the filter as the HUNTR/X chorus hits.",
     needs: [
       "KPop Demon Hunters OST in djay",
-      "Hot Cue + Loop + Filter + SYNC",
+      "Hot Cue + Loop + Filter + match speed by hand",
       "Headphones recommended",
     ],
     steps: [
       {
         title: "Load Soda Pop and Golden",
-        djay: "Search “KPop Demon Hunters”. Deck 1: Soda Pop (Saja Boys). Deck 2: Golden (HUNTR/X). Key Lock on. Note BPMs (~126 vs ~123).",
+        djay: "Search “KPop Demon Hunters”. Deck 1: Soda Pop (Saja Boys). Deck 2: Golden (HUNTR/X). Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). Note BPMs (~126 vs ~123).",
         hardware: "Load left then right. Crossfader LEFT. Deck 1 up, Deck 2 down.",
-        expect: "Two OST bangers, close enough for SYNC.",
+        expect: "Two OST bangers, close enough to match by hand.",
       },
       {
         title: "Mark Soda Pop’s hooks",
@@ -1321,7 +1893,7 @@ export const TUTORIALS: Tutorial[] = [
       {
         title: "Mark Golden’s chorus",
         hardware:
-          "Deck 2 HOT CUE. Find the first “golden” chorus downbeat → tap pad 1. Press SYNC. Play pad 1 in headphones — it should slam on the One.",
+          "Deck 2 HOT CUE. Find the first “golden” chorus downbeat → tap pad 1. Leave SYNC off. Match Deck 2 by hand (tempo fader + jog). Play pad 1 in headphones — it should slam on the One.",
         expect: "Deck 2 pad 1 is Golden’s chorus detonator.",
       },
       {
@@ -1335,7 +1907,7 @@ export const TUTORIALS: Tutorial[] = [
         title: "Prep Golden thin in headphones",
         hardware:
           "Cue Deck 2 headphones. From Hot Cue 1, start Golden. FILTER clockwise ~1/4 (thin). LOW down a little. Channel still down.",
-        listen: "In cans: Golden sounds lighter so two choruses don’t fight on bass.",
+        listen: "In headphones: Golden sounds lighter so two choruses don’t fight on bass.",
         expect: "Armed on the chorus, filter/EQ making space.",
       },
       {
@@ -1354,7 +1926,7 @@ export const TUTORIALS: Tutorial[] = [
     time: "~15 min",
     level: "Advanced",
     trackRecipe:
-      "SONG SHEET — same two KPDH tracks, Neural Mix this time.\n\nDeck 1 (bed): HUNTR/X – Golden · ~123 BPM\n• Hot Cue 1 → chorus downbeat (~0:40–0:55)\n• You will MUTE VOCALS (bottom Neural pad LIT) so the instrumental/groove stays\n\nDeck 2 (guest vocal): Saja Boys – Soda Pop · ~126 BPM\n• Hot Cue 1 → chorus downbeat (~0:28–0:40)\n• Keep vocals; optionally MUTE DRUMS on Deck 2 so Golden’s beat leads\n\nSYNC Soda Pop to Golden. Key Lock ON. Mash only 8–16 bars — keys may clash; that’s OK for practice.\n\nBonus if you have instrumentals: the OST includes Golden / Soda Pop instrumentals — even cleaner beds.\n\nBackup: mute vocals on How It’s Done (~160 BPM) and ride Golden (~123) — wider BPM stretch; SYNC + Key Lock required.",
+      "SONG SHEET — same two KPDH tracks, Neural Mix this time.\n\nDeck 1 (bed): HUNTR/X – Golden · ~123 BPM\n• Hot Cue 1 → chorus downbeat (~0:40–0:55)\n• You will MUTE VOCALS (bottom Neural pad LIT) so the instrumental/groove stays\n\nDeck 2 (guest vocal): Saja Boys – Soda Pop · ~126 BPM\n• Hot Cue 1 → chorus downbeat (~0:28–0:40)\n• Keep vocals; optionally MUTE DRUMS on Deck 2 so Golden’s beat leads\n\nMatch Soda Pop to Golden by hand (tempo fader + jog; leave SYNC off). Key Lock ON (holds pitch while you beatmatch — not a pitch SYNC). Mash only 8–16 bars — keys may clash; that’s OK for practice.\n\nBonus if you have instrumentals: the OST includes Golden / Soda Pop instrumentals — even cleaner beds.\n\nBackup: mute vocals on How It’s Done (~160 BPM) and ride Golden (~123) — wider BPM stretch; Key Lock + match speed by hand required.",
     summary:
       "Mute HUNTR/X vocals, ride Saja Boys’ hook over Golden’s beat — live OST mashup.",
     needs: [
@@ -1365,8 +1937,8 @@ export const TUTORIALS: Tutorial[] = [
       {
         title: "Cue both choruses",
         hardware:
-          "Deck 1 Golden Hot Cue 1 on chorus One. Deck 2 Soda Pop Hot Cue 1 on chorus One. SYNC Deck 2.",
-        expect: "Both pads restart hooks. Tempos locked.",
+          "Deck 1 Golden Hot Cue 1 on chorus One. Deck 2 Soda Pop Hot Cue 1 on chorus One. Match Deck 2 by hand (tempo fader + jog; leave SYNC off).",
+        expect: "Both pads restart hooks. Speeds matched by hand.",
         lab: "/labs/neural-pads if mute lights still feel backwards.",
       },
       {
@@ -1403,18 +1975,18 @@ export const TUTORIALS: Tutorial[] = [
     time: "~12 min",
     level: "Advanced",
     trackRecipe:
-      "SONG SHEET — Encanto soundtrack (search “From Encanto”).\n\nDeck 1 (outgoing): Encanto Cast – We Don’t Talk About Bruno · ~103 BPM · ~3:36\n• Landmark: the group chorus “We don’t talk about Bruno, no, no, no…”\n• Hot Cue 1 → downbeat of a MID-SONG chorus (often ~0:50–1:10 after Pepa’s verse)\n• Hot Cue 2 → a LATE chorus before the ending pile-up (~2:20–2:50) — use this for the echo-out\n• Don’t cue the spoken/theatrical intro — you want the sung hook on beat 1\n\nDeck 2 (incoming): Jessica Darrow – Surface Pressure · ~90–91 BPM · ~3:20\n• Landmark: first big “pressure like a drip, drip, drip…” chorus\n• Hot Cue 1 → chorus downbeat (often ~0:45–1:05)\n\nBPM gap is real (~103 → ~91). SYNC Deck 2 + Key Lock ON so Surface Pressure doesn’t chipmunk/slow-warble more than needed. Practice the echo on Bruno alone first.\n\nBackup same-movie: Bruno → The Family Madrigal (closer energy, still theatrical).",
+      "SONG SHEET — Encanto soundtrack (search “From Encanto”).\n\nDeck 1 (outgoing): Encanto Cast – We Don’t Talk About Bruno · ~103 BPM · ~3:36\n• Landmark: the group chorus “We don’t talk about Bruno, no, no, no…”\n• Hot Cue 1 → downbeat of a MID-SONG chorus (often ~0:50–1:10 after Pepa’s verse)\n• Hot Cue 2 → a LATE chorus before the ending pile-up (~2:20–2:50) — use this for the echo-out\n• Don’t cue the spoken/theatrical intro — you want the sung hook on beat 1\n\nDeck 2 (incoming): Jessica Darrow – Surface Pressure · ~90–91 BPM · ~3:20\n• Landmark: first big “pressure like a drip, drip, drip…” chorus\n• Hot Cue 1 → chorus downbeat (often ~0:45–1:05)\n\nBPM gap is real (~103 → ~91). Match Deck 2 by hand (tempo fader + jog; leave SYNC off). Key Lock on (holds pitch while you beatmatch — not a pitch SYNC) so Surface Pressure doesn’t chipmunk/slow-warble more than needed. Practice the echo on Bruno alone first.\n\nBackup same-movie: Bruno → The Family Madrigal (closer energy, still theatrical).",
     summary:
       "Echo out Encanto’s Bruno hook, then land Surface Pressure’s chorus — Disney-night vocal handoff.",
     needs: [
       "Encanto OST in djay",
       "FX Echo on pad 1",
-      "SYNC + Key Lock (BPM gap)",
+      "Tempo fader + Key Lock (BPM gap — match by hand)",
     ],
     steps: [
       {
         title: "Load Encanto tracks + Echo",
-        djay: "Deck 1: We Don’t Talk About Bruno. Deck 2: Surface Pressure. Landscape → FX → Echo on Deck 1 slot 1. Key Lock on.",
+        djay: "Deck 1: We Don’t Talk About Bruno. Deck 2: Surface Pressure. Landscape → FX → Echo on Deck 1 slot 1. Key Lock on (holds pitch while you beatmatch — not a pitch SYNC).",
         hardware: "Crossfader left. Confirm FX pad 1 with a short HOLD (you should hear echo), then release.",
         expect: "Echo assigned. Two Encanto bangers loaded.",
       },
@@ -1428,8 +2000,8 @@ export const TUTORIALS: Tutorial[] = [
       {
         title: "Mark Surface Pressure’s chorus",
         hardware:
-          "Deck 2 HOT CUE. Find the first full “pressure” chorus → beat 1 → tap pad 1. Press SYNC.",
-        expect: "Deck 2 pad 1 = Luisa’s chorus. BPM pulled toward Bruno.",
+          "Deck 2 HOT CUE. Find the first full “pressure” chorus → beat 1 → tap pad 1. Leave SYNC off. Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). Match Deck 2 by hand: tempo fader until BPMs agree (widen the range in djay if ~91 won’t reach ~103), headphones, nudge the jog. If voices sound wrecked, skip the stretch and use the brake-cut tutorial instead.",
+        expect: "Deck 2 pad 1 = Luisa’s chorus. Speeds matched by hand — this is a stretch.",
       },
       {
         title: "Practice echo-out on Bruno only",
@@ -1453,7 +2025,7 @@ export const TUTORIALS: Tutorial[] = [
     time: "~12 min",
     level: "Advanced",
     trackRecipe:
-      "SONG SHEET — easy BPM pair for a birthday / Disney-adjacent set.\n\nDeck 1 (outgoing): Shakira – Try Everything (Zootopia) · ~115 BPM · ~3:16\n• Landmark: chorus “I won’t give up, no I won’t give in…” / title hook\n• Hot Cue 1 → first chorus downbeat (often ~0:40–0:55)\n• Hot Cue 2 → last full chorus before the end (~2:20–2:40)\n\nDeck 2 (incoming): Justin Timberlake – Can’t Stop the Feeling! (Trolls / radio) · ~113 BPM · ~3:56\n• Landmark: “I got this feeling in my body…” chorus\n• Hot Cue 1 → first chorus downbeat (often ~0:45–1:05 on radio edits)\n\nSYNC Deck 2. Key Lock ON. Filter-open or simple EQ blend — both are upbeat kids-floor tracks.\n\nBackup: Try Everything → Moana – You’re Welcome (~97 BPM, bigger stretch) or Encanto – We Don’t Talk About Bruno (~103).",
+      "SONG SHEET — easy BPM pair for a birthday / Disney-adjacent set.\n\nDeck 1 (outgoing): Shakira – Try Everything (Zootopia) · ~115 BPM · ~3:16\n• Landmark: chorus “I won’t give up, no I won’t give in…” / title hook\n• Hot Cue 1 → first chorus downbeat (often ~0:40–0:55)\n• Hot Cue 2 → last full chorus before the end (~2:20–2:40)\n\nDeck 2 (incoming): Justin Timberlake – Can’t Stop the Feeling! (Trolls / radio) · ~113 BPM · ~3:56\n• Landmark: “I got this feeling in my body…” chorus\n• Hot Cue 1 → first chorus downbeat (often ~0:45–1:05 on radio edits)\n\nMatch Deck 2 by hand (tempo fader + jog; leave SYNC off). Key Lock ON (holds pitch while you beatmatch — not a pitch SYNC). Filter-open or simple EQ blend — both are upbeat kids-floor tracks.\n\nBackup: Try Everything → Moana – You’re Welcome (~97 BPM, bigger stretch) or Encanto – We Don’t Talk About Bruno (~103).",
     summary:
       "Zootopia into Trolls: last Try Everything chorus, thin-filter Can’t Stop the Feeling, open as the hook hits.",
     needs: [
@@ -1463,7 +2035,7 @@ export const TUTORIALS: Tutorial[] = [
     steps: [
       {
         title: "Load the party pair",
-        djay: "Deck 1: Try Everything (Zootopia). Deck 2: Can’t Stop the Feeling! Key Lock on. BPMs ~115 and ~113.",
+        djay: "Deck 1: Try Everything (Zootopia). Deck 2: Can’t Stop the Feeling! Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). BPMs ~115 and ~113.",
         hardware: "Crossfader left. Deck 1 up.",
         expect: "Two “kids will scream” choruses, almost the same tempo.",
       },
@@ -1476,7 +2048,7 @@ export const TUTORIALS: Tutorial[] = [
       {
         title: "Plant Timberlake’s chorus",
         hardware:
-          "Deck 2 HOT CUE. First “feeling in my body” chorus → pad 1. SYNC.",
+          "Deck 2 HOT CUE. First “feeling in my body” chorus → pad 1. Match Deck 2 by hand (tempo fader + jog; leave SYNC off).",
         expect: "Deck 2 pad 1 = party detonator.",
       },
       {

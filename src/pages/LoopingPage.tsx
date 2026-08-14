@@ -125,6 +125,7 @@ export function LoopingPage() {
           </p>
           <p>
             Drill: <Link to="/tutorials/loop-from-cue">Loop from a cue</Link>. In a mix:{" "}
+            <Link to="/tutorials/mix-loop-bridge">Loop-bridge into the next intro</Link> ·{" "}
             <Link to="/djing/blend">The two-deck blend</Link>.
           </p>
         </section>

@@ -207,7 +207,8 @@ export function StylePage() {
       <p className="footer-note">
         Same ideas spread across <Link to="/djing/phrasing">phrases</Link>,{" "}
         <Link to="/djing/songs">songs</Link>, <Link to="/djing/cueing">cues</Link>,{" "}
-        <Link to="/djing/mixing">mix in/out</Link>, <Link to="/djing/choose">pick</Link>,{" "}
+        <Link to="/djing/mixing">mix in/out</Link>, <Link to="/djing/techniques">techniques</Link>,{" "}
+        <Link to="/djing/choose">pick</Link>,{" "}
         <Link to="/djing/blend">the blend</Link>, <Link to="/djing/eq">EQ</Link>,{" "}
         <Link to="/djing/remix">remix</Link>. Switch the menu above anytime.
       </p>

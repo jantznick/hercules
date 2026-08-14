@@ -198,9 +198,11 @@ export function EqMixingPage() {
           </ol>
           <p>
             Short pop/hip-hop mixes: you may skip the long trade and just cut, or only Filter for a
-            few seconds. The whole hand loop (headphones, faders, reset):{" "}
-            <Link to="/djing/blend">The two-deck blend</Link>. Which sections to overlap:{" "}
-            <Link to="/djing/mixing">Mix in / mix out</Link>.
+            few seconds.             That bass trade is transition #2:{" "}
+            <Link to="/djing/transitions#bass-swap">Same-speed mixes</Link>. Drill:{" "}
+            <Link to="/tutorials/mix-bass-swap">Bass swap: Losing It → Ferrari</Link>. The whole hand loop
+            (headphones, faders, reset): <Link to="/djing/blend">The two-deck blend</Link>. Which
+            sections to overlap: <Link to="/djing/mixing">Mix in / mix out</Link>.
           </p>
         </section>
       </div>

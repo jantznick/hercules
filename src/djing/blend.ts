@@ -26,7 +26,7 @@ export const BLEND: Record<GenreId, BlendGuide> = {
       "The long slider between the decks blends left deck ↔ right deck. Park it toward the song that’s in the room. Center = both (if both faders are up). You can mix with only channel faders and leave the crossfader parked — that’s often simpler at 101. Don’t fight yourself with both at once until the loop is boring.",
     headphones:
       "Light only the incoming deck’s headphone button. Line up in your ears: speed, beat 1, LOW or Filter ready. Both buttons on to check they’re together, then incoming-only again. Gear page: Pre-cue. Play does not mean “headphones only.”",
-    sync: "SYNC on the incoming deck matches speed (and optionally beats — that’s a djay setting). It does not pick a section, does not set a cue, and does not move the fader. You still start on beat 1.",
+    sync: "Match speed on the incoming deck: tempo fader until the BPMs agree, jog until the kicks hit together — or press SYNC as a shortcut (and optionally lock downbeats — that’s a djay setting). SYNC does not pick a section, set a cue, or move the fader. You still start on beat 1. Hands: Match the speed yourself.",
     skipIf:
       "If the file has no extra drums at the start (no drum intro, 3-minute pop, two vocals), don’t force this whole loop. Cut or echo-then-cut. The steps below still apply — they’re just shorter.",
     reset:
@@ -38,7 +38,7 @@ export const BLEND: Record<GenreId, BlendGuide> = {
       },
       {
         title: "Hear it first",
-        do: "Turn on the incoming deck’s headphone button only. Jump to hot cue 1 — that’s the mix-in you saved, the first rubber pad in HOT CUE mode, not the CUE button. Press SYNC. In your ears, check that both songs’ beat 1 line up with the song in the room.",
+        do: "Turn on the incoming deck’s headphone button only. Jump to hot cue 1 — that’s the mix-in you saved, the first rubber pad in HOT CUE mode, not the CUE button. Match speed (tempo fader + jog, or SYNC). In your ears, check that both songs’ beat 1 line up with the song in the room.",
       },
       {
         title: "Carve space",
@@ -89,8 +89,8 @@ export const BLEND: Record<GenreId, BlendGuide> = {
     crossfader:
       "Park it. Mix with channel faders so you can still kill one deck fast. If you use the crossfader, move it over a phrase or two, not a tiny twitch every beat.",
     headphones:
-      "Incoming only while you find hot cue 1 and SYNC. Both on for a bar to confirm kicks together, then incoming-only so the old song in the room doesn’t confuse you.",
-    sync: "Made for this. Grid is usually right on extended versions. Tempo fader for tiny taste, not for turning the track into a different genre.",
+      "Incoming only while you find hot cue 1 and match speed. Both on for a bar to confirm kicks together, then incoming-only so the old song in the room doesn’t confuse you.",
+    sync: "Works well here if you want it. Grid is usually right on extended versions. Or match with the tempo fader — tiny taste, not turning the track into a different genre.",
     skipIf:
       "Radio edit / 3-minute version: you don’t have this blend. Short Filter or a cut into the first groove, then get out. Don’t spend the drop mixing.",
     reset:
@@ -102,7 +102,7 @@ export const BLEND: Record<GenreId, BlendGuide> = {
       },
       {
         title: "Hot cue 1 in headphones",
-        do: "Incoming: first kick. SYNC. LOW left (less bass) or Filter a little right.",
+        do: "Incoming: first kick. Match speed (or SYNC). LOW left (less bass) or Filter a little right.",
       },
       {
         title: "Drums in, bass still old",
@@ -154,7 +154,7 @@ export const BLEND: Record<GenreId, BlendGuide> = {
       "A fast move to the new side on beat 1 is a cut with one slider. Channel faders do the same job. Pick one.",
     headphones:
       "You need hot cue 1 ready (past the skit) before the old hook ends. Both decks in ears for a second if you’re lining up a beat-only overlap, then cut.",
-    sync: "Helps. Key Lock on if you’re stretching toward pop so voices don’t chipmunk. A wrong grid is obvious because the mix is short — if it feels drunk, tap the cue, don’t trust snap.",
+    sync: "Match by hand. Key Lock on if you’re stretching toward pop so voices don’t go thin and high — that holds this song’s pitch; it does not match keys. A wrong grid is obvious because the mix is short — if it feels drunk, tap the cue, don’t trust snap. Matching by hand: Match the speed yourself.",
     skipIf:
       "Two verses that both have words: skip the overlap. Echo the last hook word, cut. The long house loop below is the trap for this music.",
     reset:
@@ -165,7 +165,7 @@ export const BLEND: Record<GenreId, BlendGuide> = {
         do: "Old hot cue 4 / last hook. You will not get a long outro. Incoming hot cue 1 past talking.",
       },
       {
-        title: "Headphones, SYNC, ready to cut",
+        title: "Headphones, ready to cut",
         do: "Incoming in ears. If you’ll overlap: mute incoming vocal (Neural Mix) or keep LOW left (less bass).",
       },
       {
@@ -282,7 +282,7 @@ export const BLEND: Record<GenreId, BlendGuide> = {
     steps: [
       {
         title: "Leave the fat drop",
-        do: "Old hot cue 4 is the last tall block, not the cliff after. Incoming hot cue 1 in headphones, LOW left (less bass), SYNC.",
+        do: "Old hot cue 4 is the last tall block, not the cliff after. Incoming hot cue 1 in headphones, LOW left (less bass), speeds matched.",
       },
       {
         title: "Intro over still-loud drop",

@@ -61,7 +61,7 @@ export function PreCuePage() {
           <p>They do not pick “AirPods vs speakers.” The audio dropdowns already did that.</p>
           <ul>
             <li>
-              <strong>Lit</strong> — that deck is sent to pre-cue (your cans).
+              <strong>Lit</strong> — that deck is sent to headphones (pre-cue).
             </li>
             <li>
               <strong>Dark</strong> — that deck is not in headphones.
@@ -88,7 +88,7 @@ export function PreCuePage() {
             <li>Crossfader all the way toward the live deck (left if Deck 1 is live).</li>
             <li>Incoming <strong>channel fader down</strong> (belt and suspenders).</li>
             <li>Light only the incoming deck’s headphone button.</li>
-            <li>Play, scrub, set CUE, SYNC, EQ — all in cans.</li>
+            <li>Play, scrub, set CUE, SYNC, EQ — all in headphones.</li>
             <li>When you’re ready, raise the fader and/or move the crossfader.</li>
           </ol>
           <p>
@@ -110,7 +110,7 @@ export function PreCuePage() {
             </li>
             <li>
               <strong>One analog jack + Hercules Y-cable:</strong> Main = that headphone/output.
-              Pre-Cueing = <strong>Split Output</strong>. Green = your cans (cue). Black = speakers
+              Pre-Cueing = <strong>Split Output</strong>. Green = your headphones (cue). Black = speakers
               (live). Works on phone or Mac. Drill:{" "}
               <Link to="/tutorials/pre-cue-split">Test the splitter</Link>.
             </li>
@@ -138,7 +138,7 @@ export function PreCuePage() {
           </ul>
           <p>
             If Main is Bluetooth headphones and Pre-Cueing is Split Output, you usually get mix in
-            one ear and cue in the other of <em>the same</em> cans — not a booth. For a real room vs
+            one ear and cue in the other of <em>the same</em> headphones — not a booth. For a real room vs
             DJ split: wired jack + Y-cable, or (Mac) two separate devices without Split Output.
           </p>
         </section>
@@ -190,7 +190,7 @@ export function PreCuePage() {
           <p>Mix Ultra has no dedicated cue-volume knob. Loudness lives in djay and the OS.</p>
           <ul>
             <li>
-              djay’s <strong>pre-cueing volume</strong> slider — main control for cans vs the mix.
+              djay’s <strong>pre-cueing volume</strong> slider — main control for headphones vs the mix.
             </li>
             <li>
               OS volume of the cue device (AirPods, headphones). Mix Ultra <strong>MASTER</strong> is

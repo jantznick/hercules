@@ -109,7 +109,8 @@ export function RemixPage() {
             </li>
             <li>
               <strong>FX</strong> — HOLD echo/reverb on the last word of a line, then RELEASE
-              (tap-and-forget does almost nothing)
+              (tap-and-forget does almost nothing). Echo then a backspin:{" "}
+              <Link to="/tutorials/remix-backspin-echo">Backspin with Echo</Link>
             </li>
             <li>
               <strong>Neural Mix pads</strong> — mute vocals for 8 beats, or solo drums, then all
@@ -119,7 +120,9 @@ export function RemixPage() {
               <strong>Slicer</strong> — 4–8 beats of chops on a looped bar, then get out
             </li>
             <li>
-              <strong>Sampler</strong> — riser or one-shot into your own drop (watch volume)
+              <strong>Sampler</strong> — riser or one-shot into your own drop (watch volume). Or
+              chop noise on the empty deck:{" "}
+              <Link to="/tutorials/remix-noise-fader">Noise chops on the empty deck</Link>
             </li>
             <li>
               <strong>Pitch Play / stutter</strong> — optional candy;{" "}
@@ -169,6 +172,11 @@ export function RemixPage() {
 
       <RelatedExtras
         links={[
+          {
+            to: "/djing/techniques",
+            label: "Named techniques",
+            blurb: "Echo a word, mute, filter-open, backspin — what they’re for",
+          },
           {
             to: "/tutorials",
             label: "Remix tutorials",

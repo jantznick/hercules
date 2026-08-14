@@ -69,7 +69,7 @@ export function SettingsPage() {
                 <tr>
                   <td>Auto Select</td>
                   <td>iOS: Sound → Pre-cueing · Mac: headphone icon or Advanced → Pre-Cueing</td>
-                  <td>djay flips which deck is in your cans when you move the crossfader / faders.</td>
+                  <td>djay flips which deck is in your headphones when you move the crossfader / faders.</td>
                   <td>
                     <strong>Off</strong> until you like it. Tutorial:{" "}
                     <Link to="/tutorials/pre-cue-auto-select">Tame Auto Select</Link>.
@@ -79,7 +79,11 @@ export function SettingsPage() {
                   <td>Sync type</td>
                   <td>General → Sync mode</td>
                   <td>Tempo = same BPM, you still line up the kicks. Beat sync = BPM + downbeats locked.</td>
-                  <td>Beat sync while learning. Tempo-only if you want to practice nudging.</td>
+                  <td>
+                    Beat sync while learning if you use SYNC. Tempo-only if you want to practice
+                    nudging. Or skip SYNC:{" "}
+                    <Link to="/djing/beatmatch">Match the speed yourself</Link>.
+                  </td>
                 </tr>
                 <tr>
                   <td>Quantize (Q)</td>
@@ -157,7 +161,8 @@ export function SettingsPage() {
           <ul>
             <li>
               <strong>Start / stop time</strong> — vinyl motor spin-up/down. 0 = instant (normal DJ
-              controller).
+              controller). Above 0 for an echo-then-pause exit:{" "}
+              <Link to="/tutorials/mix-brake-cut">Echo + brake cut</Link>.
             </li>
             <li>
               <strong>Auto-play when moving crossfader</strong> — paused deck starts when you fade

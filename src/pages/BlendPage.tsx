@@ -14,7 +14,7 @@ export function BlendPage() {
       <PageHeader
         eyebrow="DJing · Next"
         title="The two-deck blend"
-        description="Headphones, SYNC, faders, then the room. Mix in / mix out is which sections to stack. This is the order of hands on Mix Ultra — and when to skip the long version and just cut."
+        description="Headphones, match speed, faders, then the room. Mix in / mix out is which sections to stack. This is the order of hands on Mix Ultra — and when to skip the long version and just cut."
         actions={
           <Link to="/djing" className="text-back">
             DJing
@@ -50,9 +50,12 @@ export function BlendPage() {
         </section>
 
         <section className="info-block">
-          <h2>Headphones, then SYNC</h2>
+          <h2>Headphones, then match the speed</h2>
           <p>{blend.headphones}</p>
           <p>{blend.sync}</p>
+          <p>
+            Hands without SYNC: <Link to="/djing/beatmatch">Match the speed yourself</Link>.
+          </p>
         </section>
       </div>
 
@@ -78,10 +81,12 @@ export function BlendPage() {
         </section>
 
         <section className="info-block">
-          <h2>Four ways to leave</h2>
+          <h2>Four ways to leave — and two more</h2>
           <p>
-            Same hands; different length. If you only remember one thing: pick the move that matches
-            the file, not the move that looks the most like “DJing.”
+            Same hands; different length. The named catalog (including the drop mix and the
+            crossfader cut) is <Link to="/djing/transitions">Same-speed mixes</Link>. If you only
+            remember one thing: pick the move that matches the file, not the move that looks the
+            most like “DJing.”
           </p>
           <div className="table-wrap" style={{ margin: "0.75rem 0" }}>
             <table>
@@ -118,7 +123,9 @@ export function BlendPage() {
           <p>
             Loop 2–4 bars on the <em>old</em> song so you don’t run out of music while the new one
             isn’t ready. Exit on beat 1. That’s looping as a mix tool, not a remix.{" "}
-            <Link to="/djing/looping">Looping</Link>.
+            <Link to="/djing/looping">Looping</Link>. Drill:{" "}
+            <Link to="/tutorials/mix-loop-bridge">Loop-bridge into the next intro</Link>.
+            Different BPMs: <Link to="/djing/jumps">When speeds don’t match</Link>.
           </p>
           <p>
             Hands-on: <Link to="/tutorials/two-deck-blend">First two-deck blend</Link> ·{" "}

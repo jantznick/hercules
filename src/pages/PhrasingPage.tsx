@@ -25,9 +25,11 @@ export function PhrasingPage() {
           <h2>BPM & tempo</h2>
           <p>{guide.bpm}</p>
           <p>
-            On Mix Ultra: <strong>SYNC</strong> matches tempo (and optionally beats — that’s a{" "}
-            <Link to="/settings">djay setting</Link>). The tempo fader fine-tunes. Center click =
-            original speed.
+            On Mix Ultra the <strong>tempo fader</strong> is how you match speed by hand (nudge the
+            jog so the kicks hit together). <strong>SYNC</strong> is a shortcut — same BPM, and
+            optionally the downbeats too (that’s a <Link to="/settings">djay setting</Link>). Center
+            click on the tempo fader = original speed.{" "}
+            <Link to="/djing/beatmatch">Match the speed yourself</Link>.
           </p>
         </section>
 
@@ -38,6 +40,13 @@ export function PhrasingPage() {
             <strong>bar</strong>. Beat 1 of a bar is where you’d usually start the incoming track so
             both songs’ structures line up. DJs sometimes call that beat <strong>the One</strong> —
             these pages mostly just say beat 1.
+          </p>
+          <p>
+            Eight bars is also <strong>32 beats</strong> (4 beats × 8 bars). If a video says “start
+            at the end of the 32-beat phrase,” that’s the same moment: beat 1 of the next chunk.
+            Named mixes that depend on that timing:{" "}
+            <Link to="/djing/transitions">Same-speed mixes</Link>. Drill:{" "}
+            <Link to="/tutorials/mix-32-window">32-beat intro over a chorus</Link>.
           </p>
           <p>{guide.phraseLen}</p>
           <p>

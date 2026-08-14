@@ -4,6 +4,7 @@ import { HomePage } from "./pages/HomePage";
 import { GearPage } from "./pages/GearPage";
 import { PreCuePage } from "./pages/PreCuePage";
 import { MixingStrategyPage } from "./pages/MixingStrategyPage";
+import { TechniquesPage } from "./pages/TechniquesPage";
 import { CueingPage } from "./pages/CueingPage";
 import { RemixPage } from "./pages/RemixPage";
 import { SettingsPage } from "./pages/SettingsPage";
@@ -19,6 +20,9 @@ import { WaveformPage } from "./pages/WaveformPage";
 import { SongPartsPage } from "./pages/SongPartsPage";
 import { ChoosePage } from "./pages/ChoosePage";
 import { BlendPage } from "./pages/BlendPage";
+import { TransitionsPage } from "./pages/TransitionsPage";
+import { JumpsPage } from "./pages/JumpsPage";
+import { BeatmatchPage } from "./pages/BeatmatchPage";
 import { StylePage } from "./pages/StylePage";
 import { LabsIndexPage } from "./pages/LabsIndexPage";
 import { TutorialDetailPage, TutorialsIndexPage } from "./pages/TutorialsPages";
@@ -58,6 +62,10 @@ export default function App() {
             <Route path="waveform" element={<WaveformPage />} />
             <Route path="cueing" element={<CueingPage />} />
             <Route path="mixing" element={<MixingStrategyPage />} />
+            <Route path="beatmatch" element={<BeatmatchPage />} />
+            <Route path="techniques" element={<TechniquesPage />} />
+            <Route path="transitions" element={<TransitionsPage />} />
+            <Route path="jumps" element={<JumpsPage />} />
             <Route path="eq" element={<EqMixingPage />} />
             <Route path="choose" element={<ChoosePage />} />
             <Route path="blend" element={<BlendPage />} />

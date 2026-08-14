@@ -88,9 +88,33 @@ export function HomePage() {
           </Link>
         </li>
         <li>
+          <Link to="/djing/beatmatch">
+            <strong>Match the speed yourself</strong>
+            <span>Tempo fader + jog — SYNC is optional</span>
+          </Link>
+        </li>
+        <li>
           <Link to="/djing/eq">
             <strong>EQ, bass & filter</strong>
             <span>One bassline at a time</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/djing/techniques">
+            <strong>Named techniques</strong>
+            <span>Short list of each move — then full steps and tutorials</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/djing/transitions">
+            <strong>Same-speed mixes</strong>
+            <span>Long blend, bass swap, drop mix, echo-out, crossfader cut</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/djing/jumps">
+            <strong>When speeds don’t match</strong>
+            <span>Stop, walk the tempo, loop-bridge — plus hype a build</span>
           </Link>
         </li>
         <li>

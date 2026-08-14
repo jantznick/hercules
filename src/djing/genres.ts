@@ -248,7 +248,7 @@ export const GUIDES: Record<GenreId, GenreGuide> = {
   hiphop: {
     id: "hiphop",
     name: "hip-hop / R&B",
-    bpm: "Often about 80–100. SYNC still helps. Mixes are short, so a wrong beat grid is obvious. If you’re mixing toward a pop or house track, turn Key Lock on (the musical-note control) so speeding up/slowing down doesn’t chipmunk the voices.",
+    bpm: "Often about 80–100. Mixes are short, so a wrong beat grid is obvious. If you’re mixing toward a pop or house track, turn Key Lock on (the musical-note control) so speeding up/slowing down doesn’t make voices go thin and high. That holds this song’s pitch while you beatmatch — it does not match two songs’ keys.",
     phraseLen:
       "Verses and hooks usually last 8 bars (sometimes 16). You often just cut to the next song on beat 1. If you wait 30–60 seconds of drums like techno, the verse already started without you.",
     countTip:
@@ -336,7 +336,7 @@ export const GUIDES: Record<GenreId, GenreGuide> = {
   pop: {
     id: "pop",
     name: "pop / kids / Disney",
-    bpm: "All over (~90–130 is common). These are the short versions (~3 minutes) — soundtrack, radio, Spotify — not a 7-minute club mix. SYNC + Key Lock, because the songs often weren’t meant to share a tempo. Huge jumps still sound like a crash; pick songs that are somewhat close, or a song in between.",
+    bpm: "All over (~90–130 is common). These are the short versions (~3 minutes) — soundtrack, radio, Spotify — not a 7-minute club mix. Match speed by hand and turn Key Lock on so changing tempo doesn’t make voices go thin and high (Key Lock is not matching keys). Huge jumps still sound like a crash; pick songs that are somewhat close, or a song in between.",
     phraseLen:
       "Chorus every 8 bars (sometimes 16). There is often no extra drum intro. If you wait 30–60 seconds of drums, the chorus already happened and the kids are confused.",
     countTip:

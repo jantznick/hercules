@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { useGenre } from "../djing/GenreContext";
 import { GUIDES, type GenreId } from "../djing/genres";
-import { BLEND } from "../djing/blend";
 import { LevelBand } from "../components/SectionCards";
 import { PageHeader } from "./HomePage";
 
@@ -57,30 +56,16 @@ export function MixingStrategyPage() {
         </section>
 
         <section className="info-block">
-          <h2>Four ways to leave</h2>
+          <h2>Named ways to leave</h2>
           <p>
-            “Which sections” is half. The other half is the <em>shape</em> of the handoff — cut,
-            echo, bass-swap, or Filter. Pick the one that matches the file. Hands for each:{" "}
-            <Link to="/djing/blend">The two-deck blend</Link>.
+            “Which sections” is half. The other half is the <em>shape</em> of the handoff: long
+            blend, bass swap, drop mix, echo-out, crossfader cut. Full Mix Ultra steps:{" "}
+            <Link to="/djing/transitions">Same-speed mixes</Link>. What each named move is for:{" "}
+            <Link to="/djing/techniques">Named techniques</Link>. A common house window is{" "}
+            <Link to="/tutorials/mix-32-window">32 beats of new intro over the old chorus</Link>.
+            The order of hands around any of them: <Link to="/djing/blend">The two-deck blend</Link>.
+            Different BPMs: <Link to="/djing/jumps">When speeds don’t match</Link>.
           </p>
-          <div className="table-wrap" style={{ margin: "0.75rem 0" }}>
-            <table>
-              <thead>
-                <tr>
-                  <th>Move</th>
-                  <th>When</th>
-                </tr>
-              </thead>
-              <tbody>
-                {BLEND[genre].leaveMoves.map((row) => (
-                  <tr key={row.name}>
-                    <td>{row.name}</td>
-                    <td>{row.when}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
         </section>
       </div>
 
@@ -173,6 +158,10 @@ export function MixingStrategyPage() {
               <Link to="/tutorials/read-waveform">Read the waveform</Link>
             </li>
             <li>
+              <Link to="/tutorials/mix-manual-beatmatch">Match BPM by hand</Link> ·{" "}
+              <Link to="/tutorials/mix-key-lock">Tempo vs how high the notes sound</Link>
+            </li>
+            <li>
               <Link to="/tutorials/mix-in-mix-out">Mix in / mix out without killing energy</Link>{" "}
               (house/techno version)
             </li>
@@ -180,12 +169,22 @@ export function MixingStrategyPage() {
               <Link to="/tutorials/vocal-handoff">Hand off vocal tracks</Link> (pop / hip-hop /
               Disney)
             </li>
+            <li>
+              <Link to="/tutorials/mix-long-blend">Long blend</Link> ·{" "}
+              <Link to="/tutorials/mix-bass-swap">Bass swap</Link> ·{" "}
+              <Link to="/tutorials/mix-echo-out">Echo-out</Link> (beginner song sheets)
+            </li>
+            <li>
+              <Link to="/tutorials/mix-brake-cut">Echo + brake cut</Link> when speeds don’t match
+            </li>
           </ol>
         </section>
       </div>
 
       <p className="footer-note">
-        Why those sections exist: <Link to="/djing/songs">How songs are built</Link>. Which file:{" "}
+        Why those sections exist: <Link to="/djing/songs">How songs are built</Link>. Named handoffs:{" "}
+        <Link to="/djing/transitions">Same-speed mixes</Link>. Speeds don’t match:{" "}
+        <Link to="/djing/jumps">When speeds don’t match</Link>. Which file:{" "}
         <Link to="/djing/choose">Pick the next song</Link>. The hands:{" "}
         <Link to="/djing/blend">The two-deck blend</Link>. Finding the actual spots:{" "}
         <Link to="/djing/cueing">Which cues to set</Link>. EQ / bass:{" "}

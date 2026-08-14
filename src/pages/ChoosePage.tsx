@@ -60,7 +60,8 @@ export function ChoosePage() {
           <p>{pick.bpm}</p>
           <p>
             Counting and BPM: <Link to="/djing/phrasing">Phrases & beat 1</Link>. SYNC matches the
-            number; it does not make a jump feel small.
+            number; it does not make a jump feel small. Honest exits when the numbers are far apart:{" "}
+            <Link to="/djing/jumps">When speeds don’t match</Link>.
           </p>
         </section>
       </div>
@@ -138,7 +139,8 @@ export function ChoosePage() {
           <p>{pick.nightShape}</p>
           <p>
             Once the file is on the deck, the hands: <Link to="/djing/blend">The two-deck blend</Link>
-            . Which sections to overlap: <Link to="/djing/mixing">Mix in / mix out</Link>.
+            . Which sections to overlap: <Link to="/djing/mixing">Mix in / mix out</Link>. Named
+            handoffs: <Link to="/djing/transitions">Same-speed mixes</Link>.
           </p>
         </section>
       </div>

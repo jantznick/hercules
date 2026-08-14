@@ -7,8 +7,8 @@ export function DjingHubPage() {
     <>
       <PageHeader
         eyebrow="3 · DJing"
-        title="Techniques"
-        description="How DJs usually think — not which Mix Ultra button to press. Tabs above are every topic. The style menu rewrites examples for house, hip-hop, pop/kids, or drum & bass."
+        title="How DJs think"
+        description="How DJs usually think — not which Mix Ultra button to press. Tabs above are every topic. Named moves live on Techniques. The style menu rewrites examples for house, hip-hop, pop/kids, or drum & bass."
       />
 
       <div className="callout accent" style={{ marginBottom: "1.25rem" }}>
@@ -69,10 +69,22 @@ export function DjingHubPage() {
             blurb: "Which sections to overlap so energy stays up. What goes wrong depends on the music.",
           },
           {
-            to: "/djing/eq",
+            to: "/djing/beatmatch",
             pill: "6",
+            title: "Match the speed yourself",
+            blurb: "Tempo fader + jog. SYNC is optional. Pitch isn’t a SYNC button.",
+          },
+          {
+            to: "/djing/eq",
+            pill: "7",
             title: "EQ, bass & filter",
             blurb: "What HIGH / MID / LOW actually change, Filter vs EQ, Neural Mix, Gain.",
+          },
+          {
+            to: "/djing/techniques",
+            pill: "8",
+            title: "Named techniques",
+            blurb: "Short list of each move — what it’s for, then full steps and tutorials.",
           },
         ]}
       />
@@ -83,38 +95,50 @@ export function DjingHubPage() {
       <SectionCards
         items={[
           {
+            to: "/djing/transitions",
+            pill: "9",
+            title: "Same-speed mixes",
+            blurb: "Long blend, bass swap, drop mix, echo-out, crossfader cut — Mix Ultra steps.",
+          },
+          {
+            to: "/djing/jumps",
+            pill: "10",
+            title: "When speeds don’t match",
+            blurb: "Echo + stop, walk the tempo, loop-bridge — plus Filter / backspin / noise to hype a build.",
+          },
+          {
             to: "/djing/choose",
-            pill: "7",
+            pill: "11",
             title: "Pick the next song",
             blurb: "Songs that can sit next to each other: speed, vocals, how busy they are, which version you loaded.",
           },
           {
             to: "/djing/blend",
-            pill: "8",
+            pill: "12",
             title: "The two-deck blend",
-            blurb: "Headphones, SYNC, faders, then the room. Four ways to leave: cut, echo, bass swap, Filter.",
+            blurb: "Headphones, match speed, faders, then the room. Named mixes sit on top of this loop.",
           },
           {
             to: "/djing/quantize",
-            pill: "9",
+            pill: "13",
             title: "Quantize",
             blurb: "Snap to the beat — sometimes. Tap vs hold; Mix Ultra has no Q button.",
           },
           {
             to: "/djing/looping",
-            pill: "10",
+            pill: "14",
             title: "Looping",
             blurb: "Buy time or extend a hook. Why Play-then-LOOP starts late.",
           },
           {
             to: "/djing/remix",
-            pill: "11",
+            pill: "15",
             title: "Remix one song",
             blurb: "Jump the drop, mute a vocal, filter-open — performing without a second deck.",
           },
           {
             to: "/djing/style",
-            pill: "12",
+            pill: "16",
             title: "How this music works",
             blurb: "Structure, cues, and mixing for whatever’s in the menu above.",
           },

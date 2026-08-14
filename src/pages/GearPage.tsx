@@ -93,7 +93,7 @@ export function GearPage() {
             <li>
               <strong>Headphones + speakers together:</strong> on a <strong>Mac</strong>, djay can
               send Main to speakers and Pre-Cueing to headphones (two devices). On a{" "}
-              <strong>phone</strong>, use the included splitter (green = cans, black = speakers) and
+              <strong>phone</strong>, use the included splitter (green = headphones, black = speakers) and
               Split Output. Explainer: <Link to="/pre-cue">Pre-cueing</Link>.
             </li>
             <li>
