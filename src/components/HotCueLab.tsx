@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 const DURATION = 32;
 
@@ -253,6 +254,18 @@ export function HotCueLab() {
             Local files keep hot cues in djay. Streaming tracks may or may not save them depending
             on the service.
           </p>
+        </details>
+        <details>
+          <summary>How to use hot cues to remix one song</summary>
+          <ul>
+            <li>Pad 1: intro · Pad 2: verse/hook · Pad 3: drop (replay button)</li>
+            <li>Pad 4: breakdown · Pad 5: a vocal or drum hit</li>
+            <li>Play, then jump drop → breakdown → drop again on phrase starts (“the One”)</li>
+            <li>
+              That’s live remixing: same file, different order — no second deck. See{" "}
+              <Link to="/djing/remix">Remix one song</Link>.
+            </li>
+          </ul>
         </details>
       </div>
     </div>

@@ -256,6 +256,22 @@ export function NeuralMixPadsLab() {
           </ul>
         </details>
         <details>
+          <summary>101 remix uses (one song)</summary>
+          <ul>
+            <li>
+              Mute vocals for 8 beats in a chorus (bottom vocals lit), then tap dark — instant
+              instrumental, same track.
+            </li>
+            <li>
+              Solo drums for a bar as a fake breakdown, then all-dark as the drop continues.
+            </li>
+            <li>
+              One stem trick at a time. Leftover mutes are how the next song “mysteriously”
+              has no vocals.
+            </li>
+          </ul>
+        </details>
+        <details>
           <summary>If the pads don’t match drums/vocals on your unit</summary>
           <p>
             In djay, set Neural Mix to 3 or 4 parts and confirm the stem order on screen. Pad 1 is

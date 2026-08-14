@@ -65,7 +65,7 @@ const MODES: PadMode[] = [
     why: [
       "Start the incoming track on the exact phrase every time.",
       "Skip a boring intro without scrubbing.",
-      "Jump back to the drop for a double-drop.",
+      "Rearrange one song: skip the verse, replay the drop, jump to the breakdown.",
     ],
     recipe: {
       title: "101 transition use",
@@ -98,15 +98,18 @@ const MODES: PadMode[] = [
     how: [
       "Shorter pads = tight stutter-y loops; 2–4 bar pads = time to mix.",
       "If the loop feels lopsided, the beat grid may be off — exit and re-enter on a downbeat.",
+      "The loop starts at the playhead, not at a hot cue. HOT CUE and LOOP are different pad modes, so Play-then-LOOP is always a little late.",
+      "Exact start: pause on the cue → LOOP → length pad → Play. Or save a cue-loop (see Which cues).",
     ],
     configure: [
       "Length = which pad you tap. That’s the config.",
       "djay landscape can nudge loop in/out on screen if you need precision.",
+      "Settings → Advanced → “Save active loop when setting cue point” makes a hot cue recall the loop.",
     ],
     why: [
       "Buy time on the outgoing track while you cue/EQ the next one.",
-      "Extend a short intro.",
-      "Build tension, then exit the loop into the next track.",
+      "Extend a hook you love on the same song.",
+      "Build tension, then exit the loop into the next phrase or track.",
     ],
     recipe: {
       title: "Hold the outro, mix in",
@@ -114,6 +117,7 @@ const MODES: PadMode[] = [
         "Deck 1 playing → LOOP mode → tap a 2- or 4-bar pad once (loop stays on).",
         "Prep Deck 2 (hot cue, sync, lows down).",
         "Bring Deck 2 in → tap the lit loop pad again to exit → fade Deck 1 out.",
+        "Need the loop to start on a cue? Pause on that cue first, then tap the length pad — don’t Play then LOOP.",
       ],
     },
   },
@@ -145,6 +149,7 @@ const MODES: PadMode[] = [
       "Memorize 2–3 pads (e.g. pad 1 = echo) instead of all eight.",
     ],
     why: [
+      "Echo the last word of a line while the beat keeps going (same song).",
       "Echo-out the last vocal while fading a track.",
       "Short FX hit into a drop.",
       "Cover a slightly messy transition with a wash, then release.",
@@ -197,8 +202,8 @@ const MODES: PadMode[] = [
       "Pad 1 is usually the first stem (often drums).",
     ],
     why: [
-      "Mute vocals for an instrumental blend.",
-      "Solo drums as a breakdown.",
+      "Mute vocals for an 8-beat instrumental (same song) or a blend.",
+      "Solo drums as a breakdown, then all-dark.",
       "Mashup: beat from one track, voice from another.",
     ],
     recipe: {
@@ -315,7 +320,7 @@ const MODES: PadMode[] = [
       "Get a clean loop first so slices land on musical pieces.",
     ],
     why: [
-      "Drum-machine-style fill before a drop.",
+      "Drum-machine-style fill before a drop — this song or the next one.",
       "High-energy moment — then get out of the way.",
     ],
     recipe: {
@@ -355,7 +360,7 @@ const MODES: PadMode[] = [
       "Start simple: kick, clap, shout, riser, noise sweep.",
     ],
     why: [
-      "Riser into a drop.",
+      "Riser into a drop (this song’s drop, or a new track).",
       "Percussion fills / party one-shots.",
     ],
     recipe: {
@@ -366,6 +371,39 @@ const MODES: PadMode[] = [
         "Press NEURAL MIX / HOT CUE to leave Sampler.",
       ],
     },
+  },
+];
+
+const REMIX_RECIPES = [
+  {
+    title: "Replay the drop",
+    tags: ["Hot Cue"],
+    body: "Map pad 3 (or 1) on the chorus/drop One. Play, then tap that pad again after 8–16 beats. Same song, new arrangement. Land on the One.",
+  },
+  {
+    title: "Loop the hook",
+    tags: ["Loop", "Hot Cue"],
+    body: "On a chorus One: LOOP → tap 2- or 4-bar once. Ride it twice. Tap the lit pad to exit, then Hot Cue the drop again if you want a second hit.",
+  },
+  {
+    title: "Filter-open your own drop",
+    tags: ["Filter", "Hot Cue"],
+    body: "In the breakdown: Filter left (muffle) or right (thin). On the drop One, sweep back to 12 o’clock over 8–16 beats. Park Filter at center.",
+  },
+  {
+    title: "Echo a word (not an echo-out)",
+    tags: ["FX"],
+    body: "FX mode: at the end of a vocal line, HOLD echo 1–2 beats, RELEASE. Leave the fader up — you’re decorating this track, not washing it away.",
+  },
+  {
+    title: "8-beat instrumental",
+    tags: ["Neural Mix"],
+    body: "All pads dark. Tap bottom vocals once (lit = mute). Count 8 beats. Tap dark. Solo drums (top) is the same idea — spotlight, then home.",
+  },
+  {
+    title: "Chop then same drop",
+    tags: ["Loop", "Slicer"],
+    body: "1-bar loop → SHIFT+FX → HOLD slices for ~4 beats → leave Slicer → exit loop. Optional: Hot Cue the drop. Keep it short.",
   },
 ];
 
@@ -518,6 +556,31 @@ export function PadModes() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="section-head">
+        <div>
+          <h2 style={{ fontSize: "1.2rem", margin: 0 }}>Remix recipes (one song)</h2>
+          <p style={{ margin: "0.25rem 0 0" }}>
+            Stay on Deck 1. Jump, loop, filter, or decorate — then reset. Not a second-deck mix.
+          </p>
+        </div>
+      </div>
+
+      <div className="recipe-cards" style={{ marginBottom: "1.5rem" }}>
+        {REMIX_RECIPES.map((r) => (
+          <article key={r.title} className="recipe-card">
+            <h3>{r.title}</h3>
+            <div className="recipe-tags">
+              {r.tags.map((t) => (
+                <span key={t} className="pill">
+                  {t}
+                </span>
+              ))}
+            </div>
+            <p>{r.body}</p>
+          </article>
+        ))}
       </div>
 
       <div className="section-head">

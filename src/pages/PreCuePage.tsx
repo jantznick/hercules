@@ -5,12 +5,12 @@ export function PreCuePage() {
   return (
     <>
       <PageHeader
-        eyebrow="Headphones vs the room"
+        eyebrow="Gear · audio"
         title="Pre-cueing"
         description="Hear the next song in your headphones while the room keeps dancing to the current one. This page is the idea; the tutorials are the hands-on drills."
         actions={
-          <Link to="/tutorials/pre-cue-hear-first" className="text-back">
-            Start the drill →
+          <Link to="/gear" className="text-back">
+            Gear
           </Link>
         }
       />
@@ -212,7 +212,9 @@ export function PreCuePage() {
         {" · "}
         <Link to="/tutorials/pre-cue-split">Splitter</Link>
         {" · "}
-        <Link to="/gear">Gear & setup</Link>.
+        <Link to="/settings">djay settings</Link>
+        {" · "}
+        <Link to="/gear">Gear</Link>.
       </p>
     </>
   );

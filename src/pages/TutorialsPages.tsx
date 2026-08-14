@@ -21,7 +21,7 @@ function saveProgress(p: Progress) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
 }
 
-const LEVEL_ORDER = ["Start here", "Basics", "Mixing", "Advanced"] as const;
+const LEVEL_ORDER = ["Start here", "Basics", "Remix", "Mixing", "Advanced"] as const;
 
 export function TutorialsIndexPage() {
   const [progress, setProgress] = useState<Progress>({});
@@ -33,20 +33,25 @@ export function TutorialsIndexPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Guided"
+        eyebrow="4 · Practice"
         title="Tutorials"
-        description="Hardware + djay first. Work Start here → Basics → Mixing, then Advanced recipes — club tracks, KPop Demon Hunters, and Disney/kids party mixes."
+        description="Hardware + djay first. Work Start here → Basics → Remix (one song) → Mixing (two decks), then Advanced recipes — club tracks, KPop Demon Hunters, and Disney/kids party mixes."
+        actions={
+          <Link to="/practice" className="text-back">
+            Practice
+          </Link>
+        }
       />
 
       <div className="callout accent" style={{ marginBottom: "1rem" }}>
         <h2>How to use these</h2>
         <p>
           Do the moves on the <strong>hardware</strong>. Tap <em>I did it — next</em> when you’ve
-          done that step. Progress saves in this browser. New to headphones vs the room? Read{" "}
-          <Link to="/pre-cue">Pre-cueing</Link> then do the Start here / Basics pre-cue drills.
-          Phrases and EQ: <Link to="/dj-basics">DJ basics</Link>. Advanced tutorials include a{" "}
-          <strong>song sheet</strong> — always confirm cues on the waveform (radio vs extended vs
-          sing-along edits differ).
+          done that step. Progress saves in this browser. Setup:{" "}
+          <Link to="/pre-cue">Pre-cue</Link> · <Link to="/settings">djay settings</Link>. Ideas:{" "}
+          <Link to="/djing">DJing</Link> (cues, mix-in, remix). Click-around:{" "}
+          <Link to="/labs">Labs</Link>. Advanced tutorials include a <strong>song sheet</strong> —
+          always confirm cues on the waveform (radio vs extended vs sing-along edits differ).
         </p>
       </div>
 

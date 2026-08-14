@@ -1,41 +1,51 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { GenreProvider } from "../djing/GenreContext";
+import { SectionChrome } from "./SectionChrome";
 
-const NAV_GROUPS: { label: string; items: { to: string; label: string; end?: boolean }[] }[] = [
+type NavItem = {
+  to: string;
+  label: string;
+  end?: boolean;
+  /** Extra path prefixes that should keep this item highlighted */
+  also?: string[];
+};
+
+const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
+  {
+    label: "Start",
+    items: [{ to: "/", label: "Home", end: true }],
+  },
   {
     label: "Learn",
     items: [
-      { to: "/", label: "Home", end: true },
-      { to: "/gear", label: "Gear & setup" },
-      { to: "/pre-cue", label: "Pre-cue" },
-      { to: "/dj-basics", label: "DJ basics" },
-      { to: "/tutorials", label: "Tutorials" },
+      { to: "/gear", label: "Gear", also: ["/pre-cue", "/settings"] },
+      { to: "/controls", label: "The controller", also: ["/cheatsheet"] },
+      {
+        to: "/djing",
+        label: "DJing",
+        also: ["/cueing", "/mixing-strategy", "/remix"],
+      },
+      { to: "/practice", label: "Practice", also: ["/labs", "/tutorials"] },
     ],
-  },
-  {
-    label: "Labs",
-    items: [
-      { to: "/labs/cue", label: "Cue" },
-      { to: "/labs/hot-cue", label: "Hot cue" },
-      { to: "/labs/filter", label: "Filter" },
-      { to: "/labs/neural", label: "Neural knobs" },
-      { to: "/labs/pads", label: "Pad modes" },
-    ],
-  },
-  {
-    label: "Reference",
-    items: [{ to: "/cheatsheet", label: "Cheat sheet" }],
   },
 ];
 
 const FLAT_NAV = NAV_GROUPS.flatMap((g) => g.items);
 
+function pathActive(pathname: string, item: NavItem, navIsActive: boolean) {
+  if (navIsActive) return true;
+  return (item.also ?? []).some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
+
 export function Layout() {
+  const { pathname } = useLocation();
+
   return (
     <div className="shell">
       <aside className="sidebar">
         <div className="sidebar-brand">
           <span className="brand-mark">Mix Ultra Lab</span>
-          <p>Controller + djay + how DJing works</p>
+          <p>Your Mix Ultra + djay — gear, buttons, craft, practice</p>
         </div>
         <nav className="side-nav" aria-label="Main">
           {NAV_GROUPS.map((group) => (
@@ -46,7 +56,9 @@ export function Layout() {
                   key={item.to}
                   to={item.to}
                   end={item.end}
-                  className={({ isActive }) => (isActive ? "side-link active" : "side-link")}
+                  className={({ isActive }) =>
+                    pathActive(pathname, item, isActive) ? "side-link active" : "side-link"
+                  }
                 >
                   {item.label}
                 </NavLink>
@@ -55,7 +67,8 @@ export function Layout() {
           ))}
         </nav>
         <p className="sidebar-foot">
-          Suggested path: Gear → Pre-cue → DJ basics → Labs → Tutorials.
+          Gear → Controller → DJing → Practice. Technique pages (which cues, mix in/out, looping)
+          live under DJing.
         </p>
       </aside>
 
@@ -69,14 +82,19 @@ export function Layout() {
               key={item.to}
               to={item.to}
               end={item.end}
-              className={({ isActive }) => (isActive ? "mobile-link active" : "mobile-link")}
+              className={({ isActive }) =>
+                pathActive(pathname, item, isActive) ? "mobile-link active" : "mobile-link"
+              }
             >
               {item.label}
             </NavLink>
           ))}
         </nav>
         <main className="page">
-          <Outlet />
+          <GenreProvider>
+            <SectionChrome />
+            <Outlet />
+          </GenreProvider>
         </main>
       </div>
     </div>

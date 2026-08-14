@@ -164,6 +164,15 @@ export function FilterLab() {
             Low → crossfade fully to B → open A’s controls back to neutral for the next load.
           </p>
         </details>
+        <details>
+          <summary>One-song remix recipe</summary>
+          <p>
+            Stay on this deck. In a breakdown, twist Filter left (muffle) or right (thin). When{" "}
+            <em>this</em> song’s drop hits (or you slap its hot cue), sweep Filter back to center
+            over 8–16 beats. Same “bloom” as bringing a new track in — you never left the song.
+            Always park at 12 o’clock when you’re done.
+          </p>
+        </details>
       </div>
     </div>
   );

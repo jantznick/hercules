@@ -5,11 +5,14 @@ export function GearPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Not DJing — just the box"
-        title="Gear & setup"
-        description="Charging, pairing, sound, cover, and battery lights — so the controller stays out of your way while you learn to mix."
+        eyebrow="1 · Gear"
+        title="Your Mix Ultra + djay"
+        description="Charging, pairing, the splitter, and djay settings. Tabs above jump to headphones and settings."
       />
 
+      <h2 className="home-section-title">
+        The box
+      </h2>
       <div className="info-stack">
         <section className="info-block">
           <h2>Power & charging</h2>
@@ -141,8 +144,8 @@ export function GearPage() {
       </div>
 
       <p className="footer-note">
-        Next: <Link to="/dj-basics">DJ basics</Link> (what “the One” and phrases are), then{" "}
-        <Link to="/labs/cue">Cue lab</Link> or <Link to="/tutorials">Tutorials</Link>. Official{" "}
+        Next: <Link to="/controls">The controller</Link> (buttons), then{" "}
+        <Link to="/djing">DJing</Link> (techniques). Official{" "}
         <a
           href="https://ts.hercules.com/download/sound/manuals/DJC_Mix_Ultra/DJControl_Mix_Ultra_user_manual_EN.pdf"
           target="_blank"

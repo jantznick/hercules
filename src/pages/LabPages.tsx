@@ -14,6 +14,11 @@ export function CueLabPage() {
         eyebrow="Interactive lab"
         title="The CUE button"
         description="Pause → scrub → CUE to plant. Play → CUE to snap back and stop. Compare with the blinking Play LED."
+        actions={
+          <Link to="/labs" className="text-back">
+            All labs
+          </Link>
+        }
       />
       <CueLab />
       <RelatedExtras
@@ -24,9 +29,14 @@ export function CueLabPage() {
             blurb: "Same ideas on the real Mix Ultra",
           },
           {
-            to: "/dj-basics",
-            label: "DJ basics",
+            to: "/djing/phrasing",
+            label: "Phrases & the One",
             blurb: "Why a home cue on “the One” matters",
+          },
+          {
+            to: "/djing/cueing",
+            label: "Which cues to set",
+            blurb: "Mix-in, drop, vocal, mix-out",
           },
         ]}
       />
@@ -41,6 +51,11 @@ export function HotCueLabPage() {
         eyebrow="Interactive lab"
         title="Hot cues"
         description="Press HOT CUE on the controller first. Empty pad = set. Lit pad = jump + play. SHIFT + pad = erase."
+        actions={
+          <Link to="/labs" className="text-back">
+            All labs
+          </Link>
+        }
       />
       <HotCueLab />
       <RelatedExtras
@@ -49,6 +64,21 @@ export function HotCueLabPage() {
             to: "/tutorials/hot-cues",
             label: "Tutorial: Hot cues jump map",
             blurb: "Build intro / drop / breakdown pads",
+          },
+          {
+            to: "/tutorials/quantize-snap",
+            label: "Tutorial: Quantize tap vs hold",
+            blurb: "Snap to the beat without hunting djay’s Q switch",
+          },
+          {
+            to: "/djing/remix",
+            label: "Remix one song",
+            blurb: "Why those jump points matter on one song",
+          },
+          {
+            to: "/djing/cueing",
+            label: "Which cues to set",
+            blurb: "Mix-in / mix-out maps vs remix jump maps",
           },
         ]}
       />
@@ -63,6 +93,11 @@ export function FilterLabPage() {
         eyebrow="Interactive lab"
         title="Filter"
         description="Left muffles (low-pass). Right thins (high-pass). Center is open. Different from High/Mid/Low EQ."
+        actions={
+          <Link to="/labs" className="text-back">
+            All labs
+          </Link>
+        }
       />
       <FilterLab />
       <RelatedExtras
@@ -70,12 +105,22 @@ export function FilterLabPage() {
           {
             to: "/tutorials/filter-sweep",
             label: "Tutorial: Filter sweep",
-            blurb: "Feel LPF vs HPF on one deck",
+            blurb: "Feel left vs right on one deck",
+          },
+          {
+            to: "/tutorials/remix-filter-own-drop",
+            label: "Remix: Filter-open your own drop",
+            blurb: "Same gesture, no second track",
           },
           {
             to: "/tutorials/adv-filter-open",
             label: "Advanced: Filter-open into a drop",
             blurb: "Song-style transition recipe",
+          },
+          {
+            to: "/djing/eq",
+            label: "EQ, Filter, HIGH / MID / LOW",
+            blurb: "What the knobs change in the song — not just the lab",
           },
         ]}
       />
@@ -90,6 +135,11 @@ export function NeuralLabPage() {
         eyebrow="Interactive lab"
         title="EQ vs Neural Mix knobs"
         description="Center N button: HIGH/MID/LOW become stem volumes. Different from Neural Mix pad mode."
+        actions={
+          <Link to="/labs" className="text-back">
+            All labs
+          </Link>
+        }
       />
       <NeuralMixGuide />
       <RelatedExtras
@@ -103,6 +153,11 @@ export function NeuralLabPage() {
             to: "/tutorials/eq-vs-neural",
             label: "Tutorial: EQ vs Neural Mix knobs",
             blurb: "Do it on the hardware",
+          },
+          {
+            to: "/djing/eq",
+            label: "EQ, Filter, HIGH / MID / LOW",
+            blurb: "What the three knobs mean, and the Neural Mix trap",
           },
         ]}
       />
@@ -118,8 +173,8 @@ export function NeuralPadsLabPage() {
         title="Neural Mix pads & lights"
         description="Not in the main menu on purpose — it’s a deep dive when pad LEDs feel backwards. Top = solo, bottom = mute; lit = action ON."
         actions={
-          <Link to="/labs/pads" className="text-back">
-            Back to pad modes
+          <Link to="/labs" className="text-back">
+            All labs
           </Link>
         }
       />
@@ -130,6 +185,11 @@ export function NeuralPadsLabPage() {
             to: "/tutorials/neural-pad-lights",
             label: "Tutorial: read the lights",
             blurb: "Step through solo/mute on the controller",
+          },
+          {
+            to: "/tutorials/remix-flare-kit",
+            label: "Remix: mute vocals for a phrase",
+            blurb: "One-song flare, then all-dark",
           },
           {
             to: "/tutorials/adv-vocal-swap",
@@ -153,7 +213,12 @@ export function PadsLabPage() {
       <PageHeader
         eyebrow="Deep dive"
         title="Pad modes"
-        description="All 8 modes: how to enter, configure in djay, why you’d use them, and transition recipes."
+        description="All 8 modes: how to enter, configure in djay, why you’d use them, plus remix (one song) and transition recipes."
+        actions={
+          <Link to="/labs" className="text-back">
+            All labs
+          </Link>
+        }
       />
       <PadModes />
       <RelatedExtras
@@ -164,9 +229,24 @@ export function PadsLabPage() {
             blurb: "Extra simulator for the confusing LED behavior",
           },
           {
-            to: "/tutorials/pads-transition",
-            label: "Tutorial: pads in a simple transition",
-            blurb: "Hot Cue + Loop + optional echo",
+            to: "/tutorials/loop-from-cue",
+            label: "Tutorial: Loop from a cue",
+            blurb: "Arm the loop paused so it starts on the pad, not late",
+          },
+          {
+            to: "/djing/looping",
+            label: "Looping",
+            blurb: "Why Play-then-LOOP starts late",
+          },
+          {
+            to: "/tutorials/remix-flare-kit",
+            label: "Tutorial: a small flare kit",
+            blurb: "Echo, vocal mute, optional chop — one song",
+          },
+          {
+            to: "/djing/remix",
+            label: "Remix one song",
+            blurb: "One-song jumps and decorations",
           },
         ]}
       />
@@ -178,9 +258,14 @@ export function CheatSheetPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Reference"
+        eyebrow="The controller"
         title="Cheat sheet"
         description="Controls that trip people up on Mix Ultra + djay."
+        actions={
+          <Link to="/controls" className="text-back">
+            The controller
+          </Link>
+        }
       />
       <div className="table-wrap">
         <table>
@@ -210,7 +295,17 @@ export function CheatSheetPage() {
             <tr>
               <td>Hot Cue pads</td>
               <td>Up to 8 jump points</td>
-              <td>Press = play from there · SHIFT+pad = erase</td>
+              <td>Press = play from there · SHIFT+pad = erase · remix map: intro / verse / drop / breakdown</td>
+            </tr>
+            <tr>
+              <td>CUE / hot cue hold</td>
+              <td>While setting: hold snaps to the beatgrid even if Quantize is off</td>
+              <td>Quick tap = exact playhead. Mix Ultra has no Quantize button</td>
+            </tr>
+            <tr>
+              <td>Quantize (djay Q)</td>
+              <td>Snaps setting + triggering cues/loops to the grid</td>
+              <td>Tools bar / Cue points. Set size to 1 beat if you want the One</td>
             </tr>
             <tr>
               <td>Filter</td>
@@ -262,8 +357,9 @@ export function CheatSheetPage() {
       </div>
       <RelatedExtras
         links={[
-          { to: "/gear", label: "Gear & setup", blurb: "Charging, pairing, audio" },
-          { to: "/dj-basics", label: "DJ basics", blurb: "Phrases, EQ, practice loop" },
+          { to: "/settings", label: "djay settings", blurb: "What the switches mean + iCloud" },
+          { to: "/djing", label: "DJing", blurb: "Phrases, mix-in, cueing, remix" },
+          { to: "/labs", label: "Labs", blurb: "Click-around simulators" },
           {
             to: "/labs/neural-pads",
             label: "Neural pads lab",

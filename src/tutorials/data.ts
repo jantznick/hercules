@@ -14,7 +14,7 @@ export type Tutorial = {
   id: string;
   title: string;
   time: string;
-  level: "Start here" | "Basics" | "Mixing" | "Advanced";
+  level: "Start here" | "Basics" | "Remix" | "Mixing" | "Advanced";
   summary: string;
   needs: string[];
   steps: TutorialStep[];
@@ -213,8 +213,8 @@ export const TUTORIALS: Tutorial[] = [
         title: "Practice a mini transition gesture",
         hardware:
           "With the track playing: Filter right (thin) → slowly open to center over 8–16 beats.",
-        expect: "Sounds like a track “opening up.” You’ll use this on the incoming deck later.",
-        tip: "Always park Filter back at center when you’re done — easy to leave it half-cut by accident.",
+        expect: "Sounds like a track “opening up.” You’ll use this on an incoming deck later — and on this same song’s drop when remixing.",
+        tip: "Always park Filter back at center when you’re done — easy to leave it half-cut by accident. One-song version: close Filter in a breakdown, open it as your drop hits.",
       },
     ],
   },
@@ -319,6 +319,7 @@ export const TUTORIALS: Tutorial[] = [
         hardware:
           "Turn Deck 1 LOW down, move crossfader fully to Deck 2, pause/stop Deck 1, reset Deck 1’s EQ/Filter to center, load the next track.",
         expect: "Clean exit. You’re ready to repeat the other direction.",
+        tip: "Next skill: don’t wait for the dying outro — Mix in / mix out without killing energy.",
       },
     ],
   },
@@ -458,8 +459,8 @@ export const TUTORIALS: Tutorial[] = [
     id: "stutter-cue",
     title: "Stutter from the CUE",
     time: "~3 min",
-    level: "Mixing",
-    summary: "Use SHIFT + Play taps to stutter from your main cue — a classic build/FX gesture.",
+    level: "Remix",
+    summary: "Use SHIFT + Play taps to stutter from your main cue — a classic one-song flare gesture.",
     needs: ["Main CUE already set on a strong hit (kick or vocal)"],
     steps: [
       {
@@ -579,6 +580,504 @@ export const TUTORIALS: Tutorial[] = [
         hardware: "Press the lit mute pad again → dark. Confirm all pads dark.",
         expect: "Full mix. Habit: return to all-dark before the next transition so you don’t leave a mute stuck on.",
         lab: "Use Reset = full mix in the Neural pads lab anytime you get lost.",
+      },
+    ],
+  },
+  {
+    id: "remix-cue-map",
+    title: "Map a song for remixing",
+    time: "~8 min",
+    level: "Remix",
+    summary:
+      "Plant five hot cues as a jump map, then rearrange one song live: skip ahead, replay the drop, hit the breakdown.",
+    needs: [
+      "One song you already know (clear verse / chorus / drop)",
+      "Deck 1 loaded, HOT CUE mode",
+      "You can set a hot cue (Basics: Hot cues jump map)",
+    ],
+    steps: [
+      {
+        title: "Pick a song you can hum",
+        hardware: "Load it on Deck 1. Crossfader toward Deck 1. Channel fader up. Ignore Deck 2.",
+        expect: "One deck, one song. Remixing does not need a second track.",
+        tip: "A 3–4 minute pop/dance song with an obvious chorus is easier than a long DJ-tool intro.",
+      },
+      {
+        title: "Pad 1 = intro / start",
+        hardware:
+          "HOT CUE (solid). Scrub to where you’d usually let the song start for a crowd → tap pad 1.",
+        djay: "A hot-cue marker appears near the beginning (not necessarily 0:00).",
+        expect: "Pad 1 is “play this song from a useful start.”",
+      },
+      {
+        title: "Pad 2 = verse or first hook",
+        hardware: "Find the first verse or the first time the hook appears → beat 1 of that phrase → tap pad 2.",
+        expect: "You can skip the intro anytime.",
+      },
+      {
+        title: "Pad 3 = drop / chorus (your replay button)",
+        hardware:
+          "Find the big energy hit (chorus or drop). Land on beat 1 of that bar → tap pad 3. Play from pad 3 once to confirm it slams on the One.",
+        expect: "Pad 3 is the remix detonator — you’ll hit this more than once.",
+      },
+      {
+        title: "Pad 4 = breakdown · Pad 5 = a vocal or drum hit",
+        hardware:
+          "Breakdown / bridge / quiet bit → pad 4 on a One. Then find a short vocal word or kick you might want to jump to → pad 5 (doesn’t have to be a full phrase).",
+        expect: "Five bookmarks. That’s enough of a remix map.",
+        lab: "Hot Cue Lab: plant a few pads and jump while playing — same idea, fake waveform.",
+      },
+      {
+        title: "Rearrange it live",
+        hardware:
+          "Play from pad 1. After a few bars, tap pad 3 (drop). Let it run 8–16 beats. Tap pad 4 (breakdown). Then tap pad 3 again (replay the drop). Let the song run.",
+        listen: "You changed the arrangement without touching Deck 2. Jumps should land on phrase starts, not mid-word.",
+        expect: "That’s live remixing: same file, different order. If a jump felt early/late, nudge that cue and retry.",
+        tip: "Local files usually save hot cues; streaming may not — remap if they vanish next session.",
+      },
+    ],
+  },
+  {
+    id: "remix-loop-replay",
+    title: "Loop a hook, replay the drop",
+    time: "~8 min",
+    level: "Remix",
+    summary:
+      "Extend a chorus with a 2- or 4-bar loop, exit on the One, then jump the drop again — classic one-song remix.",
+    needs: [
+      "Song with a mapped drop/chorus hot cue (do “Map a song for remixing” first)",
+      "LOOP mode + HOT CUE mode",
+    ],
+    steps: [
+      {
+        title: "Start from the drop / chorus",
+        hardware: "HOT CUE. Tap your drop pad (often pad 3). Let the hook play in the room.",
+        expect: "You’re in the part people sing. Crossfader still on this deck.",
+      },
+      {
+        title: "Catch a 2- or 4-bar loop",
+        hardware:
+          "On a One (beat 1 of the bar): press LOOP, then tap the 2-bar or 4-bar pad once. Take your finger off — it stays looping.",
+        listen: "The hook repeats. If it feels lopsided, tap the lit pad to exit and retry on a downbeat.",
+        expect: "Loop pad lit. You bought extra chorus without loading another track.",
+        tip: "Shorter pads (1/4, 1/2) are stutter-y; 2–4 bars are “keep dancing.”",
+      },
+      {
+        title: "Ride it, then exit on a One",
+        hardware:
+          "Let the loop run 2–4 times. On a downbeat, tap the same lit loop pad once to exit. The song continues from there.",
+        expect: "You’re out of the loop, still in the same song. Don’t leave LOOP mode forever — you’ll want HOT CUE next.",
+      },
+      {
+        title: "Replay the drop",
+        hardware: "Press HOT CUE. Tap the drop pad again so the chorus/drop hits a second time.",
+        listen: "Hook extended → drop (or chorus) again. That’s a tiny remix, not a transition.",
+        expect: "One song, rearranged. Park in HOT CUE so pads are jump markers again.",
+      },
+    ],
+  },
+  {
+    id: "loop-from-cue",
+    title: "Loop from a cue (not late)",
+    time: "~6 min",
+    level: "Remix",
+    summary:
+      "LOOP pads start from the playhead, not from the hot cue you just hit — and you have to leave HOT CUE mode to loop. Arm the loop while paused, or save a cue-loop.",
+    needs: ["A hot cue already planted on a clear One (intro or chorus)", "LOOP + HOT CUE modes"],
+    steps: [
+      {
+        title: "See why Play-then-LOOP is late",
+        hardware:
+          "HOT CUE → tap pad 1 so it plays. Then press LOOP, then tap 4-bar (or 2-bar).",
+        listen: "The loop starts wherever you landed — a bar or two after the cue — because the song kept running while you changed modes.",
+        expect: "That’s normal. Pads are one mode at a time. LOOP is “from now,” not “from pad 1.”",
+      },
+      {
+        title: "Arm it paused (exact start)",
+        hardware:
+          "Tap the lit loop pad to exit. HOT CUE → pad 1, then Pause on that One. LOOP → tap 4-bar once. Play.",
+        listen: "The repeating phrase starts on the cue, not after it.",
+        expect: "In-point = paused playhead. This is the prep move. Exit the loop (tap lit pad) when you’re done.",
+      },
+      {
+        title: "Optional: save a cue-loop on pad 1",
+        djay: "Settings → Advanced → turn ON “Save active loop when setting cue point.”",
+        hardware:
+          "Paused on the One with the 4-bar loop still active: HOT CUE → tap pad 1 (sets/overwrites). Play from somewhere else, then tap pad 1.",
+        expect: "Pad 1 jumps and the loop comes back — no mode race. Turn that setting OFF again so later cues don’t all become loops.",
+        tip: "If pad 1 didn’t keep the loop, the setting was off or you set the cue before the loop.",
+      },
+      {
+        title: "Live recovery: next One",
+        hardware:
+          "Exit any loop. HOT CUE → pad 1 and let it play. Press LOOP, wait for the next downbeat, tap 4-bar.",
+        listen: "Loop starts on a phrase, just not the one you jumped from. Still musical.",
+        expect: "You stopped chasing the past bar. That’s what you do in a set when you didn’t prep.",
+      },
+    ],
+  },
+  {
+    id: "remix-filter-own-drop",
+    title: "Filter-open your own drop",
+    time: "~6 min",
+    level: "Remix",
+    summary:
+      "Same filter gesture as a two-deck mix, but you open into this song’s drop — one deck, one Filter knob.",
+    needs: ["Track with a breakdown then a drop/chorus", "Filter knob + a drop hot cue"],
+    steps: [
+      {
+        title: "Park in the breakdown",
+        hardware:
+          "Play into the quiet/build section (or jump your breakdown hot cue). Filter at 12 o’clock. Finger ready on FILTER and on the drop pad.",
+        listen: "Energy dipped. You’re about to fake a “new track arriving” using the same song.",
+        expect: "Breakdown, Filter centered, drop pad armed.",
+        lab: "Filter Lab: remember left = muffle, right = thin, center = open.",
+      },
+      {
+        title: "Close the filter",
+        hardware:
+          "Twist FILTER left (muffled) or right (thin) — pick one. Hold it there for 4–8 beats of the breakdown.",
+        listen: "Track sounds buried or skinny. That’s tension, not a broken speaker.",
+        expect: "Filter is away from center on purpose.",
+      },
+      {
+        title: "Open into the drop",
+        hardware:
+          "On the One into the drop: tap your drop hot cue (or let the real drop arrive) and sweep FILTER back to 12 o’clock over 8–16 beats.",
+        listen: "The song “blooms” into the drop. Same move as bringing a new track in — you just never left this one.",
+        expect: "Filter parked at center when the drop is fully in. Easy to forget and leave it half-cut.",
+        tip: "If you also used LOOP in the breakdown, exit the loop on that same One so the drop isn’t still repeating.",
+      },
+    ],
+  },
+  {
+    id: "remix-flare-kit",
+    title: "A small flare kit (one song)",
+    time: "~10 min",
+    level: "Remix",
+    summary:
+      "Three decorations, one at a time: echo a word, mute vocals for a phrase, optional 4-beat slicer chop — then reset.",
+    needs: [
+      "Same mapped song on Deck 1",
+      "FX: Echo assigned to pad 1 in djay",
+      "Optional: Neural Mix pads + a 1-bar loop for Slicer",
+    ],
+    steps: [
+      {
+        title: "Rule: one trick, then home",
+        hardware:
+          "Before anything: Filter at center. Neural pads all dark. Mode = HOT CUE. You’ll return here after each move.",
+        expect: "Home base. Flare is seasoning — leftover mute/filter is how tracks “mysteriously” sound wrong.",
+      },
+      {
+        title: "Echo the last word of a line",
+        hardware:
+          "Play a vocal phrase. At the end of the last word: press FX, HOLD pad 1 (echo), keep holding ~1–2 beats, RELEASE. Do not pull the fader (that’s an echo-out to another song).",
+        djay: "Landscape → FX → Echo on slot 1 if you haven’t already.",
+        listen: "The word washes; the beat keeps going under it. Same song, still playing.",
+        expect: "Hold ≠ tap. Then press HOT CUE so you’re not stuck in FX mode.",
+      },
+      {
+        title: "Instrumental for 8 beats",
+        hardware:
+          "NEURAL MIX (solid, not flashing Sampler). During a chorus: tap bottom VOCALS once (lights = mute on). Count 8 beats. Tap it dark again.",
+        listen: "Hook becomes a bed, then the singer returns. If the wrong stem died, tap off and try the neighboring bottom pad.",
+        expect: "Mute was a moment. All Neural pads dark before you continue.",
+        lab: "/labs/neural-pads if lights still feel backwards.",
+        tip: "Solo drums (top drums lit) for a bar is the same idea — spotlight, then all-dark.",
+      },
+      {
+        title: "Optional: 4-beat chop, then get out",
+        hardware:
+          "On a groove: LOOP → tap the 1-bar pad. SHIFT + FX (Slicer). HOLD a few slice pads for about 4 beats. Release, press FX to leave Slicer, tap the lit loop pad to exit the loop.",
+        listen: "A short glitchy fill, then the song continues. Longer than a phrase turns into noise.",
+        expect: "Chop was a fill, not a new genre. Back to HOT CUE. Filter still center.",
+      },
+    ],
+  },
+  {
+    id: "remix-party-hook",
+    title: "Remix one anthem: Can’t Stop the Feeling!",
+    time: "~12 min",
+    level: "Remix",
+    trackRecipe:
+      "SONG SHEET — one deck only (no second track).\n\nJustin Timberlake – Can’t Stop the Feeling! (Trolls / radio) · ~113 BPM · ~3:56\n• Hot Cue 1 → first chorus downbeat (“I got this feeling in my body…” — often ~0:45–1:05 on radio edits)\n• Hot Cue 2 → a later chorus / last full hook (~2:30–3:00)\n• Hot Cue 3 → a quieter verse or pre-chorus you can use as a fake breakdown (~1:20–1:40)\n\nConfirm on the waveform — sing-along vs radio vs movie edits move by a few seconds.\n\nBackup one-song remix: Shakira – Try Everything, or Encanto – We Don’t Talk About Bruno (same idea: chorus replay + loop + filter).",
+    summary:
+      "Concrete one-song remix: loop the chorus, replay it, filter-open from a quieter bit back into the hook.",
+    needs: [
+      "Can’t Stop the Feeling! in djay (very common on Apple Music)",
+      "Hot Cue + Loop + Filter on Deck 1",
+    ],
+    steps: [
+      {
+        title: "Load only this track",
+        djay: "Deck 1: Can’t Stop the Feeling! Ignore Deck 2. Key Lock on is fine but you won’t SYNC anyone.",
+        hardware: "Crossfader toward Deck 1. Channel up.",
+        expect: "Party anthem, one deck. Times below are radio-ish — trust the chorus downbeat.",
+      },
+      {
+        title: "Plant the remix map",
+        hardware:
+          "HOT CUE. First “feeling in my body” chorus → pad 1 on beat 1. Later chorus → pad 2. A quieter verse/pre-chorus → pad 3.",
+        expect: "Pad 1 = replay button. Pad 2 = late chorus. Pad 3 = fake breakdown.",
+      },
+      {
+        title: "Loop the first chorus",
+        hardware:
+          "Play from pad 1. On a One in the hook: LOOP → tap 4-bar (or 2-bar) once. Ride it twice, then tap the lit pad to exit.",
+        listen: "Kids-floor chorus lasts longer. Exit should feel like the song continued, not a stall.",
+        expect: "Extended hook. Press HOT CUE again after you exit.",
+      },
+      {
+        title: "Replay the chorus, then dip",
+        hardware: "Tap pad 1 again (second chorus hit). After 8–16 beats, tap pad 3 to jump to the quieter bit.",
+        listen: "Hook → hook again → verse-ish dip. You rearranged the radio edit.",
+        expect: "Jumps on the One. If pad 3 landed mid-line, nudge it and retry.",
+      },
+      {
+        title: "Filter-open back into the hook",
+        hardware:
+          "In that quieter bit: FILTER left or right a little. On a One, tap pad 1 (or pad 2) and sweep Filter to center over 8 beats.",
+        listen: "Breakdown-ish → chorus bloom. Same filter-open as a mix, never left the song.",
+        expect: "Filter at 12 o’clock. HOT CUE mode. That’s a full mini-remix you can repeat on any anthem.",
+      },
+    ],
+  },
+  {
+    id: "count-phrases",
+    title: "Count phrases (the One)",
+    time: "~6 min",
+    level: "Basics",
+    summary:
+      "Count 8-bar blocks out loud, feel where songs change, and plant a cue on beat 1 — the skill that makes mixes feel musical instead of merely in time.",
+    needs: ["One dance-ish track on Deck 1 (house, pop, or a kids anthem with a clear kick)"],
+    steps: [
+      {
+        title: "Find beat 1 by ear",
+        hardware:
+          "Load Deck 1. Play from the start (SHIFT + CUE if you already have a cue). Nod to the kick. The heaviest beat of each bar is usually “1.”",
+        listen: "1-2-3-4, 1-2-3-4. If you lose it, wait for a crash, a new instrument, or a vocal starting — that’s often a One.",
+        expect: "You can point at beat 1 without looking at the screen.",
+      },
+      {
+        title: "Count bars, not just beats",
+        hardware: "Keep it playing. Say the bar number on each downbeat: 1-2-3-4, 2-2-3-4, … 8-2-3-4.",
+        listen:
+          "After “8,” something usually changes: hats, bass, a vocal, a fill. That’s a phrase boundary — DJs mix on those, not on bar 5.",
+        expect: "8 bars felt like a sentence. The next 1 felt like a new sentence.",
+        tip: "House/techno often stack two of these into a 16-bar section. Pop and hip-hop may change every 8 — or even 4.",
+      },
+      {
+        title: "Watch the waveform confirm it",
+        djay: "Overview waveform: fat blocks vs thin dips often line up with your 8-counts. Zoom in: the cue should sit on a kick spike, not the swell before it.",
+        expect: "Your ear and the picture agree. If they don’t, trust the ear and move the marker.",
+      },
+      {
+        title: "Plant a cue on a One",
+        hardware:
+          "Pause. Jog to the downbeat of a new phrase (first kick of a drop, chorus, or intro groove). Press CUE. Optionally HOT CUE → pad 1 on the same spot.",
+        expect: "Home cue / pad 1 restarts that phrase, not a random beat in the middle.",
+        lab: "Cue lab: scrub, plant, Play, then CUE to return.",
+      },
+      {
+        title: "Practice launching on the One",
+        hardware:
+          "Play a few bars past the cue. Press CUE to return and stop. Then Play from the cue (or CUE + Play). Do it until the first kick always feels like “1,” not a pickup.",
+        expect: "You can hit the phrase start on purpose. That’s the whole game for mix-ins later.",
+        tip: "Want snap-to-beat only sometimes? Leave Quantize off and hold the pad/CUE to snap — tutorial Quantize: tap vs hold.",
+      },
+    ],
+  },
+  {
+    id: "quantize-snap",
+    title: "Quantize: tap vs hold",
+    time: "~5 min",
+    level: "Basics",
+    summary:
+      "Mix Ultra has no Quantize button. Leave djay’s Q switch off, then tap for exact cues and hold to snap to the beat — plus where the real on/off lives if you want a toggle.",
+    needs: [
+      "Track with a clear kick AND a vocal that starts off the kick (pop/house vocal works)",
+      "djay open so you can see the cue marker on the waveform",
+    ],
+    steps: [
+      {
+        title: "Find the Q switch (and leave it off)",
+        djay: "Mac: Tools / cue-loop strip at the top — Q plus a snap-size dropdown. iPhone/iPad: Tools → Cue points; circled Q, often near Sync. Turn Q OFF for this drill.",
+        expect: "You know where the global switch is. Mix Ultra does not have this button.",
+        tip: "If you want “start of a beat,” set the dropdown to 1 beat — not 1/4 — before you ever turn Q on.",
+      },
+      {
+        title: "Tap = exact (no snap)",
+        hardware:
+          "HOT CUE mode. Pause. Jog so the playhead sits a little before a kick — not on it. Quick-tap pad 1 (don’t hold).",
+        djay: "The hot-cue marker should sit where you were, slightly early — not sucked onto the kick.",
+        expect: "That’s the “I don’t want auto-snap” cue. Good for pickups and off-beat vocals.",
+      },
+      {
+        title: "Hold = snap to the beat (Q still off)",
+        hardware:
+          "SHIFT + pad 1 to erase. Same early playhead. Now HOLD pad 2 for a beat until it registers.",
+        djay: "Marker should jump to the nearest grid line / kick even though Quantize is off.",
+        expect: "Hold-to-snap is the quick toggle. You did not hunt for Q.",
+      },
+      {
+        title: "Feel why global Q can annoy you",
+        djay: "Turn Q ON (1 beat). Play the track. Tap a hot cue a little late on purpose.",
+        listen: "The jump may wait for the next beat instead of firing immediately. That’s trigger-quantize — great for drops, mushy for a spoken stab.",
+        expect: "Q on = setting AND triggering wait for the grid. Turn Q back OFF when you’re done.",
+        tip: "Want a dedicated flip? Mac: Settings → Shortcuts → assign Quantize to ⌥⌘Q (plain Q is already “jump to start CUE”). Or MIDI-learn SHIFT+LOAD on Mix Ultra to Quantize.",
+      },
+    ],
+  },
+  {
+    id: "read-waveform",
+    title: "Read the waveform (find the parts)",
+    time: "~8 min",
+    level: "Basics",
+    summary:
+      "Use djay’s waveform — and Neural Mix vocals — to find intro, drop, vocal entry, breakdown, and the last full groove. Mix Ultra does not auto-mark these.",
+    needs: [
+      "A track with a clear drop or chorus AND some singing (house vocal or a pop/kids song)",
+      "Comfortable jogging / pausing",
+    ],
+    steps: [
+      {
+        title: "Read energy at a glance",
+        djay: "Look at the overview waveform without playing. Fat/tall = busy (drop, chorus, full bass). Thin = sparse (intro, breakdown, outro tail).",
+        expect: "You can point at “the loud middle” and “the skinny ending” before you hear them.",
+        tip: "The mix-out you want is usually the last fat block — not the skinny tail after the song has already left.",
+      },
+      {
+        title: "Mark mix-in (first useful kick)",
+        hardware:
+          "HOT CUE. Jog from 0:00. Skip silence or talking. Land on the first repeating kick on beat 1 → pad 1.",
+        djay: "Zoom until you see a transient peak. If the first downbeat is quiet, that’s still the mix-in — intros are supposed to be sparse.",
+        expect: "Pad 1 is “I am willing to start this track here,” not necessarily the drop.",
+      },
+      {
+        title: "Mark the drop / chorus",
+        hardware: "Scrub to the first fat block. Land on beat 1 of that phrase → pad 2.",
+        listen: "Energy jumps. That’s the payoff people came for — don’t mix another drop over it by accident.",
+        expect: "Pad 2 is the nuclear button. Play it once to confirm it slams on the One.",
+      },
+      {
+        title: "Find where vocals come in (Neural Mix)",
+        hardware:
+          "Press NEURAL MIX (solid pad mode) or the center N knob mode. Solo Vocals (top vocal pad, or turn HIGH/Vocals up and the others down). Scrub from the start.",
+        listen: "Silence, then a voice. That’s vocal entry — the line you must not cover with another singer.",
+        djay: "On Mac / some iPad layouts you can split the waveform into stems: the vocal lane jumping from flat to busy is the same moment.",
+        expect: "You know the clock time / phrase where singing starts. Leave Neural pads all dark when you’re done hunting.",
+        tip: "Plant pad 3 on the downbeat of that vocal phrase (beat 1 of the bar), not halfway through the first word.",
+      },
+      {
+        title: "Mark mix-out (last full groove)",
+        hardware:
+          "Look at the last fat block before the waveform thins out for good. Pad 4 on beat 1 of that phrase — while there is still a kick.",
+        expect: "Pad 4 is “leave now, while it still has body.” The skinny outro is optional lull, not the default exit.",
+      },
+      {
+        title: "Jump the map",
+        hardware: "Play pad 1 → 2 → 3 → 4. Confirm each lands on a One and matches intro / payoff / vocal / last groove.",
+        expect: "You prepped a mix map without any auto-cue feature. Next mix, you already know where to start and leave.",
+        lab: "Hot Cue lab if pad set/erase still feels fuzzy.",
+      },
+    ],
+  },
+  {
+    id: "mix-in-mix-out",
+    title: "Mix in / mix out without killing energy",
+    time: "~12 min",
+    level: "Mixing",
+    trackRecipe:
+      "Use two similar-BPM house/techno (or tech-house) tracks with visible intros, a drop, a mid-track breakdown, and an outro. DJ/extended mixes beat radio edits.\n\nDeck 1 (outgoing): anything with a fat groove that later thins (e.g. FISHER – Losing It).\nDeck 2 (incoming): similar energy, similar BPM (e.g. James Hype – Ferrari, or another ~125 track).\n\nYou need four landmarks (confirm on the waveform, not the clock):\n• A last FULL groove on Deck 1 (still has kick+bass) — not the dying last 20 seconds\n• A mid-track breakdown on Deck 1 (optional second mix-out)\n• Deck 2 intro / first kick\n• Deck 2 first drop\n\nBackup: two tracks from the same playlist you already mix. Same idea: busy vs sparse.",
+    summary:
+      "The r/Beatmatch lesson: intro-over-dying-outro stacks two empty sections. Mix the new intro over the last full groove — or over a breakdown — so a kick stays in the room.",
+    needs: [
+      "Two similar-BPM house/techno tracks (DJ/extended if you have them)",
+      "Hot Cue + SYNC + LOW EQ + headphones strongly recommended",
+      "You can already do a basic two-deck blend",
+    ],
+    steps: [
+      {
+        title: "Hear the energy crash (on purpose)",
+        hardware:
+          "Deck 1 only. Play into the skinny outro (waveform is thin, few instruments left). That’s the section beginners wait for before mixing.",
+        listen: "The floor would already be cooling off. Mixing a second intro on top of this is two empties.",
+        expect: "You felt why “wait until the end” is boring — even before Deck 2 exists.",
+      },
+      {
+        title: "Mark the real mix-out (last full groove)",
+        hardware:
+          "Rewind. Find the last fat phrase that still has kick + bass — often 32–64 bars before the true end, or the groove after the last drop. HOT CUE pad 4 on that One.",
+        djay: "Last tall block, not the tail. If this is a 7-minute techno track, you may leave at minute 4–5. That’s normal.",
+        expect: "Pad 4 = “I am allowed to leave.” You will not wait for the leftover hiss.",
+      },
+      {
+        title: "Mark incoming intro and first drop",
+        hardware:
+          "Deck 2 HOT CUE: pad 1 = first useful kick / DJ intro. Pad 2 = first drop (first fat kick of the payoff). SYNC Deck 2. Lows down a bit on Deck 2.",
+        expect: "Pad 1 is mix-in (sparse). Pad 2 is the new busy section you’ll time toward.",
+      },
+      {
+        title: "Blend: sparse over busy (the workhorse)",
+        hardware:
+          "Room = Deck 1 playing toward pad 4’s groove (crossfader left). Headphones on Deck 2. On Deck 1’s mix-out One: start Deck 2 from pad 1, raise channel / ease crossfader. Keep Deck 1 LOW up at first; Deck 2 LOW still down.",
+        listen: "New hats/groove over a still-moving bass. Kick never left. This is intro-over-groove, not intro-over-outro.",
+        expect: "Energy held. You are mixing in while the old track still has dignity.",
+      },
+      {
+        title: "Bass swap on a phrase, then leave",
+        hardware:
+          "On the next One (8 or 16 bars later): Deck 1 LOW down, Deck 2 LOW up together. Fade Deck 1 out before it thins to nothing. Reset EQ.",
+        listen: "Handoff. Optional: time Deck 2’s pad 2 drop to land as Deck 1 leaves — extra lift, still one bassline.",
+        expect: "Same genre as the Reddit thread (techno/prog/house) without the lull. Contrast can wait for a breakdown next time.",
+        tip: "Want a dip on purpose? Mix over a mid-track breakdown instead of the last groove — busy incoming over sparse outgoing. Don’t do sparse over sparse unless the night needs a reset.",
+      },
+    ],
+  },
+  {
+    id: "vocal-handoff",
+    title: "Hand off vocal tracks (don’t stack singers)",
+    time: "~10 min",
+    level: "Mixing",
+    trackRecipe:
+      "Two songs people actually sing — pop, vocal house, Disney, kids party. Radio edits are fine; intros will be short.\n\nExample pair (or any two you know):\nDeck 1: Calvin Harris & Dua Lipa – One Kiss (or Shakira – Try Everything)\nDeck 2: Joel Corry – Head & Heart (or Justin Timberlake – Can’t Stop the Feeling!)\n\nMark:\n• Deck 1 last chorus downbeat (mix-out) and the lyric you might echo\n• Deck 2 first chorus downbeat (mix-in for a cut) AND the first vocal if it starts earlier\n\nSYNC + Key Lock. This is not a 32-bar techno blend.",
+    summary:
+      "Pop, hip-hop, and kids bangers don’t get house-length overlays. Protect the chorus, don’t mix two lead vocals, and leave on a short phrase — cut or echo.",
+    needs: [
+      "Two vocal-heavy tracks close-ish in BPM (or accept SYNC stretch + Key Lock)",
+      "Hot Cue + channel fader; optional FX Echo",
+      "Headphones recommended",
+    ],
+    steps: [
+      {
+        title: "Mark the forbidden overlap",
+        hardware:
+          "On each deck, find where the lead vocal starts (Neural Mix solo vocals if you need to hunt). Hot Cue that phrase’s downbeat. Play both in headphones for a second with faders down — two voices talking.",
+        listen: "That’s the wreck. Hip-hop and pop treat this as the main rule: one MC / one singer at a time.",
+        expect: "You know the bars you must not layer. House DJs can stack drums; vocal DJs usually cannot stack words.",
+      },
+      {
+        title: "Respect the chorus on the way out",
+        hardware:
+          "Deck 1: plant Hot Cue on the LAST full chorus downbeat. Play it in the room. Do not start Deck 2’s vocal during this chorus.",
+        listen: "People are singing. Mixing over it buries the reason you played the song.",
+        expect: "Mix out of the chorus (as it ends), not over it. Same idea as “don’t mix over the drop” in techno.",
+      },
+      {
+        title: "Short handoff — cut or 8 bars, not 32",
+        hardware:
+          "Deck 2 waiting on first chorus (or first sung downbeat) in headphones, LOW a bit down. At the end of Deck 1’s last chorus One: start Deck 2, raise fader, fade Deck 1 within ~8 bars (or cut on the One).",
+        listen: "Old hook finishes → new hook (or new verse) arrives. Radio-edit timing. No long percussion runway.",
+        expect: "Open-format default. If it felt rushed, the edit has no intro — that’s the genre, not a failure.",
+        tip: "Optional polish: HOLD FX Echo on Deck 1 as you pull the fader after the last word, then tap Deck 2’s chorus cue into the hole. See the Echo-out advanced tutorial.",
+      },
+      {
+        title: "If you must overlap, hide a vocal",
+        hardware:
+          "Retry once: Deck 1 NEURAL MIX → mute vocals (bottom pad LIT) for the 8-bar overlap only, then fade Deck 1 and darken all Neural pads.",
+        listen: "Groove continues; only one singer. This is a mashup-ish cheat, not the default.",
+        expect: "You have an escape hatch. Default remains: don’t stack singers. Reset Neural pads to all dark.",
       },
     ],
   },

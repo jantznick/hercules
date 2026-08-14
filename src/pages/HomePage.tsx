@@ -26,39 +26,107 @@ export function HomePage() {
     <>
       <PageHeader
         eyebrow="Hercules · DJControl Mix Ultra"
-        title="Learn the gear and the craft"
-        description="This isn’t only a button map — it’s a path from charging the box, to what a mix is, to hands-on labs, to guided transitions on real songs you pick."
+        title="Four places to look"
+        description="Gear is the box and djay settings. The controller is every button. DJing is the craft. Practice is labs and tutorials."
       />
 
+      <div className="home-cards">
+        <Link to="/gear" className="home-card">
+          <span className="pill">1</span>
+          <h3>Gear</h3>
+          <p>Charge, pair Bluetooth, splitter, speakers vs headphones, djay settings and iCloud.</p>
+        </Link>
+        <Link to="/controls" className="home-card">
+          <span className="pill">2</span>
+          <h3>The controller</h3>
+          <p>What each Mix Ultra control does in djay — CUE, hot cues, filter, Neural Mix, pads.</p>
+        </Link>
+        <Link to="/djing" className="home-card">
+          <span className="pill">3</span>
+          <h3>DJing</h3>
+          <p>Phrases, songs, mix in/out, pick the next file, then the blend — style menu tailors examples.</p>
+        </Link>
+        <Link to="/practice" className="home-card">
+          <span className="pill">4</span>
+          <h3>Practice</h3>
+          <p>Click-around labs, then do-it-on-the-hardware tutorials.</p>
+        </Link>
+      </div>
+
+      <h2 className="home-section-title" style={{ marginTop: "1.75rem" }}>
+        DJing, in order
+      </h2>
       <ol className="path-steps">
         <li>
-          <Link to="/gear">
-            <strong>1. Gear & setup</strong>
-            <span>Charge, pair Bluetooth every session, speakers vs headphones</span>
+          <Link to="/djing/phrasing">
+            <strong>Phrases & the One</strong>
+            <span>Why a mix can be in time and still feel wrong</span>
           </Link>
         </li>
         <li>
-          <Link to="/pre-cue">
-            <strong>2. Pre-cue</strong>
-            <span>Hear the next track in cans while the room stays on the current one</span>
+          <Link to="/djing/songs">
+            <strong>How songs are built</strong>
+            <span>Intro, verse, chorus, drop — which parts mix well</span>
           </Link>
         </li>
         <li>
-          <Link to="/dj-basics">
-            <strong>3. DJ basics</strong>
-            <span>BPM, phrases, “the One,” EQ — how mixing works</span>
+          <Link to="/djing/waveform">
+            <strong>Read the waveform</strong>
+            <span>Tall vs thin — find mix-in, drop, vocal, mix-out</span>
           </Link>
         </li>
         <li>
-          <Link to="/labs/cue">
-            <strong>4. Labs</strong>
-            <span>Click around Cue, Hot cue, Filter, Neural, Pads until they click</span>
+          <Link to="/djing/cueing">
+            <strong>Which cues to set</strong>
+            <span>Pad map: mix-in, drop, vocal, mix-out</span>
           </Link>
         </li>
         <li>
-          <Link to="/tutorials">
-            <strong>5. Tutorials</strong>
-            <span>Do it on the Mix Ultra — Start here → Basics → Mixing → Advanced</span>
+          <Link to="/djing/mixing">
+            <strong>Mix in / mix out</strong>
+            <span>Why a quiet intro over a dying ending kills energy</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/djing/eq">
+            <strong>EQ, bass & filter</strong>
+            <span>One bassline at a time</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/djing/choose">
+            <strong>Pick the next song</strong>
+            <span>Speed, vocals, how busy they are — songs that can sit next to each other</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/djing/blend">
+            <strong>The two-deck blend</strong>
+            <span>Headphones, faders, then the room</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/djing/quantize">
+            <strong>Quantize</strong>
+            <span>Tap vs hold — Mix Ultra has no Q button</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/djing/looping">
+            <strong>Looping</strong>
+            <span>Why Play-then-LOOP starts late, and how to arm it paused</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/djing/remix">
+            <strong>Remix one song</strong>
+            <span>Jumps, loops, filter, FX — no second deck required</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/djing/style">
+            <strong>How this music works</strong>
+            <span>House, hip-hop, pop/kids, or dnb — pick in the DJing menu</span>
           </Link>
         </li>
       </ol>
@@ -83,35 +151,6 @@ export function HomePage() {
             CUE to plant the marker.
           </p>
         </div>
-      </div>
-
-      <h2 className="home-section-title">Shortcuts</h2>
-      <div className="home-cards">
-        <Link to="/tutorials" className="home-card primary">
-          <span className="pill">Hardware</span>
-          <h3>Tutorials</h3>
-          <p>Press-this-then-that on the controller + djay. Includes advanced song-style mixes.</p>
-        </Link>
-        <Link to="/gear" className="home-card">
-          <h3>Gear & setup</h3>
-          <p>Battery, charging, pairing, splitter, cover — non-DJ essentials.</p>
-        </Link>
-        <Link to="/pre-cue" className="home-card">
-          <h3>Pre-cue</h3>
-          <p>Headphone buttons, faders vs Play, Mac vs phone, splitter, Auto Select — then do the drills.</p>
-        </Link>
-        <Link to="/dj-basics" className="home-card">
-          <h3>DJ basics</h3>
-          <p>Phrases, EQ mixing, headphones, a 30-minute practice loop.</p>
-        </Link>
-        <Link to="/labs/pads" className="home-card">
-          <h3>Pad modes</h3>
-          <p>All 8 modes and transition recipes.</p>
-        </Link>
-        <Link to="/cheatsheet" className="home-card">
-          <h3>Cheat sheet</h3>
-          <p>One-screen control reference.</p>
-        </Link>
       </div>
     </>
   );
