@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import {
+  identifyHotCuePad,
   identifyMixUltra,
   identifyPad,
   MIX_ULTRA_MAP,
@@ -63,7 +64,9 @@ export function useLiveController(
             next[pad.pad] = true;
             return next;
           });
-          onPad?.({ deck: pad.deck, pad: pad.pad, clear: pad.clear });
+          // Only HOT CUE note range becomes cues — never silently map LOOP/FX pads.
+          const hot = identifyHotCuePad(msg);
+          if (hot) onPad?.({ deck: hot.deck, pad: hot.pad, clear: hot.clear });
         } else if (msg.kind === "noteoff") {
           setPads((prev) => {
             const next = [...prev];

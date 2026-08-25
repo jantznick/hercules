@@ -67,6 +67,53 @@ export function clearLedCache() {
   lastSent.clear();
 }
 
+/** Force-send regardless of cache (for /labs/midi LED tests). */
+export function sendLed(id: LedId, on: boolean): boolean {
+  const target = ledTarget(id);
+  if (!target) return false;
+  const ok = setLed(target.channel, target.note, on);
+  if (ok) lastSent.set(id, on);
+  return ok;
+}
+
+export function ledTestPlayDeck1(): boolean {
+  clearLedCache();
+  return sendLed("deck1.play", true);
+}
+
+export function ledTestPads(): boolean {
+  clearLedCache();
+  let any = false;
+  for (let i = 0; i < 8; i++) {
+    if (sendLed(`deck1.pad.${i}` as LedId, true)) any = true;
+    if (sendLed(`deck2.pad.${i}` as LedId, true)) any = true;
+  }
+  return any;
+}
+
+export function ledTestAllOff(): boolean {
+  clearLedCache();
+  const ids: LedId[] = [
+    "deck1.play",
+    "deck1.cue",
+    "deck1.sync",
+    "deck1.headphone",
+    "deck2.play",
+    "deck2.cue",
+    "deck2.sync",
+    "deck2.headphone",
+  ];
+  let any = false;
+  for (const id of ids) {
+    if (sendLed(id, false)) any = true;
+  }
+  for (let i = 0; i < 8; i++) {
+    if (sendLed(`deck1.pad.${i}` as LedId, false)) any = true;
+    if (sendLed(`deck2.pad.${i}` as LedId, false)) any = true;
+  }
+  return any;
+}
+
 /** Build desired LED map from session transport + hot cues (+ optional drill highlight). */
 export function ledsFromSession(opts: {
   playing1: boolean;

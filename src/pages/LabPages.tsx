@@ -8,6 +8,7 @@ import { HardwareCrossfaderLab } from "../components/HardwareCrossfaderLab";
 import { HardwareEqLab } from "../components/HardwareEqLab";
 import { HardwareFilterLab } from "../components/HardwareFilterLab";
 import { HardwareFreePlay } from "../components/HardwareFreePlay";
+import { HardwareHotCueLab } from "../components/HardwareHotCueLab";
 import { HardwarePlayCueLab } from "../components/HardwarePlayCueLab";
 import { HotCueLab } from "../components/HotCueLab";
 import { LabModeShell } from "../components/LabModeShell";
@@ -146,7 +147,7 @@ export function HotCueLabPage() {
       <PageHeader
         eyebrow="Labs"
         title="Hot cues"
-        description="Press HOT CUE on the controller first. Empty pad = set. Lit pad = jump + play. SHIFT + pad = erase. Use Free play On hardware to plant pads on a real loop."
+        description="Press HOT CUE on the controller first. Empty pad = set. Lit pad = jump + play. SHIFT + pad = erase. On hardware: a short graded drill on Deck 1."
         actions={
           <Link to="/labs" className="text-back">
             All labs
@@ -156,7 +157,7 @@ export function HotCueLabPage() {
       <LabModeShell
         hardwareNote={HW_NOTE + " Pads light when a cue is set."}
         learn={<HotCueLab />}
-        hardware={<HardwareFreePlay />}
+        hardware={<HardwareHotCueLab />}
       />
       <RelatedExtras
         links={[

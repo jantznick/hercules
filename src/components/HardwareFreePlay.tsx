@@ -1,7 +1,9 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useTurntableSession } from "../audio/useTurntableSession";
 import { usePublishDeckState } from "../deck/hooks";
+import { isNonHotCuePad } from "../midi/mixUltraMap";
 import { useLiveController } from "../midi/useLiveController";
+import { useMidiMessages } from "../midi/useMidiBus";
 import { HardwareLabShell } from "./HardwareLabShell";
 import { MixUltraDeck } from "./MixUltraDeck";
 import { TrackPickerBar } from "./TrackPickerBar";
@@ -10,6 +12,7 @@ import { WaveformStrip } from "./WaveformStrip";
 export function HardwareFreePlay() {
   const padRef = useRef<(ev: { deck: 1 | 2; pad: number; clear: boolean }) => void>(() => {});
   const jogRef = useRef<(deck: 1 | 2, delta: number) => void>(() => {});
+  const [padModeHint, setPadModeHint] = useState<string | null>(null);
 
   const live = useLiveController(
     true,
@@ -23,11 +26,22 @@ export function HardwareFreePlay() {
     transportFromMidi: true,
   });
   padRef.current = (ev) => {
+    setPadModeHint(null);
     void tt.onPad(ev);
   };
   jogRef.current = (deck, delta) => {
     tt.onJog(deck, delta);
   };
+
+  useMidiMessages(
+    (msg) => {
+      if (msg.kind !== "noteon") return;
+      if (isNonHotCuePad(msg)) {
+        setPadModeHint("Press HOT CUE mode first — LOOP/FX pads aren’t treated as cues.");
+      }
+    },
+    live.ready,
+  );
 
   usePublishDeckState({
     playing1: tt.playing1,
@@ -55,6 +69,7 @@ export function HardwareFreePlay() {
       onRestart={() => {
         tt.stopDeck(1);
         tt.stopDeck(2);
+        setPadModeHint(null);
       }}
       extraToolbar={
         <button
@@ -67,6 +82,7 @@ export function HardwareFreePlay() {
       }
     >
       {tt.error && <p className="midi-banner warn">{tt.error}</p>}
+      {padModeHint && <p className="midi-banner warn">{padModeHint}</p>}
 
       <TrackPickerBar
         tracks={tt.tracks}
@@ -74,7 +90,7 @@ export function HardwareFreePlay() {
         track2={tt.track2}
         onSelect={(deck, id) => void tt.setTrack(deck, id)}
         onImport={(deck, file) => void tt.importFile(deck, file)}
-        hint="Play toggles · pads = hot cues · jog nudges · LEDs follow play/cues"
+        hint="Play toggles · HOT CUE pads = cues · jog nudges · LEDs follow play/cues"
       />
 
       {tt.booted && (

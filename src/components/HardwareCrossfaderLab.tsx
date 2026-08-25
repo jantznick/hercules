@@ -6,6 +6,7 @@ import { useCcZonePass } from "../midi/useCcZonePass";
 import { useLiveController } from "../midi/useLiveController";
 import { HardwareGrade, HardwareLabShell } from "./HardwareLabShell";
 import { MixUltraDeck } from "./MixUltraDeck";
+import { WaveformStrip } from "./WaveformStrip";
 
 const LEFT_MAX = 18;
 const RIGHT_MIN = 109;
@@ -81,7 +82,9 @@ export function HardwareCrossfaderLab() {
     setDone([]);
     setFinished(false);
     resetMotion();
-  }, [resetMotion]);
+    tt.stopDeck(1);
+    tt.stopDeck(2);
+  }, [resetMotion, tt.stopDeck]);
 
   const advance = useCallback(() => {
     if (finishedRef.current) return;
@@ -136,6 +139,25 @@ export function HardwareCrossfaderLab() {
         </span>
         <span>xf {value ?? "—"}</span>
       </div>
+
+      {tt.booted && (
+        <div className="wave-stack">
+          <WaveformStrip
+            label="Deck 1"
+            peaks={tt.peaks1}
+            playhead={tt.playhead1}
+            duration={tt.duration1}
+            playing={tt.playing1}
+          />
+          <WaveformStrip
+            label="Deck 2"
+            peaks={tt.peaks2}
+            playhead={tt.playhead2}
+            duration={tt.duration2}
+            playing={tt.playing2}
+          />
+        </div>
+      )}
 
       <MixUltraDeck
         highlight={finished ? null : "crossfader"}

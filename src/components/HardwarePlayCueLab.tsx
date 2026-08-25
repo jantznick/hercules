@@ -6,6 +6,7 @@ import { useLiveController } from "../midi/useLiveController";
 import { useMidiMessages } from "../midi/useMidiBus";
 import { HardwareGrade, HardwareLabShell } from "./HardwareLabShell";
 import { MixUltraDeck } from "./MixUltraDeck";
+import { WaveformStrip } from "./WaveformStrip";
 
 type StepId = "play1" | "cue" | "play2";
 
@@ -115,6 +116,18 @@ export function HardwarePlayCueLab() {
         <span>{playing1 ? "playing" : "stopped"}</span>
         {score != null && <span>Score {score}</span>}
       </div>
+
+      {tt.booted && (
+        <div className="wave-stack">
+          <WaveformStrip
+            label="Deck 1"
+            peaks={tt.peaks1}
+            playhead={tt.playhead1}
+            duration={tt.duration1}
+            playing={playing1}
+          />
+        </div>
+      )}
 
       <MixUltraDeck
         highlight={finished ? null : step.expect}

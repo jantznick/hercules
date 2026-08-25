@@ -89,10 +89,34 @@ export type PadHit = {
   clear: boolean;
 };
 
+function padDeck(msg: ParsedMidi): 1 | 2 | null {
+  if (msg.channel == null) return null;
+  if (msg.channel === 7) return 1;
+  if (msg.channel === 8) return 2;
+  return null;
+}
+
+/** Hot-cue pads only (notes 0–7 set/jump, 8–15 SHIFT clear). LOOP/FX/etc. use other bases. */
+export function identifyHotCuePad(msg: ParsedMidi): PadHit | null {
+  if (msg.kind !== "noteon" && msg.kind !== "noteoff") return null;
+  if (msg.number == null) return null;
+  const deck = padDeck(msg);
+  if (!deck) return null;
+  const n = msg.number;
+  if (n >= 0 && n < 8) return { deck, pad: n, clear: false };
+  if (n >= 8 && n < 16) return { deck, pad: n - 8, clear: true };
+  return null;
+}
+
+/** True when pads fire but not in HOT CUE note range (e.g. LOOP mode). */
+export function isNonHotCuePad(msg: ParsedMidi): boolean {
+  return identifyPad(msg) != null && identifyHotCuePad(msg) == null;
+}
+
 export function identifyPad(msg: ParsedMidi): PadHit | null {
   if (msg.kind !== "noteon" && msg.kind !== "noteoff") return null;
-  if (msg.channel == null || msg.number == null) return null;
-  const deck = msg.channel === 7 ? 1 : msg.channel === 8 ? 2 : null;
+  if (msg.number == null) return null;
+  const deck = padDeck(msg);
   if (!deck) return null;
   const n = msg.number;
   for (const base of PAD_BASES) {

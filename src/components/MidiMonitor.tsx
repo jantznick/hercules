@@ -1,5 +1,20 @@
 import { useEffect, useRef, useState } from "react";
+import {
+  connectMidiBus,
+  getMidiAccess,
+  getMidiStatus,
+  hasWebMidi,
+  subscribeMidi,
+  subscribeMidiStatus,
+  type MidiBusStatus,
+} from "../midi/bus";
 import { decodeMidiMessage } from "../midi/decode";
+import {
+  ledTestAllOff,
+  ledTestPads,
+  ledTestPlayDeck1,
+} from "../midi/leds";
+import { pickMidiOutput } from "../midi/out";
 
 const MAX_LOG = 80;
 
@@ -20,14 +35,6 @@ type LogEntry = {
   detail: string;
 };
 
-type ConnectState =
-  | { status: "idle" }
-  | { status: "connecting" }
-  | { status: "ready"; inputs: PortInfo[]; outputs: PortInfo[] }
-  | { status: "unsupported" }
-  | { status: "denied"; message: string }
-  | { status: "error"; message: string };
-
 function portInfo(port: MIDIPort): PortInfo {
   return {
     id: port.id,
@@ -46,10 +53,6 @@ function listPorts(map: MIDIInputMap | MIDIOutputMap): PortInfo[] {
   return out.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-function hasWebMidi(): boolean {
-  return typeof navigator !== "undefined" && "requestMIDIAccess" in navigator;
-}
-
 function formatClock(ms: number): string {
   const d = new Date(ms);
   const base = d.toLocaleTimeString(undefined, {
@@ -62,13 +65,23 @@ function formatClock(ms: number): string {
   return `${base}.${frac}`;
 }
 
+function portsFromAccess(): { inputs: PortInfo[]; outputs: PortInfo[] } {
+  const access = getMidiAccess();
+  if (!access) return { inputs: [], outputs: [] };
+  return {
+    inputs: listPorts(access.inputs),
+    outputs: listPorts(access.outputs),
+  };
+}
+
 export function MidiMonitor() {
-  const [connect, setConnect] = useState<ConnectState>({ status: "idle" });
+  const [busStatus, setBusStatus] = useState<MidiBusStatus>(getMidiStatus);
+  const [ports, setPorts] = useState(portsFromAccess);
   const [log, setLog] = useState<LogEntry[]>([]);
   const [lastFlash, setLastFlash] = useState<string | null>(null);
   const [paused, setPaused] = useState(false);
+  const [ledNote, setLedNote] = useState<string | null>(null);
   const seqRef = useRef(0);
-  const accessRef = useRef<MIDIAccess | null>(null);
   const pausedRef = useRef(paused);
   const flashTimer = useRef(0);
 
@@ -76,108 +89,84 @@ export function MidiMonitor() {
     pausedRef.current = paused;
   }, [paused]);
 
+  useEffect(() => subscribeMidiStatus(setBusStatus), []);
+
   useEffect(() => {
-    return () => {
-      window.clearTimeout(flashTimer.current);
-      const access = accessRef.current;
-      if (!access) return;
-      for (const input of access.inputs.values()) {
-        input.onmidimessage = null;
-      }
-      access.onstatechange = null;
-      accessRef.current = null;
-    };
+    const refresh = () => setPorts(portsFromAccess());
+    refresh();
+    return subscribeMidiStatus(() => refresh());
   }, []);
 
-  const refreshPorts = (access: MIDIAccess) => {
-    setConnect({
-      status: "ready",
-      inputs: listPorts(access.inputs),
-      outputs: listPorts(access.outputs),
-    });
-  };
+  useEffect(() => {
+    return subscribeMidi((msg) => {
+      if (pausedRef.current) return;
+      // Ignore ultra-noisy timing clock
+      if (msg.raw[0] === 0xf8) return;
 
-  const attachInputs = (access: MIDIAccess) => {
-    for (const input of access.inputs.values()) {
-      input.onmidimessage = (event: MIDIMessageEvent) => {
-        if (pausedRef.current) return;
-        const data = event.data;
-        if (!data || data.length === 0) return;
-
-        // Ignore ultra-noisy timing clock unless we want it later
-        if (data[0] === 0xf8) return;
-
-        const decoded = decodeMidiMessage(data);
-        const target = event.target;
-        const portName =
-          target && "name" in target && typeof target.name === "string" && target.name
-            ? target.name
-            : "input";
-        const id = ++seqRef.current;
-        const entry: LogEntry = {
-          id,
-          at: Date.now(),
-          port: portName,
-          kind: decoded.kind,
-          summary: decoded.summary,
-          detail: decoded.detail,
-        };
-
-        setLog((prev) => [entry, ...prev].slice(0, MAX_LOG));
-        setLastFlash(decoded.summary);
-        window.clearTimeout(flashTimer.current);
-        flashTimer.current = window.setTimeout(() => setLastFlash(null), 900);
+      const decoded = decodeMidiMessage(msg.raw);
+      const id = ++seqRef.current;
+      const entry: LogEntry = {
+        id,
+        at: Date.now(),
+        port: "bus",
+        kind: decoded.kind,
+        summary: decoded.summary,
+        detail: decoded.detail,
       };
-    }
-  };
+
+      setLog((prev) => [entry, ...prev].slice(0, MAX_LOG));
+      setLastFlash(decoded.summary);
+      window.clearTimeout(flashTimer.current);
+      flashTimer.current = window.setTimeout(() => setLastFlash(null), 900);
+    });
+  }, []);
+
+  useEffect(() => {
+    return () => window.clearTimeout(flashTimer.current);
+  }, []);
 
   const connectMidi = async () => {
-    if (!hasWebMidi()) {
-      setConnect({ status: "unsupported" });
-      return;
-    }
-
-    setConnect({ status: "connecting" });
-    try {
-      const access = await navigator.requestMIDIAccess({ sysex: false });
-      accessRef.current = access;
-      attachInputs(access);
-      refreshPorts(access);
-
-      access.onstatechange = () => {
-        const a = accessRef.current;
-        if (!a) return;
-        attachInputs(a);
-        refreshPorts(a);
-      };
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      const denied =
-        /denied|permission|security/i.test(message) ||
-        (err instanceof DOMException && err.name === "NotAllowedError");
-      setConnect(denied ? { status: "denied", message } : { status: "error", message });
-    }
+    await connectMidiBus();
+    setPorts(portsFromAccess());
   };
 
   const clearLog = () => setLog([]);
 
+  const runLedTest = (label: string, fn: () => boolean) => {
+    const out = pickMidiOutput();
+    if (!out) {
+      setLedNote("No MIDI outputs — LEDs need an output port. Bluetooth MIDI often has input only.");
+      return;
+    }
+    const ok = fn();
+    if (!ok) {
+      setLedNote(`Send failed via ${out.name}. BT links sometimes don’t latch LEDs.`);
+      return;
+    }
+    setLedNote(`${label} via ${out.name}. If nothing lit, BT may not accept LED note-ons.`);
+  };
+
+  const ready = busStatus.status === "ready";
+  const outputCount =
+    busStatus.status === "ready" ? busStatus.outputCount : ports.outputs.length;
+
   return (
     <div className="lab midi-monitor">
       <div className="lab-toolbar">
-        {(connect.status === "idle" ||
-          connect.status === "denied" ||
-          connect.status === "error" ||
-          connect.status === "unsupported") && (
-          <button type="button" className="active" onClick={connectMidi}>
+        {(busStatus.status === "idle" ||
+          busStatus.status === "denied" ||
+          busStatus.status === "error" ||
+          busStatus.status === "unsupported") && (
+          <button type="button" className="active" onClick={() => void connectMidi()}>
             Connect MIDI
           </button>
         )}
-        {connect.status === "connecting" && (
+        {busStatus.status === "connecting" && (
           <button type="button" disabled>
             Connecting…
           </button>
         )}
-        {connect.status === "ready" && (
+        {ready && (
           <>
             <button type="button" className="active" disabled>
               Listening
@@ -188,7 +177,7 @@ export function MidiMonitor() {
             <button type="button" onClick={clearLog}>
               Clear
             </button>
-            <button type="button" onClick={() => accessRef.current && refreshPorts(accessRef.current)}>
+            <button type="button" onClick={() => setPorts(portsFromAccess())}>
               Refresh ports
             </button>
           </>
@@ -207,19 +196,19 @@ export function MidiMonitor() {
         </span>
       </div>
 
-      {connect.status === "unsupported" && (
+      {busStatus.status === "unsupported" && (
         <p className="midi-banner warn">
           This browser has no Web MIDI API. Use Chrome, Edge, or Firefox on desktop — not Safari.
         </p>
       )}
-      {connect.status === "denied" && (
+      {busStatus.status === "denied" && (
         <p className="midi-banner warn">
           MIDI permission was denied. Allow MIDI for this site in the address bar, then try again.
-          {connect.message ? ` (${connect.message})` : ""}
+          {busStatus.message ? ` (${busStatus.message})` : ""}
         </p>
       )}
-      {connect.status === "error" && (
-        <p className="midi-banner warn">Could not open MIDI: {connect.message}</p>
+      {busStatus.status === "error" && (
+        <p className="midi-banner warn">Could not open MIDI: {busStatus.message}</p>
       )}
       {!window.isSecureContext && (
         <p className="midi-banner warn">
@@ -269,16 +258,16 @@ export function MidiMonitor() {
         </p>
       </div>
 
-      {connect.status === "ready" && (
+      {ready && (
         <>
           <div className="midi-ports">
             <div>
-              <h3>Inputs ({connect.inputs.length})</h3>
-              {connect.inputs.length === 0 ? (
+              <h3>Inputs ({ports.inputs.length})</h3>
+              {ports.inputs.length === 0 ? (
                 <p className="midi-empty">No MIDI inputs yet. Pair the Mix Ultra in Audio MIDI Setup, then Refresh.</p>
               ) : (
                 <ul>
-                  {connect.inputs.map((p) => (
+                  {ports.inputs.map((p) => (
                     <li key={p.id}>
                       <strong>{p.name}</strong>
                       {p.manufacturer ? ` · ${p.manufacturer}` : ""}
@@ -292,12 +281,12 @@ export function MidiMonitor() {
               )}
             </div>
             <div>
-              <h3>Outputs ({connect.outputs.length})</h3>
-              {connect.outputs.length === 0 ? (
-                <p className="midi-empty">None (fine for listening).</p>
+              <h3>Outputs ({ports.outputs.length})</h3>
+              {ports.outputs.length === 0 ? (
+                <p className="midi-empty">None (fine for listening; LED test needs an output).</p>
               ) : (
                 <ul>
-                  {connect.outputs.map((p) => (
+                  {ports.outputs.map((p) => (
                     <li key={p.id}>
                       <strong>{p.name}</strong>
                       {p.manufacturer ? ` · ${p.manufacturer}` : ""}
@@ -306,6 +295,40 @@ export function MidiMonitor() {
                 </ul>
               )}
             </div>
+          </div>
+
+          <div className="midi-led-test">
+            <h3>LED test</h3>
+            {outputCount === 0 && (
+              <p className="midi-banner warn">
+                No MIDI outputs — can’t light LEDs from the browser. Many Bluetooth MIDI links expose
+                input only; USB may show an output. Sends also may not latch over BT.
+              </p>
+            )}
+            <div className="lab-toolbar midi-led-toolbar">
+              <button
+                type="button"
+                disabled={outputCount === 0}
+                onClick={() => runLedTest("Play D1 on", ledTestPlayDeck1)}
+              >
+                Play D1
+              </button>
+              <button
+                type="button"
+                disabled={outputCount === 0}
+                onClick={() => runLedTest("Pads on", ledTestPads)}
+              >
+                Pads
+              </button>
+              <button
+                type="button"
+                disabled={outputCount === 0}
+                onClick={() => runLedTest("All off", ledTestAllOff)}
+              >
+                All off
+              </button>
+            </div>
+            {ledNote && <p className="midi-led-note">{ledNote}</p>}
           </div>
 
           <div className={`midi-flash${lastFlash ? " on" : ""}`} aria-live="polite">

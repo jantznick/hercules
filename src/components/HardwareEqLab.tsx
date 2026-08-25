@@ -6,6 +6,7 @@ import { useCcZonePass } from "../midi/useCcZonePass";
 import { useLiveController } from "../midi/useLiveController";
 import { HardwareGrade, HardwareLabShell } from "./HardwareLabShell";
 import { MixUltraDeck } from "./MixUltraDeck";
+import { WaveformStrip } from "./WaveformStrip";
 
 const CENTER = 64;
 const CENTER_TOL = 10;
@@ -131,6 +132,18 @@ export function HardwareEqLab() {
         <span>{value ?? "—"}</span>
         {live.lastControl && <span>last: {live.lastControl}</span>}
       </div>
+
+      {tt.booted && (
+        <div className="wave-stack">
+          <WaveformStrip
+            label="Deck 1"
+            peaks={tt.peaks1}
+            playhead={tt.playhead1}
+            duration={tt.duration1}
+            playing={tt.playing1}
+          />
+        </div>
+      )}
 
       <MixUltraDeck
         highlight={finished ? null : "deck1.low"}

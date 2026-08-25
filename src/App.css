@@ -2942,3 +2942,28 @@ tr:last-child td {
 .mix-timing-tip.incomplete {
   color: #8a8278;
 }
+
+.midi-led-test {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  background: var(--deck-panel);
+  border: 1px solid var(--deck-line);
+  border-radius: 12px;
+}
+
+.midi-led-test h3 {
+  margin: 0 0 0.45rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.midi-led-toolbar {
+  margin: 0.35rem 0 0;
+}
+
+.midi-led-note {
+  margin: 0.55rem 0 0;
+  font-size: 0.85rem;
+  color: #cfc6b8;
+  line-height: 1.4;
+}
