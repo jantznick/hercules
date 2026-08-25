@@ -440,6 +440,7 @@ export const TUTORIALS: Tutorial[] = [
         title: "Deck 1 is the outgoing track",
         hardware: "Load Track A on Deck 1. Crossfader hard LEFT. Channel 1 fader up. Play Deck 1.",
         expect: "Only Deck 1 in the room / master.",
+        tip: "Practice EQ+crossfader motions in the Blend lab first (laptop audio), then do this drill in djay.",
       },
       {
         title: "Load Deck 2 and match speed",
@@ -467,6 +468,7 @@ export const TUTORIALS: Tutorial[] = [
         hardware:
           "On Deck 2 (incoming), turn LOW down a bit before it enters. Optionally high-pass FILTER a little to the right.",
         expect: "When B fades in, two kicks won’t fight as hard.",
+        lab: "Bass kill (LOW) lab if the knob feels unfamiliar — Blend lab strings bass + crossfader together.",
       },
       {
         title: "Line up “the One” and fade in",
@@ -505,6 +507,7 @@ export const TUTORIALS: Tutorial[] = [
           "Losing It on Deck 1, fader up, playing. Saving Up on Deck 2, channel fader down. Leave the SYNC button off. Tempo faders at center.",
         djay: `${KEY_LOCK_WHY} Note both BPM readouts (~125 vs ~128). If SYNC is lit, turn it off on Deck 2.`,
         expect: "Two different speeds. Room = Losing It only. Key Lock is already on so slowing Saving Up won’t chipmunk it.",
+        tip: "This drill is tempo + jog only. When you blend for real, practice EQ+crossfader motions in the Blend lab first (laptop audio).",
       },
       {
         title: "Headphones on Deck 2 only",

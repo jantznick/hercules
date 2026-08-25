@@ -83,7 +83,8 @@ export function LabsIndexPage() {
         <Link to="/tutorials/filter-sweep">Filter sweep</Link> ·{" "}
         <Link to="/tutorials/eq-vs-neural">EQ vs Neural Mix</Link> ·{" "}
         <Link to="/tutorials/neural-pad-lights">Neural pad lights</Link> ·{" "}
-        <Link to="/tutorials/loop-from-cue">Loop from a cue</Link>. Pages:{" "}
+        <Link to="/tutorials/loop-from-cue">Loop from a cue</Link> ·{" "}
+        <Link to="/tutorials/two-deck-blend">First two-deck blend</Link>. Pages:{" "}
         <Link to="/djing/cueing">Cues</Link> · <Link to="/djing/eq">EQ & Filter</Link> ·{" "}
         <Link to="/djing/remix">Remix</Link> · <Link to="/djing/looping">Looping</Link> ·{" "}
         <Link to="/djing/filter">Filter</Link> · <Link to="/djing/pads-fx">Pads / FX</Link> ·{" "}

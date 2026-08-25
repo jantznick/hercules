@@ -456,6 +456,12 @@ const EXTRA_TUTORIAL_LABS: Record<string, LabLink[]> = {
   ],
   "neural-pad-lights": [{ to: "/labs/neural-pads", label: "Neural Mix pads" }],
   "pads-transition": [{ to: "/labs/pads", label: "Pad modes" }],
+  "two-deck-blend": [
+    { to: "/labs/blend", label: "Two-deck blend" },
+    { to: "/labs/eq", label: "Bass kill (LOW)" },
+    { to: "/labs/crossfader", label: "Crossfader" },
+  ],
+  "mix-manual-beatmatch": [{ to: "/labs/blend", label: "Two-deck blend" }],
 };
 
 export function labsForTutorial(tutorialId: string): LabLink[] {
