@@ -5,6 +5,7 @@ import { useBlendMotionRecorder, usePublishDeckState } from "../deck/hooks";
 import { judgeBlendSession, MIX_ZONES } from "../mix/timingFeedback";
 import { useCcZonePass } from "../midi/useCcZonePass";
 import { useLiveController, type LiveDeckValues } from "../midi/useLiveController";
+import { markLabPass } from "../tutorials/labPass";
 import type { DeckHighlight } from "./MixUltraDeck";
 import { HardwareGrade, HardwareLabShell } from "./HardwareLabShell";
 import { HowToUse, WhatItDoes } from "./HowToUse";
@@ -201,6 +202,10 @@ export function BlendHardware() {
     void tt.playDeck(1);
     void tt.playDeck(2);
   };
+
+  useEffect(() => {
+    if (finished) markLabPass("/labs/blend");
+  }, [finished]);
 
   return (
     <HardwareLabShell

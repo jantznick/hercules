@@ -9,6 +9,7 @@ import {
   pushPlayheadSample,
   type PlayheadSample,
 } from "../mix/timingFeedback";
+import { markLabPass } from "../tutorials/labPass";
 import { useCcZonePass } from "../midi/useCcZonePass";
 import { useLiveController } from "../midi/useLiveController";
 import type { DeckHighlight } from "./MixUltraDeck";
@@ -271,6 +272,10 @@ export function BeatmatchHardware() {
     highlight: finished ? null : step.highlight,
     syncLeds: true,
   });
+
+  useEffect(() => {
+    if (finished) markLabPass("/labs/beatmatch");
+  }, [finished]);
 
   return (
     <HardwareLabShell

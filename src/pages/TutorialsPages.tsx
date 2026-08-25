@@ -8,10 +8,54 @@ import {
   tutorialNeedsHeadphones,
   type Tutorial,
 } from "../tutorials/data";
+import { hasLabPass, LAB_PASS_KEY } from "../tutorials/labPass";
 import { loadProgress, saveProgress } from "../tutorials/progress";
 import { tutorialsInSpineOrder } from "../spine";
 import { labsForTutorial, techniquePath, techniquesForTutorial } from "../djing/techniques";
 import { PageHeader } from "./HomePage";
+
+function useLabPass(labPath: string | undefined) {
+  const [passed, setPassed] = useState(() => (labPath ? hasLabPass(labPath) : false));
+
+  useEffect(() => {
+    if (!labPath) return;
+    const refresh = () => setPassed(hasLabPass(labPath));
+    refresh();
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === LAB_PASS_KEY) refresh();
+    };
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("focus", refresh);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("focus", refresh);
+    };
+  }, [labPath]);
+
+  return passed;
+}
+
+function TutorialCoachLab({ tutorial }: { tutorial: Tutorial }) {
+  const coach = tutorial.coachLabFirst;
+  const labPassed = useLabPass(coach?.to);
+
+  if (!coach) return null;
+
+  return (
+    <div className="callout accent tutorial-coach-lab" style={{ marginBottom: "1rem" }}>
+      <p>
+        <strong>Practice in {coach.label} lab first</strong> — click-around on laptop audio before
+        this hardware drill.{" "}
+        <Link to={coach.to}>Open {coach.label} lab</Link>
+        {labPassed ? (
+          <span className="pill lab-pass-badge" style={{ marginLeft: "0.5rem" }}>
+            Lab pass
+          </span>
+        ) : null}
+      </p>
+    </div>
+  );
+}
 
 export function TutorialsIndexPage() {
   const [deckFilter, setDeckFilter] = useState<"all" | "one" | "two">("all");
@@ -165,6 +209,8 @@ function TutorialRunner({ tutorial }: { tutorial: Tutorial }) {
           <pre className="song-sheet-body">{tutorial.trackRecipe}</pre>
         </div>
       )}
+
+      <TutorialCoachLab tutorial={tutorial} />
 
       {(relatedTechniques.length > 0 || relatedLabs.length > 0) && (
         <div style={{ marginBottom: "1rem" }}>

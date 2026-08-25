@@ -452,6 +452,16 @@ export function techniquesForTutorial(tutorialId: string): NamedTechnique[] {
 
 export type LabLink = { to: string; label: string };
 
+/** Lab to practice first before the hardware drill (tutorial coach links). */
+export const TUTORIAL_COACH_LABS: Record<string, LabLink> = {
+  "two-deck-blend": { to: "/labs/blend", label: "Blend" },
+  "mix-manual-beatmatch": { to: "/labs/beatmatch", label: "Beatmatch" },
+};
+
+export function coachLabForTutorial(tutorialId: string): LabLink | null {
+  return TUTORIAL_COACH_LABS[tutorialId] ?? null;
+}
+
 /** Labs that match a tutorial even when no named technique lists them. */
 const EXTRA_TUTORIAL_LABS: Record<string, LabLink[]> = {
   "first-session": [{ to: "/labs/cue", label: "CUE button" }],

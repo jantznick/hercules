@@ -24,6 +24,8 @@ export type Tutorial = {
   trackRecipe?: string;
   decks?: "one" | "two";
   needsHeadphones?: boolean;
+  /** Click-around lab to try before the hardware drill (Blend / Beatmatch). */
+  coachLabFirst?: { to: string; label: string };
 };
 
 /** Index groups + tutorial submenu hashes. Checklist numbers follow this order. */
@@ -428,6 +430,7 @@ export const TUTORIALS: Tutorial[] = [
     title: "First two-deck blend",
     time: "~8 min",
     level: "Mixing",
+    coachLabFirst: { to: "/labs/blend", label: "Blend" },
     summary:
       "Match tempo, cue the incoming track, EQ the bass clash away, then crossfade. Hardware + djay together.",
     needs: [
@@ -491,6 +494,7 @@ export const TUTORIALS: Tutorial[] = [
     title: "Match BPM by hand",
     time: "~12 min",
     level: "Mixing",
+    coachLabFirst: { to: "/labs/beatmatch", label: "Beatmatch" },
     trackRecipe:
       "SONG SHEET — two house tracks a few BPM apart so you have to move the fader. Leave the SYNC button off the whole time.\n\nDeck 1 (room): FISHER – Losing It · ~125 BPM\n• Hot cue 1 → first useful kick / a fat groove you can loop in your ears\n\nDeck 2 (headphones): Dom Dolla – Saving Up · ~128 BPM\n• Hot cue 1 → first useful kick / DJ intro\n\nKey Lock on both so you’re judging speed, not “did the singer get higher.” Key Lock does not match two songs’ keys — it only holds each file’s notes still while you change BPM.\n\nBackup: Ferrari (~125–126) in the room, Turn Off The Lights (~126–128) in headphones.",
     summary:
