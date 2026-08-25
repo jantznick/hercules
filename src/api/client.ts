@@ -84,5 +84,9 @@ export const tidalAPI = {
     if (limit != null) params.set("limit", String(limit));
     return request<{ tracks: TidalTrackSummary[] }>(`/tidal/search?${params.toString()}`);
   },
-  track: (id: string) => request<{ track: TidalTrackSummary }>(`/tidal/tracks/${encodeURIComponent(id)}`),
+  getTrack: (id: string) =>
+    request<{ track: TidalTrackSummary }>(`/tidal/tracks/${encodeURIComponent(id)}`),
+  /** @deprecated Use getTrack */
+  track: (id: string) =>
+    request<{ track: TidalTrackSummary }>(`/tidal/tracks/${encodeURIComponent(id)}`),
 };
