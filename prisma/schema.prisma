@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String      @id @default(uuid())
+  email     String      @unique
+  password  String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  tidal     TidalToken?
+}
+
+model MagicToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  email     String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([expiresAt])
+}
+
+model Session {
+  sid    String   @id
+  sess   Json     @db.JsonB
+  expire DateTime @db.Timestamp(6)
+
+  @@map("session")
+  @@index([expire])
+}
+
+model TidalToken {
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken  String
+  refreshToken String
+  expiresAt    DateTime
+  updatedAt    DateTime @updatedAt
+}
+
+model PracticeTrack {
+  id           String  @id @default(uuid())
+  tidalTrackId String? @unique
+  catalogId    String? @unique
+  title        String
+  bpm          Int?
+  sortOrder    Int     @default(0)
+}
