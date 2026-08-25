@@ -3043,3 +3043,227 @@ tr:last-child td {
   color: #cfc6b8;
   line-height: 1.4;
 }
+
+/* —— Auth modal + account —— */
+.auth-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.auth-modal-scrim {
+  position: absolute;
+  inset: 0;
+  border: none;
+  background: rgba(26, 24, 20, 0.45);
+  backdrop-filter: blur(2px);
+  cursor: default;
+}
+
+.auth-modal-panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 26rem;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff8ee;
+  box-shadow: 0 18px 48px rgba(26, 24, 20, 0.18);
+}
+
+.auth-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.auth-modal-head h2 {
+  margin: 0;
+  font-size: 1.45rem;
+}
+
+.auth-modal-tagline {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+  color: var(--ink-muted);
+}
+
+.auth-modal-close {
+  border: none;
+  background: transparent;
+  color: var(--ink-muted);
+  font-size: 1.35rem;
+  line-height: 1;
+  padding: 0.15rem 0.35rem;
+}
+
+.auth-modal-close:hover {
+  color: var(--ink);
+}
+
+.auth-modal-tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-top: 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.auth-modal-tabs button {
+  border: none;
+  background: transparent;
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.55rem 0.75rem;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+}
+
+.auth-modal-tabs button.active {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+.auth-modal-body {
+  margin-top: 1rem;
+}
+
+.auth-modal-error {
+  margin: 0 0 0.85rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  background: var(--warn-soft);
+  color: #8a3d12;
+  font-size: 0.88rem;
+}
+
+.auth-modal-note,
+.auth-modal-hint {
+  margin: 0 0 0.85rem;
+  font-size: 0.9rem;
+  color: var(--ink-muted);
+  line-height: 1.45;
+}
+
+.auth-modal-hint {
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  background: var(--bg-deep);
+}
+
+.auth-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.auth-field label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.auth-field input {
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.auth-field input:focus {
+  outline: 2px solid var(--accent-soft);
+  border-color: #9bcfc6;
+}
+
+.auth-code-input {
+  letter-spacing: 0.2em;
+  font-family: var(--mono);
+}
+
+.auth-link-btn {
+  margin-top: 0.35rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font-size: 0.88rem;
+  text-align: left;
+}
+
+.auth-link-btn:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.auth-link-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.auth-link-btn-block {
+  width: 100%;
+  margin-top: 0.25rem;
+  text-align: center;
+  color: var(--ink-muted);
+}
+
+.auth-submit {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #9bcfc6;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.auth-submit:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.auth-submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.auth-inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.65rem;
+}
+
+.auth-inline-btn {
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.auth-inline-btn.primary {
+  border-color: #9bcfc6;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.auth-inline-btn:hover {
+  background: var(--bg-deep);
+}
+
+.auth-deeplink-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-muted);
+}

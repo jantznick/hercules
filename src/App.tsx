@@ -1,5 +1,8 @@
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { AuthModal } from "./components/AuthModal";
 import { Layout } from "./components/Layout";
+import { AuthProvider } from "./context/AuthContext";
+import { LoginPage } from "./pages/LoginPage";
 import { HomePage } from "./pages/HomePage";
 import { GearBoxPage, GearPage } from "./pages/GearPage";
 import { PreCuePage } from "./pages/PreCuePage";
@@ -54,8 +57,12 @@ function CueingLegacyRedirect() {
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route element={<Layout />}>
+      <AuthProvider>
+        <AuthModal />
+        <Routes>
+          <Route path="login" element={<LoginPage mode="login" />} />
+          <Route path="register" element={<LoginPage mode="register" />} />
+          <Route element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="gear" element={<GearPage />} />
           <Route path="gear/box" element={<GearBoxPage />} />
@@ -115,7 +122,8 @@ export default function App() {
           <Route path="remix" element={<Navigate to="/djing/remix" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
-      </Routes>
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

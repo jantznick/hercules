@@ -1,7 +1,20 @@
 import { Link } from "react-router-dom";
+import { authAPI } from "../api/client";
+import { useAuth } from "../context/AuthContext";
 import { PageHeader } from "./HomePage";
 
 export function SettingsPage() {
+  const { user, isAuthenticated, isLoading, openAuthModal, logout } = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await authAPI.logout();
+    } catch {
+      /* ignore */
+    }
+    logout();
+  };
+
   return (
     <>
       <PageHeader
@@ -14,6 +27,40 @@ export function SettingsPage() {
           </Link>
         }
       />
+
+      <section className="info-block" style={{ marginBottom: "1rem" }}>
+        <h2>Account</h2>
+        {isLoading ? (
+          <p>Checking sign-in…</p>
+        ) : isAuthenticated && user ? (
+          <>
+            <p>
+              Signed in as <strong>{user.email}</strong>.
+            </p>
+            <p>
+              Tidal track search and saved picks will use this account once connected.
+            </p>
+            <button type="button" className="auth-inline-btn" onClick={handleSignOut}>
+              Sign out
+            </button>
+          </>
+        ) : (
+          <>
+            <p>
+              Sign in to connect Tidal and save track picks across devices. Use your email and
+              password, or request a magic link with a 6-digit code.
+            </p>
+            <div className="auth-inline-actions">
+              <button type="button" className="auth-inline-btn primary" onClick={() => openAuthModal("login")}>
+                Sign in
+              </button>
+              <button type="button" className="auth-inline-btn" onClick={() => openAuthModal("register")}>
+                Create account
+              </button>
+            </div>
+          </>
+        )}
+      </section>
 
       <div className="callout accent" style={{ marginBottom: "1rem" }}>
         <h2>Where this lives</h2>
