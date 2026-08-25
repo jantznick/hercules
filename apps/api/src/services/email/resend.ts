@@ -2,6 +2,15 @@ import { magicLinkEmail } from './templates.js';
 
 const RESEND_API_URL = 'https://api.resend.com/emails';
 
+export type MagicLinkEmailPayload = {
+  to: string;
+  loginUrl: string;
+  code: string;
+  expiresMinutes?: number;
+};
+
+export type SendMagicLinkResult = { id: string } | { skipped: true };
+
 export function isResendConfigured(): boolean {
   return Boolean(process.env.RESEND_API_KEY && process.env.RESEND_FROM_EMAIL);
 }
@@ -11,14 +20,8 @@ export async function sendMagicLinkEmail({
   loginUrl,
   code,
   expiresMinutes = 15,
-}: {
-  to: string;
-  loginUrl: string;
-  code: string;
-  expiresMinutes?: number;
-}) {
+}: MagicLinkEmailPayload): Promise<SendMagicLinkResult> {
   if (!isResendConfigured()) {
-    console.warn('Resend not configured — magic link email skipped for', to);
     return { skipped: true };
   }
 
@@ -44,5 +47,6 @@ export async function sendMagicLinkEmail({
     throw new Error(`Resend error: ${body}`);
   }
 
-  return response.json();
+  const payload = (await response.json()) as { id: string };
+  return payload;
 }

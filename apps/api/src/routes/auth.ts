@@ -263,14 +263,14 @@ router.post(
         }
       }
 
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('\n=== MAGIC TOKEN ===');
+      if (!isResendConfigured()) {
+        console.log('\n=== MAGIC TOKEN (Resend not configured) ===');
         console.log(`Email: ${normalizedEmail}`);
         console.log(`6-Digit Code: ${sixDigitCode}`);
         console.log(`Login Link: ${loginUrl}`);
         console.log(`Link Token: ${linkToken}`);
         console.log(`Expires at: ${expiresAt.toISOString()}`);
-        console.log('===================\n');
+        console.log('===========================================\n');
       }
 
       res.json({
