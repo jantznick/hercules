@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useMidiConnect } from "../midi/useMidiBus";
+import { useHardwareArm } from "../context/HardwareArmContext";
 
 type Props = {
   children: ReactNode;
@@ -8,19 +8,23 @@ type Props = {
 };
 
 export function HardwareLabShell({ children, onRestart, extraToolbar }: Props) {
-  const { status, connect, ready } = useMidiConnect();
+  const { status, armed, arming, arm } = useHardwareArm();
 
   return (
     <div className="lab hw-lab hw-lab-deck">
       <div className="lab-toolbar">
-        {!ready && (
-          <button type="button" className="active" onClick={() => void connect()}>
-            {status.status === "connecting" ? "Connecting…" : "Connect MIDI"}
-          </button>
-        )}
-        {ready && (
-          <button type="button" className="active" disabled>
-            Listening
+        {!armed && (
+          <button
+            type="button"
+            className="active"
+            disabled={arming}
+            onClick={() => void arm()}
+          >
+            {arming
+              ? status.status === "connecting"
+                ? "Connecting…"
+                : "Arming…"
+              : "Connect MIDI"}
           </button>
         )}
         <button type="button" onClick={onRestart}>
@@ -35,10 +39,10 @@ export function HardwareLabShell({ children, onRestart, extraToolbar }: Props) {
       {status.status === "denied" && (
         <p className="midi-banner warn">Allow MIDI permission, then Connect again.</p>
       )}
-      {!ready && status.status === "idle" && (
+      {!armed && status.status === "idle" && (
         <p className="midi-banner warn">
-          Connect MIDI first (same Bluetooth pairing as Controller live). Quit djay so it isn’t
-          holding the box.
+          Arm MIDI + audio from the sidebar (or Connect here). Quit djay so it isn’t holding the
+          box.
         </p>
       )}
 

@@ -1,6 +1,44 @@
 import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { HardwareArmProvider, useHardwareArm } from "../context/HardwareArmContext";
 import { GenreProvider } from "../djing/GenreContext";
 import { SectionChrome } from "./SectionChrome";
+
+function HardwareArmControl({ compact }: { compact?: boolean }) {
+  const { status, armed, arming, error, arm } = useHardwareArm();
+
+  const label = armed
+    ? "Armed"
+    : arming
+      ? status.status === "connecting"
+        ? "Connecting…"
+        : "Arming…"
+      : compact
+        ? "Arm"
+        : "Arm MIDI + audio";
+
+  return (
+    <div className={`hw-arm${compact ? " hw-arm-compact" : ""}`}>
+      <button
+        type="button"
+        className={armed ? "hw-arm-btn active" : "hw-arm-btn"}
+        disabled={armed || arming}
+        onClick={() => void arm()}
+      >
+        {label}
+      </button>
+      {!compact && status.status === "unsupported" && (
+        <p className="hw-arm-note warn">Use Chrome/Edge/Firefox — not Safari.</p>
+      )}
+      {!compact && status.status === "denied" && (
+        <p className="hw-arm-note warn">Allow MIDI, then Arm again.</p>
+      )}
+      {!compact && !armed && status.status === "idle" && (
+        <p className="hw-arm-note">Quit djay so it isn’t holding the Mix Ultra.</p>
+      )}
+      {error && <p className="hw-arm-note warn">{error}</p>}
+    </div>
+  );
+}
 
 type NavItem = {
   to: string;
@@ -43,6 +81,7 @@ export function Layout() {
   const { pathname } = useLocation();
 
   return (
+    <HardwareArmProvider>
     <div className="shell">
       <aside className="sidebar">
         <div className="sidebar-brand">
@@ -68,19 +107,23 @@ export function Layout() {
             </div>
           ))}
         </nav>
-        <nav className="sidebar-foot" aria-label="Reference">
-          <NavLink
-            to={CHEAT_SHEET.to}
-            className={({ isActive }) => (isActive ? "side-link active" : "side-link")}
-          >
-            {CHEAT_SHEET.label}
-          </NavLink>
-        </nav>
+        <div className="sidebar-foot">
+          <HardwareArmControl />
+          <nav aria-label="Reference">
+            <NavLink
+              to={CHEAT_SHEET.to}
+              className={({ isActive }) => (isActive ? "side-link active" : "side-link")}
+            >
+              {CHEAT_SHEET.label}
+            </NavLink>
+          </nav>
+        </div>
       </aside>
 
       <div className="shell-main">
         <header className="mobile-bar">
           <span className="brand-mark">Mix Ultra Lab</span>
+          <HardwareArmControl compact />
         </header>
         <nav className="mobile-nav" aria-label="Mobile">
           {FLAT_NAV.map((item) => (
@@ -104,5 +147,6 @@ export function Layout() {
         </main>
       </div>
     </div>
+    </HardwareArmProvider>
   );
 }
