@@ -1,6 +1,28 @@
 /**
  * LED note targets for Mix Ultra (same ch/note as djay `output` entries).
  * Channels match our input map (djay nibble + 1).
+ *
+ * ## Pad-mode vs pad LEDs
+ *
+ * Performance pads share one physical LED ring per deck. djay uses different
+ * MIDI note bases per pad mode (see `PAD_BASES` in mixUltraMap.ts: 0 = HOT CUE,
+ * 8 = SHIFT-clear, 16/32/80/112/120 = LOOP, FX, Sampler, Neural, etc.).
+ *
+ * **What we mirror today (`ledsFromSession`):**
+ * - Transport: play / cue / sync / phones on deck channels 2/3.
+ * - Hot-cue pads only: ch 7 (deck 1) / ch 8 (deck 2), notes 0–7 lit when a
+ *   cue is stored on that pad index. Shift-clear (notes 8–15) does not turn
+ *   LEDs on in our app — djay owns that flash pattern.
+ *
+ * **What we do not drive:**
+ * - Mode-button LEDs (HOT CUE / LOOP / FX / NEURAL solid vs flashing). No
+ *   output bindings yet; MixUltraDeck shows mode visually only.
+ * - LOOP/FX/Neural pad colors while those modes are active. If the controller
+ *   is in LOOP/FX, pad note-ons use non–hot-cue bases (`isNonHotCuePad`) and
+ *   our cue LEDs may disagree with djay until HOT CUE mode is selected.
+ *
+ * **Lab UX:** Free play warns when non–hot-cue pads fire. For graded labs,
+ * assume HOT CUE mode unless the drill says otherwise.
  */
 import { setLed } from "./out";
 

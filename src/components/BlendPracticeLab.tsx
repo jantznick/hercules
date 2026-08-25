@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTurntableSession } from "../audio/useTurntableSession";
 import { useBlendMotionRecorder, usePublishDeckState } from "../deck/hooks";
-import { trackById } from "../audio/tracks";
 import { judgeBlendSession, MIX_ZONES } from "../mix/timingFeedback";
 import { useCcZonePass } from "../midi/useCcZonePass";
 import { useLiveController, type LiveDeckValues } from "../midi/useLiveController";
@@ -142,12 +141,10 @@ export function BlendHardware() {
     live.ready && !finished,
   );
 
-  const blendBpm = useMemo(() => trackById(tt.track2).bpm, [tt.track2]);
-
   const timing = useMemo(() => {
     if (!finished) return null;
-    return judgeBlendSession(samples, blendBpm);
-  }, [finished, samples.low, samples.crossfader, blendBpm]);
+    return judgeBlendSession(samples);
+  }, [finished, samples.low, samples.crossfader]);
 
   const reset = useCallback(() => {
     setStepIndex(0);

@@ -189,15 +189,19 @@ function DeckWing({
         )}
       </div>
 
-      <div className="mx-modes">
+      <div className="mx-modes" role="group" aria-label={`Deck ${deck} pad mode`}>
         {["HOT CUE", "LOOP", "FX", "NEURAL"].map((m) => (
-          <div key={m} className={`mx-mode${padMode === m ? " on" : ""}`}>
+          <div
+            key={m}
+            className={`mx-mode${padMode === m ? " on" : ""}`}
+            aria-current={padMode === m ? "true" : undefined}
+          >
             {m}
           </div>
         ))}
       </div>
 
-      <div className="mx-pads">
+      <div className="mx-pads" role="group" aria-label={`Deck ${deck} performance pads`}>
         {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
           <div
             key={i}
