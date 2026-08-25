@@ -220,6 +220,12 @@ export function TrackPickerBar({
         </Link>
       ) : null}
 
+      {tidalReady ? (
+        <Link to="/settings#tidal-reference" className="track-tidal-stub">
+          Tidal reference player
+        </Link>
+      ) : null}
+
       {hint && <span className="hw-free-hint">{hint}</span>}
     </div>
   );

@@ -6,6 +6,7 @@ import {
   deleteTidalTokens,
   exchangeAuthorizationCode,
   frontendSettingsUrl,
+  getPlayerSession,
   getTidalConnectionStatus,
   getTrackMetadata,
   saveTidalTokens,
@@ -128,6 +129,21 @@ router.get('/search', requireAuth, async (req: Request, res: Response) => {
     }
     console.error('Tidal search error:', err);
     res.status(502).json({ error: 'Tidal search failed' });
+  }
+});
+
+router.get('/player-session', requireAuth, async (req: Request, res: Response) => {
+  try {
+    const session = await getPlayerSession(req.session.userId!);
+    res.json(session);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Player session failed';
+    if (message === 'Tidal account not connected') {
+      res.status(403).json({ error: message });
+      return;
+    }
+    console.error('Tidal player-session error:', err);
+    res.status(502).json({ error: 'Tidal player session failed' });
   }
 });
 

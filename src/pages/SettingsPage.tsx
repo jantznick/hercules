@@ -1,6 +1,7 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { authAPI, tidalAPI, type TidalConnectionStatus } from "../api/client";
+import { TidalPlayerPanel } from "../components/TidalPlayerPanel";
 import { useAuth } from "../context/AuthContext";
 import { PageHeader } from "./HomePage";
 
@@ -108,6 +109,7 @@ export function SettingsPage() {
                     Disconnect Tidal
                   </button>
                 </div>
+                <TidalPlayerPanel />
               </>
             ) : (
               <>

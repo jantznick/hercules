@@ -3080,6 +3080,84 @@ tr:last-child td {
   border-color: #8a8278;
 }
 
+.tidal-player-panel {
+  margin-top: 1rem;
+}
+
+.tidal-player-meta {
+  font-size: 0.82rem;
+  color: #8a8278;
+  margin: 0.35rem 0;
+}
+
+.tidal-player-search {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0.75rem 0;
+  font-size: 0.88rem;
+}
+
+.tidal-player-search input {
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--deck-line);
+  background: rgba(0, 0, 0, 0.25);
+  color: inherit;
+}
+
+.tidal-player-results {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.tidal-player-result {
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--deck-line);
+  background: rgba(0, 0, 0, 0.2);
+  color: inherit;
+  cursor: pointer;
+}
+
+.tidal-player-result:hover {
+  border-color: #8a8278;
+}
+
+.tidal-player-result-title {
+  display: block;
+  font-weight: 600;
+}
+
+.tidal-player-result-meta {
+  display: block;
+  font-size: 0.8rem;
+  color: #8a8278;
+  margin-top: 0.15rem;
+}
+
+.tidal-player-now {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--deck-line);
+}
+
+.tidal-player-audio-host {
+  margin-top: 0.5rem;
+}
+
+.tidal-player-audio-host audio,
+.tidal-player-audio-host video {
+  width: 100%;
+  max-width: 420px;
+}
+
 .wave-stack {
   display: flex;
   flex-direction: column;

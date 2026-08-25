@@ -351,6 +351,31 @@ export async function getTrackMetadata(userId: string, trackId: string): Promise
   return mapTrackResource(data, doc.included);
 }
 
+export type TidalPlayerSession = {
+  clientId: string;
+  accessToken: string;
+  expiresAt: string;
+};
+
+/** Short-lived access token for browser Player SDK (session-gated route only). */
+export async function getPlayerSession(userId: string): Promise<TidalPlayerSession> {
+  const { clientId } = requireTidalConfig();
+  const accessToken = await getValidAccessToken(userId);
+  const row = await prisma.tidalToken.findUnique({
+    where: { userId },
+    select: { expiresAt: true },
+  });
+  if (!row) {
+    throw new Error('Tidal account not connected');
+  }
+
+  return {
+    clientId,
+    accessToken,
+    expiresAt: row.expiresAt.toISOString(),
+  };
+}
+
 export function frontendSettingsUrl(query?: Record<string, string>): string {
   const base = (process.env.FRONTEND_URL || process.env.FRONTEND_URLS?.split(',')[0] || 'http://localhost:5173').trim();
   const url = new URL('/settings', base.replace(/\/$/, ''));

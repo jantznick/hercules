@@ -1,6 +1,6 @@
 # Practice tracks
 
-Bundled loops drive turntable labs (blend, beatmatch, EQ, free play). Tidal streams stay separate — see `docs/tidal-playback.md` when that lands.
+Bundled loops drive turntable labs (blend, beatmatch, EQ, free play). Tidal streams stay separate — see [`docs/tidal-playback.md`](../docs/tidal-playback.md).
 
 ## Curator workflow
 

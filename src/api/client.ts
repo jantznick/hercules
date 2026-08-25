@@ -65,6 +65,12 @@ export type TidalConnectionStatus = {
   expiresAt: string | null;
 };
 
+export type TidalPlayerSession = {
+  clientId: string;
+  accessToken: string;
+  expiresAt: string;
+};
+
 export type TidalTrackSummary = {
   id: string;
   title: string;
@@ -89,4 +95,5 @@ export const tidalAPI = {
   /** @deprecated Use getTrack */
   track: (id: string) =>
     request<{ track: TidalTrackSummary }>(`/tidal/tracks/${encodeURIComponent(id)}`),
+  playerSession: () => request<TidalPlayerSession>("/tidal/player-session"),
 };
