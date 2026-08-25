@@ -33,6 +33,11 @@ const LABS = [
     blurb: "Left / center / right — timing tip when you finish.",
   },
   {
+    to: "/labs/beatmatch",
+    title: "Beatmatch",
+    blurb: "Tempo fader + jog — motion tips on hardware.",
+  },
+  {
     to: "/labs/blend",
     title: "Two-deck blend",
     blurb: "EQ + crossfader phrase drill — bass and XF timing tips.",

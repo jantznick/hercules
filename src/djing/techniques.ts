@@ -89,6 +89,7 @@ export const TECHNIQUES: NamedTechnique[] = [
       { to: "/djing/beatmatch", label: "Full steps" },
       { to: "/settings", label: "djay settings" },
     ],
+    labs: [{ to: "/labs/beatmatch", label: "Beatmatch" }],
     tutorials: ["mix-manual-beatmatch", "mix-beat-grid", "two-deck-blend"],
     sourceVideos: ["blakey5"],
   },
@@ -461,7 +462,10 @@ const EXTRA_TUTORIAL_LABS: Record<string, LabLink[]> = {
     { to: "/labs/eq", label: "Bass kill (LOW)" },
     { to: "/labs/crossfader", label: "Crossfader" },
   ],
-  "mix-manual-beatmatch": [{ to: "/labs/blend", label: "Two-deck blend" }],
+  "mix-manual-beatmatch": [
+    { to: "/labs/beatmatch", label: "Beatmatch" },
+    { to: "/labs/blend", label: "Two-deck blend" },
+  ],
 };
 
 export function labsForTutorial(tutorialId: string): LabLink[] {

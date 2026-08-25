@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { BeatmatchHardware, BeatmatchLearn } from "../components/BeatmatchPracticeLab";
 import { BlendHardware, BlendLearn } from "../components/BlendPracticeLab";
 import { CrossfaderLab } from "../components/CrossfaderLab";
 import { CueLab } from "../components/CueLab";
@@ -298,6 +299,52 @@ export function CrossfaderLabPage() {
             to: "/djing/blend",
             label: "Blend",
             blurb: "Longer mix strategy",
+          },
+        ]}
+      />
+    </>
+  );
+}
+
+export function BeatmatchLabPage() {
+  return (
+    <>
+      <PageHeader
+        eyebrow="Labs"
+        title="Beatmatch"
+        description="Tempo fader until speeds match, jog until kicks lock. Learn the controls, then On hardware for tempo + jog motion tips — not kick grading."
+        actions={
+          <Link to="/labs" className="text-back">
+            All labs
+          </Link>
+        }
+      />
+      <LabModeShell
+        hardwareNote={HW_NOTE}
+        learn={<BeatmatchLearn />}
+        hardware={<BeatmatchHardware />}
+      />
+      <RelatedExtras
+        links={[
+          {
+            to: "/djing/beatmatch",
+            label: "Match the speed yourself",
+            blurb: "Full steps — Key Lock, SYNC off",
+          },
+          {
+            to: "/tutorials/mix-manual-beatmatch",
+            label: "Tutorial: Match BPM by hand",
+            blurb: "Same drill in djay with real songs",
+          },
+          {
+            to: "/labs/blend",
+            label: "Two-deck blend",
+            blurb: "After speeds match — EQ + crossfader",
+          },
+          {
+            to: "/labs/free",
+            label: "Free play",
+            blurb: "Both decks, no grade",
           },
         ]}
       />
