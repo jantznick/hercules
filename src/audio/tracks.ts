@@ -21,6 +21,9 @@ export const TRACK_CATALOG: TrackInfo[] = [
   { id: "deep", title: "Deep", bpm: 118, file: "/tracks/deep.mp3", synth: "deep" },
   { id: "breaks", title: "Breaks", bpm: 138, file: "/tracks/breaks.mp3", synth: "breaks" },
   { id: "tech", title: "Tech", bpm: 128, file: "/tracks/tech.mp3", synth: "tech" },
+  /** Blend / beatmatch pair — similar BPM (~126 vs 128). Synth beds until CC0 mp3s land. */
+  { id: "blend-a", title: "Blend A", bpm: 126, file: "/tracks/blend-a.mp3", synth: "house" },
+  { id: "blend-b", title: "Blend B", bpm: 128, file: "/tracks/blend-b.mp3", synth: "tech" },
 ];
 
 const bufferCache = new Map<string, AudioBuffer>();
