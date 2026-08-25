@@ -7,6 +7,7 @@ import session from 'express-session';
 import { Pool } from 'pg';
 import { sessionCookieName, sessionCookieOptions } from './lib/sessionCookie.js';
 import authRoutes from './routes/auth.js';
+import tidalRoutes from './routes/tidal.js';
 
 const app = express();
 const PORT = Number(process.env.PORT || 3001);
@@ -70,6 +71,7 @@ app.use(
 );
 
 app.use('/api/auth', authRoutes);
+app.use('/api/tidal', tidalRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', service: 'hercules-api', date: new Date().toISOString() });

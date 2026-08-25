@@ -59,3 +59,30 @@ export const authAPI = {
   logout: () => request<{ message: string }>("/auth/logout", { method: "POST" }),
   me: () => request<{ user: AuthUser }>("/auth/me"),
 };
+
+export type TidalConnectionStatus = {
+  connected: boolean;
+  expiresAt: string | null;
+};
+
+export type TidalTrackSummary = {
+  id: string;
+  title: string;
+  durationSeconds: number | null;
+  explicit: boolean;
+  artists: string[];
+  album: string | null;
+  bpm: number | null;
+  isrc: string | null;
+};
+
+export const tidalAPI = {
+  status: () => request<TidalConnectionStatus>("/tidal/status"),
+  disconnect: () => request<{ message: string }>("/tidal/disconnect", { method: "POST" }),
+  search: (q: string, limit?: number) => {
+    const params = new URLSearchParams({ q });
+    if (limit != null) params.set("limit", String(limit));
+    return request<{ tracks: TidalTrackSummary[] }>(`/tidal/search?${params.toString()}`);
+  },
+  track: (id: string) => request<{ track: TidalTrackSummary }>(`/tidal/tracks/${encodeURIComponent(id)}`),
+};

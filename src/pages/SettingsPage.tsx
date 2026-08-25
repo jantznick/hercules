@@ -1,10 +1,55 @@
-import { Link } from "react-router-dom";
-import { authAPI } from "../api/client";
+import { Link, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { authAPI, tidalAPI, type TidalConnectionStatus } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { PageHeader } from "./HomePage";
 
 export function SettingsPage() {
   const { user, isAuthenticated, isLoading, openAuthModal, logout } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [tidalStatus, setTidalStatus] = useState<TidalConnectionStatus | null>(null);
+  const [tidalLoading, setTidalLoading] = useState(false);
+  const [tidalNotice, setTidalNotice] = useState<string | null>(null);
+
+  useEffect(() => {
+    const tidalParam = searchParams.get("tidal");
+    if (tidalParam === "connected") {
+      setTidalNotice("Tidal connected.");
+      searchParams.delete("tidal");
+      setSearchParams(searchParams, { replace: true });
+    } else if (tidalParam === "error") {
+      const reason = searchParams.get("reason") || "unknown";
+      setTidalNotice(`Could not connect Tidal (${reason}). Try again.`);
+      searchParams.delete("tidal");
+      searchParams.delete("reason");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setTidalStatus(null);
+      return;
+    }
+
+    let cancelled = false;
+    setTidalLoading(true);
+    tidalAPI
+      .status()
+      .then((status) => {
+        if (!cancelled) setTidalStatus(status);
+      })
+      .catch(() => {
+        if (!cancelled) setTidalStatus({ connected: false, expiresAt: null });
+      })
+      .finally(() => {
+        if (!cancelled) setTidalLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated, tidalNotice]);
 
   const handleSignOut = async () => {
     try {
@@ -13,6 +58,16 @@ export function SettingsPage() {
       /* ignore */
     }
     logout();
+  };
+
+  const handleDisconnectTidal = async () => {
+    try {
+      await tidalAPI.disconnect();
+      setTidalStatus({ connected: false, expiresAt: null });
+      setTidalNotice("Tidal disconnected.");
+    } catch {
+      setTidalNotice("Could not disconnect Tidal.");
+    }
   };
 
   return (
@@ -40,6 +95,30 @@ export function SettingsPage() {
             <p>
               Tidal track search and saved picks will use this account once connected.
             </p>
+            {tidalNotice ? <p className="auth-inline-note">{tidalNotice}</p> : null}
+            {tidalLoading ? (
+              <p>Checking Tidal connection…</p>
+            ) : tidalStatus?.connected ? (
+              <>
+                <p>
+                  <strong>Tidal connected.</strong> Search and track metadata are available in labs.
+                </p>
+                <div className="auth-inline-actions">
+                  <button type="button" className="auth-inline-btn" onClick={handleDisconnectTidal}>
+                    Disconnect Tidal
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p>Connect your Tidal account to search tracks from Hercules.</p>
+                <div className="auth-inline-actions">
+                  <a href="/api/tidal/login" className="auth-inline-btn primary">
+                    Connect Tidal
+                  </a>
+                </div>
+              </>
+            )}
             <button type="button" className="auth-inline-btn" onClick={handleSignOut}>
               Sign out
             </button>
