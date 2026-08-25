@@ -10,6 +10,7 @@ import { HardwareEqLab } from "../components/HardwareEqLab";
 import { HardwareFilterLab } from "../components/HardwareFilterLab";
 import { HardwareFreePlay } from "../components/HardwareFreePlay";
 import { HardwareHotCueLab } from "../components/HardwareHotCueLab";
+import { HardwareIncomingCueLab, IncomingCueLearn } from "../components/IncomingCueLab";
 import { HardwarePlayCueLab } from "../components/HardwarePlayCueLab";
 import { HotCueLab } from "../components/HotCueLab";
 import { LabModeShell } from "../components/LabModeShell";
@@ -352,13 +353,59 @@ export function BeatmatchLabPage() {
   );
 }
 
+export function IncomingCueLabPage() {
+  return (
+    <>
+      <PageHeader
+        eyebrow="Labs"
+        title="Incoming cue (Deck 2)"
+        description="Mark hot cue pad 1 on the incoming song before a blend — restart from there in headphones while Deck 1 plays in the room."
+        actions={
+          <Link to="/labs" className="text-back">
+            All labs
+          </Link>
+        }
+      />
+      <LabModeShell
+        hardwareNote={HW_NOTE + " Focus on Deck 2 — pad 1 is your mix-in restart."}
+        learn={<IncomingCueLearn />}
+        hardware={<HardwareIncomingCueLab />}
+      />
+      <RelatedExtras
+        links={[
+          {
+            to: "/labs/hot-cue",
+            label: "Hot cues",
+            blurb: "Full Deck 1 drill — mode, set, jump, clear",
+          },
+          {
+            to: "/labs/blend?mode=hardware",
+            label: "Two-deck blend",
+            blurb: "Graded LOW + crossfader after cue prep",
+          },
+          {
+            to: "/tutorials/two-deck-blend",
+            label: "Tutorial: First two-deck blend",
+            blurb: "Same cue in djay with real songs",
+          },
+          {
+            to: "/djing/cueing",
+            label: "Which cues to set",
+            blurb: "Mix-in, drop, vocal, mix-out",
+          },
+        ]}
+      />
+    </>
+  );
+}
+
 export function BlendLabPage() {
   return (
     <>
       <PageHeader
         eyebrow="Labs"
         title="Two-deck blend"
-        description="Phrase-ish EQ + crossfader handoff on laptop audio. Learn the idea, then On hardware for graded timing tips — not beatmatching."
+        description="Phrase-ish EQ + crossfader handoff on laptop audio. Prep incoming cue on Deck 2 first, then On hardware for graded timing tips — not beatmatching."
         actions={
           <Link to="/labs" className="text-back">
             All labs
@@ -372,6 +419,11 @@ export function BlendLabPage() {
       />
       <RelatedExtras
         links={[
+          {
+            to: "/labs/incoming-cue",
+            label: "Incoming cue (Deck 2)",
+            blurb: "Hot cue pad 1 before this drill",
+          },
           {
             to: "/labs/eq",
             label: "Bass kill (LOW)",

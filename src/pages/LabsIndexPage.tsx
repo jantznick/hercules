@@ -38,6 +38,11 @@ const LABS = [
     blurb: "Tempo fader + jog — motion tips on hardware.",
   },
   {
+    to: "/labs/incoming-cue",
+    title: "Incoming cue (Deck 2)",
+    blurb: "Hot cue pad 1 on the mix-in — prep before blend.",
+  },
+  {
     to: "/labs/blend",
     title: "Two-deck blend",
     blurb: "EQ + crossfader phrase drill — bass and XF timing tips.",

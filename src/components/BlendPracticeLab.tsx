@@ -80,6 +80,11 @@ export function BlendLearn() {
       <HowToUse>
         <ol>
           <li>
+            First, mark the incoming song on Deck 2:{" "}
+            <Link to="/labs/incoming-cue">Incoming cue (Deck 2)</Link> — hot cue pad 1 on the
+            mix-in phrase before you blend.
+          </li>
+          <li>
             Warm up on{" "}
             <Link to="/labs/eq">Bass kill (LOW)</Link> and{" "}
             <Link to="/labs/crossfader">Crossfader</Link> if the knobs still feel new.

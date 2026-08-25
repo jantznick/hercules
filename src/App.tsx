@@ -40,6 +40,7 @@ import {
   FilterLabPage,
   FreePlayLabPage,
   HotCueLabPage,
+  IncomingCueLabPage,
   MidiProbePage,
   NeuralLabPage,
   NeuralPadsLabPage,
@@ -104,6 +105,7 @@ export default function App() {
           <Route path="labs/eq" element={<EqLabPage />} />
           <Route path="labs/crossfader" element={<CrossfaderLabPage />} />
           <Route path="labs/beatmatch" element={<BeatmatchLabPage />} />
+          <Route path="labs/incoming-cue" element={<IncomingCueLabPage />} />
           <Route path="labs/blend" element={<BlendLabPage />} />
           <Route path="labs/neural" element={<NeuralLabPage />} />
           <Route path="labs/pads" element={<PadsLabPage />} />

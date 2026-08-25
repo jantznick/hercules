@@ -119,6 +119,10 @@ export const TECHNIQUES: NamedTechnique[] = [
     mixUltra:
       "Incoming in headphones. Match speed with the tempo fader (or SYNC if you want the shortcut), start on beat 1 with Play or hot cue 1. Do not tap CUE while that song is playing — it usually stops and returns. Leave while the old track still has a kick.",
     more: [{ to: "/djing/transitions#long-blend", label: "Full steps" }],
+    labs: [
+      { to: "/labs/incoming-cue", label: "Incoming cue (Deck 2)" },
+      { to: "/labs/blend", label: "Two-deck blend" },
+    ],
     tutorials: ["mix-long-blend", "two-deck-blend"],
     sourceVideos: ["blakey5"],
   },
@@ -134,6 +138,10 @@ export const TECHNIQUES: NamedTechnique[] = [
     more: [
       { to: "/djing/transitions#bass-swap", label: "Full steps" },
       { to: "/djing/eq", label: "EQ, bass & filter" },
+    ],
+    labs: [
+      { to: "/labs/incoming-cue", label: "Incoming cue (Deck 2)" },
+      { to: "/labs/blend", label: "Two-deck blend" },
     ],
     tutorials: ["mix-bass-swap", "mix-gain", "mix-in-mix-out", "two-deck-blend"],
     sourceVideos: ["blakey5", "carlo3"],
@@ -458,6 +466,7 @@ const EXTRA_TUTORIAL_LABS: Record<string, LabLink[]> = {
   "neural-pad-lights": [{ to: "/labs/neural-pads", label: "Neural Mix pads" }],
   "pads-transition": [{ to: "/labs/pads", label: "Pad modes" }],
   "two-deck-blend": [
+    { to: "/labs/incoming-cue", label: "Incoming cue (Deck 2)" },
     { to: "/labs/blend", label: "Two-deck blend" },
     { to: "/labs/eq", label: "Bass kill (LOW)" },
     { to: "/labs/crossfader", label: "Crossfader" },
