@@ -2883,10 +2883,19 @@ tr:last-child td {
   align-items: center;
 }
 
-.track-import-btn {
-  margin-left: 0.35rem;
-  padding: 0.4rem 0.65rem !important;
-  font-size: 0.75rem !important;
+.track-tidal-stub {
+  align-self: center;
+  font-size: 0.82rem;
+  color: #8a8278;
+  text-decoration: none;
+  border: 1px dashed var(--deck-line);
+  border-radius: 8px;
+  padding: 0.4rem 0.65rem;
+}
+
+.track-tidal-stub:hover {
+  color: #f2ece3;
+  border-color: #8a8278;
 }
 
 .wave-stack {

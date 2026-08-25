@@ -2,12 +2,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 import { identifyMixUltra } from "../midi/mixUltraMap";
 import type { LiveDeckValues, PadCueEvent } from "../midi/useLiveController";
 import { useMidiMessages } from "../midi/useMidiBus";
-import {
-  getTrackCatalog,
-  importUserTrack,
-  subscribeCatalog,
-  type TrackId,
-} from "./tracks";
+import { getTrackCatalog, subscribeCatalog, type TrackId } from "./tracks";
 import {
   applyLiveMix,
   createTurntable,
@@ -140,19 +135,6 @@ export function useTurntableSession(opts: {
     [boot, refreshWave],
   );
 
-  const importFile = useCallback(
-    async (deck: 1 | 2, file: File, bpm = 124) => {
-      if (!engineRef.current) await boot();
-      const eng = engineRef.current;
-      if (!eng) return;
-      await ensureAudio(eng);
-      const info = await importUserTrack(file, eng.ctx, bpm);
-      await setTrack(deck, info.id);
-      return info;
-    },
-    [boot, setTrack],
-  );
-
   const onPad = useCallback(
     async (ev: PadCueEvent) => {
       if (!engineRef.current) await boot();
@@ -206,7 +188,6 @@ export function useTurntableSession(opts: {
     playDeck,
     stopDeck,
     setTrack,
-    importFile,
     onPad,
     onJog,
     playing1,

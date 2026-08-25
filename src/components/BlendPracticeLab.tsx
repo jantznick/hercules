@@ -220,7 +220,6 @@ export function BlendHardware() {
         track1={tt.track1}
         track2={tt.track2}
         onSelect={(deck, id) => void tt.setTrack(deck, id)}
-        onImport={(deck, file) => void tt.importFile(deck, file)}
         hint="Leave SYNC out of this — grade EQ + crossfader only"
       />
 
