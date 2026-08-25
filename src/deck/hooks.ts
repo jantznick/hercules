@@ -121,3 +121,26 @@ export function useMotionRecorder(value: number | undefined, enabled: boolean) {
   const reset = () => setSamples([]);
   return { samples, reset };
 }
+
+/**
+ * Record two CC series (e.g. LOW + crossfader) for judgeBlendSession.
+ * Resets both buffers together.
+ */
+export function useBlendMotionRecorder(
+  low: number | undefined,
+  crossfader: number | undefined,
+  enabled: boolean,
+) {
+  const lowRec = useMotionRecorder(low, enabled);
+  const xfRec = useMotionRecorder(crossfader, enabled);
+
+  const reset = () => {
+    lowRec.reset();
+    xfRec.reset();
+  };
+
+  return {
+    samples: { low: lowRec.samples, crossfader: xfRec.samples },
+    reset,
+  };
+}

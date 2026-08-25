@@ -28,6 +28,7 @@ import { StylePage } from "./pages/StylePage";
 import { LabsIndexPage } from "./pages/LabsIndexPage";
 import { TutorialDetailPage, TutorialsIndexPage } from "./pages/TutorialsPages";
 import {
+  BlendLabPage,
   CheatSheetPage,
   CrossfaderLabPage,
   CueLabPage,
@@ -94,6 +95,7 @@ export default function App() {
           <Route path="labs/filter" element={<FilterLabPage />} />
           <Route path="labs/eq" element={<EqLabPage />} />
           <Route path="labs/crossfader" element={<CrossfaderLabPage />} />
+          <Route path="labs/blend" element={<BlendLabPage />} />
           <Route path="labs/neural" element={<NeuralLabPage />} />
           <Route path="labs/pads" element={<PadsLabPage />} />
           <Route path="labs/neural-pads" element={<NeuralPadsLabPage />} />

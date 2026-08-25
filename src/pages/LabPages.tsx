@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { BlendHardware, BlendLearn } from "../components/BlendPracticeLab";
 import { CrossfaderLab } from "../components/CrossfaderLab";
 import { CueLab } from "../components/CueLab";
 import { EqLab } from "../components/EqLab";
@@ -296,6 +297,52 @@ export function CrossfaderLabPage() {
             to: "/djing/blend",
             label: "Blend",
             blurb: "Longer mix strategy",
+          },
+        ]}
+      />
+    </>
+  );
+}
+
+export function BlendLabPage() {
+  return (
+    <>
+      <PageHeader
+        eyebrow="Labs"
+        title="Two-deck blend"
+        description="Phrase-ish EQ + crossfader handoff on laptop audio. Learn the idea, then On hardware for graded timing tips — not beatmatching."
+        actions={
+          <Link to="/labs" className="text-back">
+            All labs
+          </Link>
+        }
+      />
+      <LabModeShell
+        hardwareNote={HW_NOTE}
+        learn={<BlendLearn />}
+        hardware={<BlendHardware />}
+      />
+      <RelatedExtras
+        links={[
+          {
+            to: "/labs/eq",
+            label: "Bass kill (LOW)",
+            blurb: "Single-knob drill first",
+          },
+          {
+            to: "/labs/crossfader",
+            label: "Crossfader",
+            blurb: "Left / center / right alone",
+          },
+          {
+            to: "/djing/blend",
+            label: "Blend",
+            blurb: "Longer mix strategy",
+          },
+          {
+            to: "/labs/free",
+            label: "Free play",
+            blurb: "Same deck, no grade",
           },
         ]}
       />

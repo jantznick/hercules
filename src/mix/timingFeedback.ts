@@ -98,3 +98,50 @@ export function pushSample(
   const cutoff = t - maxAgeMs;
   return next.filter((p) => p.t >= cutoff);
 }
+
+/** Shared MIDI zones for blend / EQ / XF labs (0–127). */
+export const MIX_ZONES = {
+  center: 64,
+  centerTol: 12,
+  killMax: 14,
+  xfLeftMax: 18,
+  xfRightMin: 109,
+} as const;
+
+export type BlendSessionSamples = {
+  /** Deck 2 LOW (or incoming-deck bass) over the session */
+  low: MotionPoint[];
+  crossfader: MotionPoint[];
+};
+
+export type BlendSessionJudgment = {
+  bass: RampJudgment;
+  crossfader: RampJudgment;
+  /** Both series completed a clear start→end ramp (timing may still be fast/slow). */
+  complete: boolean;
+};
+
+/**
+ * Score a phrase-ish blend: Deck 2 LOW kill + full left→right crossfader travel.
+ * Does not grade beatmatching / kick alignment.
+ */
+export function judgeBlendSession(samples: BlendSessionSamples): BlendSessionJudgment {
+  const { center, centerTol, killMax, xfLeftMax, xfRightMin } = MIX_ZONES;
+  const bass = judgeCcRamp(samples.low, {
+    startZone: (v) => Math.abs(v - center) <= centerTol,
+    endZone: (v) => v <= killMax,
+    idealMs: MIX_WINDOWS.bassSwap.idealMs,
+    label: "Deck 2 bass kill",
+  });
+  const crossfader = judgeCcRamp(samples.crossfader, {
+    startZone: (v) => v <= xfLeftMax,
+    endZone: (v) => v >= xfRightMin,
+    idealMs: MIX_WINDOWS.crossfader.idealMs,
+    label: "Crossfader blend",
+  });
+  return {
+    bass,
+    crossfader,
+    complete: bass.verdict !== "incomplete" && crossfader.verdict !== "incomplete",
+  };
+}

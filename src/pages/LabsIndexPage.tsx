@@ -33,6 +33,11 @@ const LABS = [
     blurb: "Left / center / right — timing tip when you finish.",
   },
   {
+    to: "/labs/blend",
+    title: "Two-deck blend",
+    blurb: "EQ + crossfader phrase drill — bass and XF timing tips.",
+  },
+  {
     to: "/labs/neural",
     title: "HIGH / MID / LOW",
     blurb: "Center N remaps knobs to stem volumes.",
