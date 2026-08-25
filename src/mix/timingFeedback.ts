@@ -185,6 +185,147 @@ export type BlendSessionJudgment = {
  * Does not grade beatmatching / kick alignment.
  * Pass deck BPM for bar-aware ideal windows and coach copy.
  */
+/** MIDI pitch CC → playback rate (matches turntable applyDeckPitch). */
+export function pitchCcToRate(cc: number): number {
+  return 1 + ((cc - 64) / 64) * 0.08;
+}
+
+/** Fractional beat position (0–1) from playhead seconds and effective tempo. */
+export function beatPhaseFromPlayhead(playheadSec: number, bpm: number, pitchCc: number): number {
+  const beats = (playheadSec * bpm * pitchCcToRate(pitchCc)) / 60;
+  return beats - Math.floor(beats);
+}
+
+/** Shortest signed phase delta in beats (−0.5…0.5). */
+export function wrapBeatPhaseDelta(phaseA: number, phaseB: number): number {
+  let d = phaseB - phaseA;
+  if (d > 0.5) d -= 1;
+  if (d < -0.5) d += 1;
+  return d;
+}
+
+export type PlayheadSample = {
+  t: number;
+  playhead1: number;
+  playhead2: number;
+  pitch1: number;
+  pitch2: number;
+  bpm1: number;
+  bpm2: number;
+};
+
+export type KickAlignGrade = "aligned" | "offset" | "drifting";
+
+export type KickAlignJudgment = {
+  /** True when both decks ran long enough to compare playhead drift vs BPM scaffold. */
+  hasSignal: boolean;
+  grade: KickAlignGrade | null;
+  offsetBeats: number | null;
+  driftBeatsPerSec: number | null;
+  tip: string;
+  /** Always true — best-effort scaffold, not spectral kick detection. */
+  experimental: true;
+};
+
+const KICK_ALIGN_MIN_SAMPLES = 4;
+const KICK_ALIGN_MIN_WINDOW_MS = 2000;
+const KICK_ALIGN_DRIFT_THRESHOLD = 0.025;
+const KICK_ALIGN_OFFSET_THRESHOLD = 0.1;
+
+/** Rolling playhead snapshots for beatmatch kick scaffold (default ~10 Hz, 30s window). */
+export function pushPlayheadSample(
+  buf: PlayheadSample[],
+  sample: Omit<PlayheadSample, "t">,
+  maxAgeMs = 30_000,
+  minIntervalMs = 100,
+): PlayheadSample[] {
+  const t = performance.now();
+  const last = buf[buf.length - 1];
+  if (last && t - last.t < minIntervalMs) return buf;
+  const next = [...buf, { ...sample, t }];
+  const cutoff = t - maxAgeMs;
+  return next.filter((p) => p.t >= cutoff);
+}
+
+/**
+ * Experimental kick-alignment hint: compare deck playhead drift against catalog BPM + pitch CC.
+ * Does not analyze audio — only a tempo/phase scaffold for practice feedback.
+ */
+export function judgeKickAlignment(samples: PlayheadSample[]): KickAlignJudgment {
+  const experimental = true as const;
+  const silent = (tip: string): KickAlignJudgment => ({
+    hasSignal: false,
+    grade: null,
+    offsetBeats: null,
+    driftBeatsPerSec: null,
+    tip,
+    experimental,
+  });
+
+  if (samples.length < KICK_ALIGN_MIN_SAMPLES) {
+    return silent("Need more play time with both decks running.");
+  }
+
+  const first = samples[0]!;
+  const last = samples[samples.length - 1]!;
+  const windowMs = last.t - first.t;
+  if (windowMs < KICK_ALIGN_MIN_WINDOW_MS) {
+    return silent("Keep both decks playing a bit longer.");
+  }
+
+  const beatsAdvanced = (playhead: number, bpm: number, pitch: number, base: number) =>
+    ((playhead - base) * bpm * pitchCcToRate(pitch)) / 60;
+
+  const deltaBeats1 = beatsAdvanced(last.playhead1, last.bpm1, last.pitch1, first.playhead1);
+  const deltaBeats2 = beatsAdvanced(last.playhead2, last.bpm2, last.pitch2, first.playhead2);
+  if (Math.abs(deltaBeats1) < 0.5 || Math.abs(deltaBeats2) < 0.5) {
+    return silent("Both decks need to be playing.");
+  }
+
+  const beatSlip = deltaBeats2 - deltaBeats1;
+  const driftBeatsPerSec = beatSlip / (windowMs / 1000);
+
+  const phase1 = beatPhaseFromPlayhead(last.playhead1, last.bpm1, last.pitch1);
+  const phase2 = beatPhaseFromPlayhead(last.playhead2, last.bpm2, last.pitch2);
+  const signedOffset = wrapBeatPhaseDelta(phase1, phase2);
+  const offsetBeats = Math.abs(signedOffset);
+
+  if (Math.abs(driftBeatsPerSec) > KICK_ALIGN_DRIFT_THRESHOLD) {
+    const dir = driftBeatsPerSec > 0 ? "fast" : "slow";
+    return {
+      hasSignal: true,
+      grade: "drifting",
+      offsetBeats,
+      driftBeatsPerSec,
+      tip: `Playheads drifting — Deck 2 may be ${dir} vs the BPM scaffold. Re-check the tempo fader.`,
+      experimental,
+    };
+  }
+
+  if (offsetBeats > KICK_ALIGN_OFFSET_THRESHOLD) {
+    const effBpm2 = last.bpm2 * pitchCcToRate(last.pitch2);
+    const ms = Math.round((offsetBeats * 60_000) / effBpm2);
+    const earlyLate = signedOffset > 0 ? "late" : "early";
+    return {
+      hasSignal: true,
+      grade: "offset",
+      offsetBeats,
+      driftBeatsPerSec,
+      tip: `~${ms} ms ${earlyLate} on the beat grid — try a small jog nudge on Deck 2.`,
+      experimental,
+    };
+  }
+
+  return {
+    hasSignal: true,
+    grade: "aligned",
+    offsetBeats,
+    driftBeatsPerSec,
+    tip: "Kick scaffold looks tight for this window — still trust your ears in djay.",
+    experimental,
+  };
+}
+
 export function judgeBlendSession(
   samples: BlendSessionSamples,
   bpm?: number,

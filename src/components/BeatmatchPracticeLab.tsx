@@ -2,7 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTurntableSession } from "../audio/useTurntableSession";
 import { useMotionRecorder, usePublishDeckState } from "../deck/hooks";
-import { judgeCcRamp } from "../mix/timingFeedback";
+import { trackById } from "../audio/tracks";
+import {
+  judgeCcRamp,
+  judgeKickAlignment,
+  pushPlayheadSample,
+  type PlayheadSample,
+} from "../mix/timingFeedback";
 import { useCcZonePass } from "../midi/useCcZonePass";
 import { useLiveController } from "../midi/useLiveController";
 import type { DeckHighlight } from "./MixUltraDeck";
@@ -108,6 +114,7 @@ export function BeatmatchHardware() {
   const [done, setDone] = useState<StepId[]>([]);
   const [finished, setFinished] = useState(false);
   const [jogNudges, setJogNudges] = useState(0);
+  const [alignSamples, setAlignSamples] = useState<PlayheadSample[]>([]);
   const stepIndexRef = useRef(0);
   const finishedRef = useRef(false);
   const jogNudgesRef = useRef(0);
@@ -131,8 +138,37 @@ export function BeatmatchHardware() {
   }, [live.ready, tt.booted, tt.playDeck]);
 
   const pitch = live.values["deck2.pitch"];
+  const pitch1 = live.values["deck1.pitch"] ?? 64;
   const step = STEPS[stepIndex]!;
   const inZone = step.pass(pitch, jogNudges);
+
+  useEffect(() => {
+    if (!live.ready || !tt.booted || finished || !tt.playing1 || !tt.playing2) return;
+    const bpm1 = trackById(tt.track1).bpm;
+    const bpm2 = trackById(tt.track2).bpm;
+    setAlignSamples((prev) =>
+      pushPlayheadSample(prev, {
+        playhead1: tt.playhead1,
+        playhead2: tt.playhead2,
+        pitch1,
+        pitch2: pitch ?? 64,
+        bpm1,
+        bpm2,
+      }),
+    );
+  }, [
+    live.ready,
+    tt.booted,
+    finished,
+    tt.playing1,
+    tt.playing2,
+    tt.playhead1,
+    tt.playhead2,
+    tt.track1,
+    tt.track2,
+    pitch1,
+    pitch,
+  ]);
 
   const { samples: pitchSamples, reset: resetPitchMotion } = useMotionRecorder(
     pitch,
@@ -166,11 +202,26 @@ export function BeatmatchHardware() {
     return "Jog motion logged — in djay, nudge until kicks hit as one.";
   }, [finished, jogSamples]);
 
+  const kickAlign = useMemo(() => {
+    if (!finished) return null;
+    return judgeKickAlignment(alignSamples);
+  }, [finished, alignSamples]);
+
+  const kickAlignTipClass =
+    kickAlign?.grade === "aligned"
+      ? "ok"
+      : kickAlign?.grade === "offset"
+        ? "too-slow"
+        : kickAlign?.grade === "drifting"
+          ? "too-fast"
+          : "";
+
   const reset = useCallback(() => {
     setStepIndex(0);
     setDone([]);
     setFinished(false);
     setJogNudges(0);
+    setAlignSamples([]);
     jogNudgesRef.current = 0;
     resetPitchMotion();
     resetJogMotion();
@@ -299,6 +350,11 @@ export function BeatmatchHardware() {
             </p>
           )}
           {jogTip && <p className="mix-timing-tip ok">Jog coach: {jogTip}</p>}
+          {kickAlign?.hasSignal && (
+            <p className={`mix-timing-tip ${kickAlignTipClass}`}>
+              <span className="experimental-badge">Experimental</span> Kick scaffold: {kickAlign.tip}
+            </p>
+          )}
         </HardwareGrade>
       )}
     </HardwareLabShell>
