@@ -2,10 +2,238 @@ import { Link } from "react-router-dom";
 import { CueLab } from "../components/CueLab";
 import { HotCueLab } from "../components/HotCueLab";
 import { FilterLab } from "../components/FilterLab";
+import { HardwareCrossfaderLab } from "../components/HardwareCrossfaderLab";
+import { HardwareEqLab } from "../components/HardwareEqLab";
+import { HardwareFilterLab } from "../components/HardwareFilterLab";
+import { HardwareFreePlay } from "../components/HardwareFreePlay";
+import { HardwarePlayCueLab } from "../components/HardwarePlayCueLab";
+import { MidiMonitor } from "../components/MidiMonitor";
 import { NeuralMixGuide, PadModes } from "../components/PadModes";
 import { NeuralMixPadsLab } from "../components/NeuralMixPadsLab";
 import { RelatedExtras } from "../components/RelatedExtras";
 import { PageHeader } from "./HomePage";
+
+export function MidiProbePage() {
+  return (
+    <>
+      <PageHeader
+        eyebrow="Labs"
+        title="Controller live"
+        description="Pair the Mix Ultra over Bluetooth MIDI, then watch every button, fader, and knob show up here."
+        actions={
+          <Link to="/labs" className="text-back">
+            All labs
+          </Link>
+        }
+      />
+      <MidiMonitor />
+      <RelatedExtras
+        links={[
+          {
+            to: "/labs/hw-play-cue",
+            label: "Hardware: Play & CUE",
+            blurb: "Graded Deck 1 button drill",
+          },
+          {
+            to: "/labs/hw-filter",
+            label: "Hardware: Filter sweep",
+            blurb: "Graded FILTER positions",
+          },
+          {
+            to: "/cheatsheet",
+            label: "Cheat sheet",
+            blurb: "Button names",
+          },
+        ]}
+      />
+    </>
+  );
+}
+
+export function HardwarePlayCueLabPage() {
+  return (
+    <>
+      <PageHeader
+        eyebrow="Labs"
+        title="Hardware: Play & CUE"
+        description="Real Mix Ultra. Glow shows the target. Play starts a laptop demo loop; CUE stops it."
+        actions={
+          <Link to="/labs" className="text-back">
+            All labs
+          </Link>
+        }
+      />
+      <HardwarePlayCueLab />
+      <RelatedExtras
+        links={[
+          {
+            to: "/labs/cue",
+            label: "Click-around CUE lab",
+            blurb: "Same ideas without the controller",
+          },
+          {
+            to: "/tutorials/cue-home",
+            label: "Tutorial: Plant your home CUE",
+            blurb: "Do it in djay next",
+          },
+          {
+            to: "/labs/midi",
+            label: "Controller live",
+            blurb: "Raw MIDI if something feels off",
+          },
+        ]}
+      />
+    </>
+  );
+}
+
+export function HardwareFilterLabPage() {
+  return (
+    <>
+      <PageHeader
+        eyebrow="Labs"
+        title="Hardware: Filter sweep"
+        description="Hear a demo loop on your laptop while you twist Deck 1 FILTER — center open, left muffles, right thins."
+        actions={
+          <Link to="/labs" className="text-back">
+            All labs
+          </Link>
+        }
+      />
+      <HardwareFilterLab />
+      <RelatedExtras
+        links={[
+          {
+            to: "/labs/hw-eq",
+            label: "Hardware: Bass kill",
+            blurb: "Hear LOW EQ cut the kick",
+          },
+          {
+            to: "/labs/filter",
+            label: "Click-around filter lab",
+            blurb: "See the curve without hardware",
+          },
+          {
+            to: "/tutorials/filter-sweep",
+            label: "Tutorial: Filter sweep",
+            blurb: "Same move in djay",
+          },
+        ]}
+      />
+    </>
+  );
+}
+
+export function HardwareEqLabPage() {
+  return (
+    <>
+      <PageHeader
+        eyebrow="Labs"
+        title="Hardware: Bass kill"
+        description="Demo loop on the laptop. Kill Deck 1 LOW and hear the bass drop out — classic blend move."
+        actions={
+          <Link to="/labs" className="text-back">
+            All labs
+          </Link>
+        }
+      />
+      <HardwareEqLab />
+      <RelatedExtras
+        links={[
+          {
+            to: "/labs/hw-filter",
+            label: "Hardware: Filter sweep",
+            blurb: "FILTER with audible demo",
+          },
+          {
+            to: "/djing/eq",
+            label: "EQ & Filter",
+            blurb: "Why you kill bass when blending",
+          },
+          {
+            to: "/labs/hw-crossfader",
+            label: "Hardware: Crossfader",
+            blurb: "Where the room hears each deck",
+          },
+        ]}
+      />
+    </>
+  );
+}
+
+export function HardwareCrossfaderLabPage() {
+  return (
+    <>
+      <PageHeader
+        eyebrow="Labs"
+        title="Hardware: Crossfader"
+        description="Slide left / center / right on the real crossfader. Glow shows the target on the deck diagram."
+        actions={
+          <Link to="/labs" className="text-back">
+            All labs
+          </Link>
+        }
+      />
+      <HardwareCrossfaderLab />
+      <RelatedExtras
+        links={[
+          {
+            to: "/labs/hw-free",
+            label: "Free play",
+            blurb: "Two decks, pick beds, mix freely",
+          },
+          {
+            to: "/labs/hw-play-cue",
+            label: "Hardware: Play & CUE",
+            blurb: "Transport with demo sound",
+          },
+          {
+            to: "/labs/midi",
+            label: "Controller live",
+            blurb: "Raw MIDI probe",
+          },
+        ]}
+      />
+    </>
+  );
+}
+
+export function HardwareFreePlayPage() {
+  return (
+    <>
+      <PageHeader
+        eyebrow="Labs"
+        title="Free play"
+        description="Full live Mix Ultra mirror. Pick a generated bed per deck, hit Play on the box, twist EQ/FILTER, blend with the crossfader."
+        actions={
+          <Link to="/labs" className="text-back">
+            All labs
+          </Link>
+        }
+      />
+      <HardwareFreePlay />
+      <RelatedExtras
+        links={[
+          {
+            to: "/labs/hw-filter",
+            label: "Filter sweep",
+            blurb: "Graded FILTER drill",
+          },
+          {
+            to: "/labs/hw-eq",
+            label: "Bass kill",
+            blurb: "Graded LOW EQ drill",
+          },
+          {
+            to: "/tutorials",
+            label: "Tutorials",
+            blurb: "Same skills later in djay with real songs",
+          },
+        ]}
+      />
+    </>
+  );
+}
 
 export function CueLabPage() {
   return (
