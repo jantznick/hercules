@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTurntableSession } from "../audio/useTurntableSession";
+import { usePublishDeckState } from "../deck/hooks";
 import { useCcZonePass } from "../midi/useCcZonePass";
 import { useLiveController } from "../midi/useLiveController";
 import { HardwareGrade, HardwareLabShell } from "./HardwareLabShell";
@@ -95,6 +96,18 @@ export function HardwareFilterLab() {
     enabled: live.ready && !finished,
     dwellMs: 200,
     onPass: advance,
+  });
+
+  usePublishDeckState({
+    playing1: tt.playing1,
+    playing2: tt.playing2,
+    cues1: tt.cues1,
+    cues2: tt.cues2,
+    values: live.values,
+    midiReady: live.ready,
+    audioReady: tt.booted,
+    highlight: finished ? null : "deck1.filter",
+    syncLeds: true,
   });
 
   return (

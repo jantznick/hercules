@@ -1,5 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTurntableSession } from "../audio/useTurntableSession";
+import { useMotionRecorder, usePublishDeckState } from "../deck/hooks";
+import { judgeCcRamp, MIX_WINDOWS } from "../mix/timingFeedback";
 import { useCcZonePass } from "../midi/useCcZonePass";
 import { useLiveController } from "../midi/useLiveController";
 import { HardwareGrade, HardwareLabShell } from "./HardwareLabShell";
@@ -53,11 +55,27 @@ export function HardwareEqLab() {
   const step = STEPS[stepIndex]!;
   const inZone = value != null && step.pass(value);
 
+  const { samples, reset: resetMotion } = useMotionRecorder(
+    value,
+    live.ready && !finished,
+  );
+
+  const timing = useMemo(() => {
+    if (!finished) return null;
+    return judgeCcRamp(samples, {
+      startZone: (v) => Math.abs(v - CENTER) <= CENTER_TOL,
+      endZone: (v) => v <= KILL_MAX,
+      idealMs: MIX_WINDOWS.bassSwap.idealMs,
+      label: "Bass kill",
+    });
+  }, [finished, samples]);
+
   const reset = useCallback(() => {
     setStepIndex(0);
     setDone([]);
     setFinished(false);
-  }, []);
+    resetMotion();
+  }, [resetMotion]);
 
   const advance = useCallback(() => {
     if (finishedRef.current) return;
@@ -75,6 +93,18 @@ export function HardwareEqLab() {
     enabled: live.ready && !finished,
     dwellMs: 200,
     onPass: advance,
+  });
+
+  usePublishDeckState({
+    playing1: tt.playing1,
+    playing2: tt.playing2,
+    cues1: tt.cues1,
+    cues2: tt.cues2,
+    values: live.values,
+    midiReady: live.ready,
+    audioReady: tt.booted,
+    highlight: finished ? null : "deck1.low",
+    syncLeds: true,
   });
 
   return (
@@ -117,6 +147,11 @@ export function HardwareEqLab() {
           <p>
             <strong>Pass.</strong> That’s the EQ kill for blending.
           </p>
+          {timing && (
+            <p className={`mix-timing-tip ${timing.verdict}`}>
+              Timing coach: {timing.tip}
+            </p>
+          )}
         </HardwareGrade>
       )}
     </HardwareLabShell>

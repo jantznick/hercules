@@ -48,6 +48,11 @@ export function getMidiStatus(): MidiBusStatus {
   return busStatus;
 }
 
+/** Active MIDIAccess after connect, or null. Used for MIDI out / LEDs. */
+export function getMidiAccess(): MIDIAccess | null {
+  return access;
+}
+
 export function hasWebMidi(): boolean {
   return typeof navigator !== "undefined" && "requestMIDIAccess" in navigator;
 }

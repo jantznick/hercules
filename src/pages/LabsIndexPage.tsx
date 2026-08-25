@@ -1,59 +1,41 @@
 import { Link } from "react-router-dom";
 import { PageHeader } from "./HomePage";
 
-const HARDWARE_LABS = [
+const LABS = [
   {
-    to: "/labs/hw-free",
+    to: "/labs/free",
     title: "Free play",
-    blurb: "Full live deck + two demo beds you can mix.",
+    blurb: "Full live deck, waveforms, your files or demo beds.",
   },
-  {
-    to: "/labs/midi",
-    title: "Controller live",
-    blurb: "Raw Bluetooth MIDI — see every message.",
-  },
-  {
-    to: "/labs/hw-play-cue",
-    title: "Play & CUE",
-    blurb: "Glow targets + demo loop follows Play/CUE.",
-  },
-  {
-    to: "/labs/hw-filter",
-    title: "Filter sweep",
-    blurb: "Hear muffling vs thinning on a demo loop.",
-  },
-  {
-    to: "/labs/hw-eq",
-    title: "Bass kill",
-    blurb: "Kill LOW and hear the kick/bass drop out.",
-  },
-  {
-    to: "/labs/hw-crossfader",
-    title: "Crossfader",
-    blurb: "Left / center / right — hear both decks.",
-  },
-];
-
-const CLICK_LABS = [
   {
     to: "/labs/cue",
-    title: "CUE button",
-    blurb: "Pause → plant. Play → return and stop.",
+    title: "CUE / Play",
+    blurb: "Learn the button, or drill it on the Mix Ultra.",
   },
   {
     to: "/labs/hot-cue",
     title: "Hot cues",
-    blurb: "Empty pad sets. Lit pad jumps and keeps playing. SHIFT+pad erases.",
+    blurb: "Empty pad sets. Lit pad jumps. SHIFT+pad erases.",
   },
   {
     to: "/labs/filter",
     title: "Filter",
-    blurb: "Left muffles. Right thins. Center is open.",
+    blurb: "Left muffles · right thins · hear it on hardware.",
+  },
+  {
+    to: "/labs/eq",
+    title: "Bass kill (LOW)",
+    blurb: "Why you kill bass when blending — graded on box.",
+  },
+  {
+    to: "/labs/crossfader",
+    title: "Crossfader",
+    blurb: "Left / center / right — timing tip when you finish.",
   },
   {
     to: "/labs/neural",
     title: "HIGH / MID / LOW",
-    blurb: "Center N remaps HIGH/MID/LOW to stem volumes.",
+    blurb: "Center N remaps knobs to stem volumes.",
   },
   {
     to: "/labs/pads",
@@ -65,6 +47,11 @@ const CLICK_LABS = [
     title: "Neural Mix pads",
     blurb: "Top = solo, bottom = mute, lit = action on.",
   },
+  {
+    to: "/labs/midi",
+    title: "Controller live",
+    blurb: "Raw Bluetooth MIDI — see every message.",
+  },
 ];
 
 export function LabsIndexPage() {
@@ -73,22 +60,11 @@ export function LabsIndexPage() {
       <PageHeader
         eyebrow="Labs"
         title="Click until the lights make sense"
-        description="Hardware drills use your Mix Ultra over Bluetooth (and a laptop demo loop so you can hear FILTER/EQ). Click-around labs need no controller."
+        description="Each lab can stay click-around (Learn) or switch to On hardware for Mix Ultra + laptop audio. Free play is the full mirror."
       />
 
-      <h2 className="home-section-title">On the Mix Ultra</h2>
       <div className="home-cards">
-        {HARDWARE_LABS.map((lab) => (
-          <Link key={lab.to} to={lab.to} className="home-card">
-            <h3>{lab.title}</h3>
-            <p>{lab.blurb}</p>
-          </Link>
-        ))}
-      </div>
-
-      <h2 className="home-section-title">Click-around</h2>
-      <div className="home-cards">
-        {CLICK_LABS.map((lab) => (
+        {LABS.map((lab) => (
           <Link key={lab.to} to={lab.to} className="home-card">
             <h3>{lab.title}</h3>
             <p>{lab.blurb}</p>

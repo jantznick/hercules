@@ -29,13 +29,11 @@ import { LabsIndexPage } from "./pages/LabsIndexPage";
 import { TutorialDetailPage, TutorialsIndexPage } from "./pages/TutorialsPages";
 import {
   CheatSheetPage,
+  CrossfaderLabPage,
   CueLabPage,
+  EqLabPage,
   FilterLabPage,
-  HardwareCrossfaderLabPage,
-  HardwareEqLabPage,
-  HardwareFilterLabPage,
-  HardwareFreePlayPage,
-  HardwarePlayCueLabPage,
+  FreePlayLabPage,
   HotCueLabPage,
   MidiProbePage,
   NeuralLabPage,
@@ -90,17 +88,23 @@ export default function App() {
           <Route path="tutorials/:tutorialId" element={<TutorialDetailPage />} />
           <Route path="labs" element={<LabsIndexPage />} />
           <Route path="labs/midi" element={<MidiProbePage />} />
-          <Route path="labs/hw-play-cue" element={<HardwarePlayCueLabPage />} />
-          <Route path="labs/hw-filter" element={<HardwareFilterLabPage />} />
-          <Route path="labs/hw-eq" element={<HardwareEqLabPage />} />
-          <Route path="labs/hw-crossfader" element={<HardwareCrossfaderLabPage />} />
-          <Route path="labs/hw-free" element={<HardwareFreePlayPage />} />
+          <Route path="labs/free" element={<FreePlayLabPage />} />
           <Route path="labs/cue" element={<CueLabPage />} />
           <Route path="labs/hot-cue" element={<HotCueLabPage />} />
           <Route path="labs/filter" element={<FilterLabPage />} />
+          <Route path="labs/eq" element={<EqLabPage />} />
+          <Route path="labs/crossfader" element={<CrossfaderLabPage />} />
           <Route path="labs/neural" element={<NeuralLabPage />} />
           <Route path="labs/pads" element={<PadsLabPage />} />
           <Route path="labs/neural-pads" element={<NeuralPadsLabPage />} />
+          <Route path="labs/hw-play-cue" element={<Navigate to="/labs/cue?mode=hardware" replace />} />
+          <Route path="labs/hw-filter" element={<Navigate to="/labs/filter?mode=hardware" replace />} />
+          <Route path="labs/hw-eq" element={<Navigate to="/labs/eq?mode=hardware" replace />} />
+          <Route
+            path="labs/hw-crossfader"
+            element={<Navigate to="/labs/crossfader?mode=hardware" replace />}
+          />
+          <Route path="labs/hw-free" element={<Navigate to="/labs/free" replace />} />
           <Route path="dj-basics" element={<Navigate to="/djing" replace />} />
           <Route path="cueing" element={<CueingLegacyRedirect />} />
           <Route path="mixing-strategy" element={<Navigate to="/djing/mixing" replace />} />

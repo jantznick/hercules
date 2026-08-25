@@ -1,22 +1,33 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { identifyMixUltra } from "../midi/mixUltraMap";
 import type { LiveDeckValues, PadCueEvent } from "../midi/useLiveController";
 import { useMidiMessages } from "../midi/useMidiBus";
-import { TRACK_CATALOG } from "./tracks";
+import {
+  getTrackCatalog,
+  importUserTrack,
+  subscribeCatalog,
+  type TrackId,
+} from "./tracks";
 import {
   applyLiveMix,
   createTurntable,
   cueStopDeck,
   disposeTurntable,
   ensureAudio,
+  getDeckDuration,
+  getDeckPeaks,
+  getDeckPlayhead,
   getHotCues,
   handleJog,
   handlePad,
   loadTrack,
   setDeckPlaying,
-  type TrackId,
   type TurntableEngine,
 } from "./turntable";
+
+function useCatalog() {
+  return useSyncExternalStore(subscribeCatalog, getTrackCatalog, getTrackCatalog);
+}
 
 export function useTurntableSession(opts: {
   values: LiveDeckValues;
@@ -31,9 +42,16 @@ export function useTurntableSession(opts: {
   const [track2, setTrack2] = useState<TrackId>("deep");
   const [cues1, setCues1] = useState<(number | null)[]>(() => Array(8).fill(null));
   const [cues2, setCues2] = useState<(number | null)[]>(() => Array(8).fill(null));
+  const [playhead1, setPlayhead1] = useState(0);
+  const [playhead2, setPlayhead2] = useState(0);
+  const [duration1, setDuration1] = useState(1);
+  const [duration2, setDuration2] = useState(1);
+  const [peaks1, setPeaks1] = useState<Float32Array>(() => new Float32Array(0));
+  const [peaks2, setPeaks2] = useState<Float32Array>(() => new Float32Array(0));
   const [error, setError] = useState<string | null>(null);
   const valuesRef = useRef(opts.values);
   valuesRef.current = opts.values;
+  const tracks = useCatalog();
 
   useEffect(() => {
     return () => {
@@ -47,6 +65,28 @@ export function useTurntableSession(opts: {
     applyLiveMix(engineRef.current, opts.values);
   }, [opts.values, booted]);
 
+  const refreshWave = useCallback((eng: TurntableEngine) => {
+    setPeaks1(getDeckPeaks(eng, 1));
+    setPeaks2(getDeckPeaks(eng, 2));
+    setDuration1(getDeckDuration(eng, 1));
+    setDuration2(getDeckDuration(eng, 2));
+  }, []);
+
+  useEffect(() => {
+    if (!booted) return;
+    let raf = 0;
+    const tick = () => {
+      const eng = engineRef.current;
+      if (eng) {
+        setPlayhead1(getDeckPlayhead(eng, 1));
+        setPlayhead2(getDeckPlayhead(eng, 2));
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [booted]);
+
   const boot = useCallback(async () => {
     try {
       setError(null);
@@ -55,11 +95,12 @@ export function useTurntableSession(opts: {
       }
       await ensureAudio(engineRef.current);
       applyLiveMix(engineRef.current, valuesRef.current);
+      refreshWave(engineRef.current);
       setBooted(true);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     }
-  }, []);
+  }, [refreshWave]);
 
   const playDeck = useCallback(
     async (deck: 1 | 2) => {
@@ -87,6 +128,7 @@ export function useTurntableSession(opts: {
       const eng = engineRef.current;
       if (!eng) return;
       await loadTrack(eng, deck, id);
+      refreshWave(eng);
       if (deck === 1) {
         setTrack1(id);
         setCues1(getHotCues(eng, 1));
@@ -95,23 +137,39 @@ export function useTurntableSession(opts: {
         setCues2(getHotCues(eng, 2));
       }
     },
-    [boot],
+    [boot, refreshWave],
   );
 
-  const onPad = useCallback(async (ev: PadCueEvent) => {
-    if (!engineRef.current) await boot();
-    const eng = engineRef.current;
-    if (!eng) return;
-    await ensureAudio(eng);
-    const cues = handlePad(eng, ev.deck, ev.pad, ev.clear);
-    if (ev.deck === 1) {
-      setCues1(cues);
-      setPlaying1(eng.deck1.playing);
-    } else {
-      setCues2(cues);
-      setPlaying2(eng.deck2.playing);
-    }
-  }, [boot]);
+  const importFile = useCallback(
+    async (deck: 1 | 2, file: File, bpm = 124) => {
+      if (!engineRef.current) await boot();
+      const eng = engineRef.current;
+      if (!eng) return;
+      await ensureAudio(eng);
+      const info = await importUserTrack(file, eng.ctx, bpm);
+      await setTrack(deck, info.id);
+      return info;
+    },
+    [boot, setTrack],
+  );
+
+  const onPad = useCallback(
+    async (ev: PadCueEvent) => {
+      if (!engineRef.current) await boot();
+      const eng = engineRef.current;
+      if (!eng) return;
+      await ensureAudio(eng);
+      const cues = handlePad(eng, ev.deck, ev.pad, ev.clear);
+      if (ev.deck === 1) {
+        setCues1(cues);
+        setPlaying1(eng.deck1.playing);
+      } else {
+        setCues2(cues);
+        setPlaying2(eng.deck2.playing);
+      }
+    },
+    [boot],
+  );
 
   const onJog = useCallback((deck: 1 | 2, delta: number) => {
     if (!engineRef.current) return;
@@ -131,7 +189,6 @@ export function useTurntableSession(opts: {
         if (engineRef.current?.deck2.playing) stopDeck(2);
         else void playDeck(2);
       }
-      // CUE while playing: stop + return to cue (startOffset / hot main)
       if (id === "deck1.cue") {
         if (engineRef.current?.deck1.playing) stopDeck(1);
       }
@@ -149,6 +206,7 @@ export function useTurntableSession(opts: {
     playDeck,
     stopDeck,
     setTrack,
+    importFile,
     onPad,
     onJog,
     playing1,
@@ -157,6 +215,12 @@ export function useTurntableSession(opts: {
     track2,
     cues1,
     cues2,
-    tracks: TRACK_CATALOG,
+    playhead1,
+    playhead2,
+    duration1,
+    duration2,
+    peaks1,
+    peaks2,
+    tracks,
   };
 }

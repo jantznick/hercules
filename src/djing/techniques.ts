@@ -450,7 +450,10 @@ const EXTRA_TUTORIAL_LABS: Record<string, LabLink[]> = {
   "hot-cues": [{ to: "/labs/hot-cue", label: "Hot cues" }],
   "quantize-snap": [{ to: "/labs/hot-cue", label: "Hot cues" }],
   "filter-sweep": [{ to: "/labs/filter", label: "Filter" }],
-  "eq-vs-neural": [{ to: "/labs/neural", label: "HIGH / MID / LOW" }],
+  "eq-vs-neural": [
+    { to: "/labs/eq", label: "Bass kill (LOW)" },
+    { to: "/labs/neural", label: "HIGH / MID / LOW" },
+  ],
   "neural-pad-lights": [{ to: "/labs/neural-pads", label: "Neural Mix pads" }],
   "pads-transition": [{ to: "/labs/pads", label: "Pad modes" }],
 };

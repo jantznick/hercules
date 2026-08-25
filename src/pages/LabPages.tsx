@@ -1,17 +1,23 @@
 import { Link } from "react-router-dom";
+import { CrossfaderLab } from "../components/CrossfaderLab";
 import { CueLab } from "../components/CueLab";
-import { HotCueLab } from "../components/HotCueLab";
+import { EqLab } from "../components/EqLab";
 import { FilterLab } from "../components/FilterLab";
 import { HardwareCrossfaderLab } from "../components/HardwareCrossfaderLab";
 import { HardwareEqLab } from "../components/HardwareEqLab";
 import { HardwareFilterLab } from "../components/HardwareFilterLab";
 import { HardwareFreePlay } from "../components/HardwareFreePlay";
 import { HardwarePlayCueLab } from "../components/HardwarePlayCueLab";
+import { HotCueLab } from "../components/HotCueLab";
+import { LabModeShell } from "../components/LabModeShell";
 import { MidiMonitor } from "../components/MidiMonitor";
 import { NeuralMixGuide, PadModes } from "../components/PadModes";
 import { NeuralMixPadsLab } from "../components/NeuralMixPadsLab";
 import { RelatedExtras } from "../components/RelatedExtras";
 import { PageHeader } from "./HomePage";
+
+const HW_NOTE =
+  "Quit djay so it isn’t holding the Mix Ultra. Connect MIDI, then use the box — laptop plays the demo bed.";
 
 export function MidiProbePage() {
   return (
@@ -30,13 +36,13 @@ export function MidiProbePage() {
       <RelatedExtras
         links={[
           {
-            to: "/labs/hw-play-cue",
-            label: "Hardware: Play & CUE",
+            to: "/labs/cue?mode=hardware",
+            label: "Play & CUE",
             blurb: "Graded Deck 1 button drill",
           },
           {
-            to: "/labs/hw-filter",
-            label: "Hardware: Filter sweep",
+            to: "/labs/filter?mode=hardware",
+            label: "Filter",
             blurb: "Graded FILTER positions",
           },
           {
@@ -50,161 +56,13 @@ export function MidiProbePage() {
   );
 }
 
-export function HardwarePlayCueLabPage() {
-  return (
-    <>
-      <PageHeader
-        eyebrow="Labs"
-        title="Hardware: Play & CUE"
-        description="Real Mix Ultra. Glow shows the target. Play starts a laptop demo loop; CUE stops it."
-        actions={
-          <Link to="/labs" className="text-back">
-            All labs
-          </Link>
-        }
-      />
-      <HardwarePlayCueLab />
-      <RelatedExtras
-        links={[
-          {
-            to: "/labs/cue",
-            label: "Click-around CUE lab",
-            blurb: "Same ideas without the controller",
-          },
-          {
-            to: "/tutorials/cue-home",
-            label: "Tutorial: Plant your home CUE",
-            blurb: "Do it in djay next",
-          },
-          {
-            to: "/labs/midi",
-            label: "Controller live",
-            blurb: "Raw MIDI if something feels off",
-          },
-        ]}
-      />
-    </>
-  );
-}
-
-export function HardwareFilterLabPage() {
-  return (
-    <>
-      <PageHeader
-        eyebrow="Labs"
-        title="Hardware: Filter sweep"
-        description="Hear a demo loop on your laptop while you twist Deck 1 FILTER — center open, left muffles, right thins."
-        actions={
-          <Link to="/labs" className="text-back">
-            All labs
-          </Link>
-        }
-      />
-      <HardwareFilterLab />
-      <RelatedExtras
-        links={[
-          {
-            to: "/labs/hw-eq",
-            label: "Hardware: Bass kill",
-            blurb: "Hear LOW EQ cut the kick",
-          },
-          {
-            to: "/labs/filter",
-            label: "Click-around filter lab",
-            blurb: "See the curve without hardware",
-          },
-          {
-            to: "/tutorials/filter-sweep",
-            label: "Tutorial: Filter sweep",
-            blurb: "Same move in djay",
-          },
-        ]}
-      />
-    </>
-  );
-}
-
-export function HardwareEqLabPage() {
-  return (
-    <>
-      <PageHeader
-        eyebrow="Labs"
-        title="Hardware: Bass kill"
-        description="Demo loop on the laptop. Kill Deck 1 LOW and hear the bass drop out — classic blend move."
-        actions={
-          <Link to="/labs" className="text-back">
-            All labs
-          </Link>
-        }
-      />
-      <HardwareEqLab />
-      <RelatedExtras
-        links={[
-          {
-            to: "/labs/hw-filter",
-            label: "Hardware: Filter sweep",
-            blurb: "FILTER with audible demo",
-          },
-          {
-            to: "/djing/eq",
-            label: "EQ & Filter",
-            blurb: "Why you kill bass when blending",
-          },
-          {
-            to: "/labs/hw-crossfader",
-            label: "Hardware: Crossfader",
-            blurb: "Where the room hears each deck",
-          },
-        ]}
-      />
-    </>
-  );
-}
-
-export function HardwareCrossfaderLabPage() {
-  return (
-    <>
-      <PageHeader
-        eyebrow="Labs"
-        title="Hardware: Crossfader"
-        description="Slide left / center / right on the real crossfader. Glow shows the target on the deck diagram."
-        actions={
-          <Link to="/labs" className="text-back">
-            All labs
-          </Link>
-        }
-      />
-      <HardwareCrossfaderLab />
-      <RelatedExtras
-        links={[
-          {
-            to: "/labs/hw-free",
-            label: "Free play",
-            blurb: "Two decks, pick beds, mix freely",
-          },
-          {
-            to: "/labs/hw-play-cue",
-            label: "Hardware: Play & CUE",
-            blurb: "Transport with demo sound",
-          },
-          {
-            to: "/labs/midi",
-            label: "Controller live",
-            blurb: "Raw MIDI probe",
-          },
-        ]}
-      />
-    </>
-  );
-}
-
-export function HardwareFreePlayPage() {
+export function FreePlayLabPage() {
   return (
     <>
       <PageHeader
         eyebrow="Labs"
         title="Free play"
-        description="Full live Mix Ultra mirror. Pick a generated bed per deck, hit Play on the box, twist EQ/FILTER, blend with the crossfader."
+        description="Full live Mix Ultra mirror with waveforms. Pick a catalog bed or add your own audio file per deck."
         actions={
           <Link to="/labs" className="text-back">
             All labs
@@ -215,12 +73,12 @@ export function HardwareFreePlayPage() {
       <RelatedExtras
         links={[
           {
-            to: "/labs/hw-filter",
-            label: "Filter sweep",
+            to: "/labs/filter?mode=hardware",
+            label: "Filter",
             blurb: "Graded FILTER drill",
           },
           {
-            to: "/labs/hw-eq",
+            to: "/labs/eq?mode=hardware",
             label: "Bass kill",
             blurb: "Graded LOW EQ drill",
           },
@@ -241,14 +99,18 @@ export function CueLabPage() {
       <PageHeader
         eyebrow="Labs"
         title="The CUE button"
-        description="Pause → scrub → CUE to plant. Play → CUE to snap back and stop."
+        description="Pause → scrub → CUE to plant. Play → CUE to snap back and stop. Switch to On hardware for a graded Mix Ultra drill."
         actions={
           <Link to="/labs" className="text-back">
             All labs
           </Link>
         }
       />
-      <CueLab />
+      <LabModeShell
+        hardwareNote={HW_NOTE}
+        learn={<CueLab />}
+        hardware={<HardwarePlayCueLab />}
+      />
       <RelatedExtras
         links={[
           {
@@ -262,9 +124,9 @@ export function CueLabPage() {
             blurb: "Same ideas on the real Mix Ultra",
           },
           {
-            to: "/djing/phrasing",
-            label: "Phrases & the One",
-            blurb: "Why a home cue on “the One” matters",
+            to: "/labs/free",
+            label: "Free play",
+            blurb: "Drive both decks with waveforms",
           },
           {
             to: "/djing/cueing",
@@ -283,14 +145,18 @@ export function HotCueLabPage() {
       <PageHeader
         eyebrow="Labs"
         title="Hot cues"
-        description="Press HOT CUE on the controller first. Empty pad = set. Lit pad = jump + play. SHIFT + pad = erase."
+        description="Press HOT CUE on the controller first. Empty pad = set. Lit pad = jump + play. SHIFT + pad = erase. Use Free play On hardware to plant pads on a real loop."
         actions={
           <Link to="/labs" className="text-back">
             All labs
           </Link>
         }
       />
-      <HotCueLab />
+      <LabModeShell
+        hardwareNote={HW_NOTE + " Pads light when a cue is set."}
+        learn={<HotCueLab />}
+        hardware={<HardwareFreePlay />}
+      />
       <RelatedExtras
         links={[
           {
@@ -299,24 +165,14 @@ export function HotCueLabPage() {
             blurb: "Build intro / drop / breakdown pads",
           },
           {
-            to: "/tutorials/quantize-snap",
-            label: "Tutorial: Quantize tap vs hold",
-            blurb: "Snap to the beat without hunting djay’s Q switch",
-          },
-          {
-            to: "/tutorials/mix-beat-grid",
-            label: "Tutorial: When the grid is wrong",
-            blurb: "Numbers match, kicks still walk — tap/adjust in djay, don’t press SYNC",
+            to: "/labs/free",
+            label: "Free play",
+            blurb: "Same deck surface, no mode toggle",
           },
           {
             to: "/djing/remix",
             label: "Remix one song",
             blurb: "Why those jump points matter on one song",
-          },
-          {
-            to: "/djing/cueing",
-            label: "Which cues to set",
-            blurb: "Mix-in / mix-out maps vs remix jump maps",
           },
         ]}
       />
@@ -330,14 +186,18 @@ export function FilterLabPage() {
       <PageHeader
         eyebrow="Labs"
         title="Filter"
-        description="Left muffles (low-pass). Right thins (high-pass). Center is open. Different from High/Mid/Low EQ."
+        description="Left muffles (low-pass). Right thins (high-pass). Center is open. On hardware: hear a demo loop while you twist Deck 1 FILTER."
         actions={
           <Link to="/labs" className="text-back">
             All labs
           </Link>
         }
       />
-      <FilterLab />
+      <LabModeShell
+        hardwareNote={HW_NOTE}
+        learn={<FilterLab />}
+        hardware={<HardwareFilterLab />}
+      />
       <RelatedExtras
         links={[
           {
@@ -346,24 +206,96 @@ export function FilterLabPage() {
             blurb: "Feel left vs right on one deck",
           },
           {
-            to: "/tutorials/remix-filter-own-drop",
-            label: "Remix: Filter-open your own drop",
-            blurb: "Same gesture, no second track",
-          },
-          {
-            to: "/tutorials/adv-filter-open",
-            label: "Advanced: Filter-open into a drop",
-            blurb: "Song-style transition recipe",
+            to: "/labs/eq",
+            label: "Bass kill (LOW)",
+            blurb: "EQ kill vs filter sweep",
           },
           {
             to: "/djing/filter",
             label: "Filter as a performance tool",
             blurb: "One-song: close the breakdown, open your drop",
           },
+        ]}
+      />
+    </>
+  );
+}
+
+export function EqLabPage() {
+  return (
+    <>
+      <PageHeader
+        eyebrow="Labs"
+        title="Bass kill (LOW)"
+        description="Kill Deck 1 LOW so kicks don’t fight when blending. On hardware you hear the drop-out — and a timing tip on how fast you killed."
+        actions={
+          <Link to="/labs" className="text-back">
+            All labs
+          </Link>
+        }
+      />
+      <LabModeShell
+        hardwareNote={HW_NOTE}
+        learn={<EqLab />}
+        hardware={<HardwareEqLab />}
+      />
+      <RelatedExtras
+        links={[
           {
             to: "/djing/eq",
-            label: "EQ, Filter, HIGH / MID / LOW",
-            blurb: "What the knobs change in the song — not just the lab",
+            label: "EQ & Filter",
+            blurb: "Why you kill bass when blending",
+          },
+          {
+            to: "/labs/crossfader",
+            label: "Crossfader",
+            blurb: "Where the room hears each deck",
+          },
+          {
+            to: "/tutorials/eq-vs-neural",
+            label: "Tutorial: EQ vs Neural Mix",
+            blurb: "Do it in djay next",
+          },
+        ]}
+      />
+    </>
+  );
+}
+
+export function CrossfaderLabPage() {
+  return (
+    <>
+      <PageHeader
+        eyebrow="Labs"
+        title="Crossfader"
+        description="Left / center / right — which deck the room hears. On hardware both beds play; finish the drill for a simple timing coach."
+        actions={
+          <Link to="/labs" className="text-back">
+            All labs
+          </Link>
+        }
+      />
+      <LabModeShell
+        hardwareNote={HW_NOTE}
+        learn={<CrossfaderLab />}
+        hardware={<HardwareCrossfaderLab />}
+      />
+      <RelatedExtras
+        links={[
+          {
+            to: "/labs/free",
+            label: "Free play",
+            blurb: "Two decks, pick beds, mix freely",
+          },
+          {
+            to: "/labs/eq",
+            label: "Bass kill",
+            blurb: "Combine with a slow LOW kill",
+          },
+          {
+            to: "/djing/blend",
+            label: "Blend",
+            blurb: "Longer mix strategy",
           },
         ]}
       />

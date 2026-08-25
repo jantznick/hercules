@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTurntableSession } from "../audio/useTurntableSession";
+import { usePublishDeckState } from "../deck/hooks";
 import { identifyMixUltraNote, type MixUltraControl } from "../midi/mixUltraMap";
 import { useLiveController } from "../midi/useLiveController";
 import { useMidiMessages } from "../midi/useMidiBus";
@@ -88,6 +89,19 @@ export function HardwarePlayCueLab() {
   const score = finished
     ? Math.max(0, Math.round((done.length / STEPS.length) * 100 - misses * 8))
     : null;
+
+  usePublishDeckState({
+    playing1,
+    playing2,
+    cues1: tt.cues1,
+    cues2: tt.cues2,
+    values: live.values,
+    pressed: live.pressed,
+    midiReady: live.ready,
+    audioReady: tt.booted,
+    highlight: finished ? null : step.expect,
+    syncLeds: true,
+  });
 
   return (
     <HardwareLabShell onRestart={reset}>

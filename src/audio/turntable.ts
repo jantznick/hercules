@@ -1,6 +1,13 @@
 /** Dual-deck practice engine. Prefers files in /public/tracks/, synth fallback if missing. */
 
-import { TRACK_CATALOG, trackById, type TrackId, type TrackInfo } from "./tracks";
+import {
+  TRACK_CATALOG,
+  getCachedBuffer,
+  trackById,
+  type TrackId,
+  type TrackInfo,
+} from "./tracks";
+import { computePeaks } from "./waveform";
 
 export type { TrackId, TrackInfo };
 export { TRACK_CATALOG };
@@ -96,6 +103,9 @@ function synthBuffer(ctx: AudioContext, style: SynthStyle, bpm: number): AudioBu
 }
 
 async function loadTrackBuffer(ctx: AudioContext, track: TrackInfo): Promise<AudioBuffer> {
+  const cached = getCachedBuffer(track.id);
+  if (cached) return cached;
+
   if (track.file) {
     try {
       const res = await fetch(track.file);
@@ -250,6 +260,22 @@ function startChannel(engine: TurntableEngine, ch: Channel, offset?: number) {
 
 export function getHotCues(engine: TurntableEngine, deck: 1 | 2): (number | null)[] {
   return (deck === 1 ? engine.deck1 : engine.deck2).hotCues.slice();
+}
+
+export function getDeckPlayhead(engine: TurntableEngine, deck: 1 | 2): number {
+  return getPlayhead(deck === 1 ? engine.deck1 : engine.deck2);
+}
+
+export function getDeckDuration(engine: TurntableEngine, deck: 1 | 2): number {
+  return (deck === 1 ? engine.deck1 : engine.deck2).buffer.duration || 1;
+}
+
+export function getDeckPeaks(
+  engine: TurntableEngine,
+  deck: 1 | 2,
+  bars = 256,
+): Float32Array {
+  return computePeaks((deck === 1 ? engine.deck1 : engine.deck2).buffer, bars);
 }
 
 /** Hot cue: empty pad sets; lit pad jumps. clear=true erases. */

@@ -1,5 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTurntableSession } from "../audio/useTurntableSession";
+import { useMotionRecorder, usePublishDeckState } from "../deck/hooks";
+import { judgeCcRamp, MIX_WINDOWS } from "../mix/timingFeedback";
 import { useCcZonePass } from "../midi/useCcZonePass";
 import { useLiveController } from "../midi/useLiveController";
 import { HardwareGrade, HardwareLabShell } from "./HardwareLabShell";
@@ -59,11 +61,27 @@ export function HardwareCrossfaderLab() {
   const step = STEPS[stepIndex]!;
   const inZone = value != null && step.pass(value);
 
+  const { samples, reset: resetMotion } = useMotionRecorder(
+    value,
+    live.ready && !finished,
+  );
+
+  const timing = useMemo(() => {
+    if (!finished) return null;
+    return judgeCcRamp(samples, {
+      startZone: (v) => v <= LEFT_MAX,
+      endZone: (v) => v >= RIGHT_MIN,
+      idealMs: MIX_WINDOWS.crossfader.idealMs,
+      label: "Left → right crossfader",
+    });
+  }, [finished, samples]);
+
   const reset = useCallback(() => {
     setStepIndex(0);
     setDone([]);
     setFinished(false);
-  }, []);
+    resetMotion();
+  }, [resetMotion]);
 
   const advance = useCallback(() => {
     if (finishedRef.current) return;
@@ -83,11 +101,31 @@ export function HardwareCrossfaderLab() {
     onPass: advance,
   });
 
+  usePublishDeckState({
+    playing1: tt.playing1,
+    playing2: tt.playing2,
+    cues1: tt.cues1,
+    cues2: tt.cues2,
+    values: live.values,
+    midiReady: live.ready,
+    audioReady: tt.booted,
+    syncLeds: true,
+  });
+
   return (
     <HardwareLabShell
       onRestart={reset}
       extraToolbar={
-        <button type="button" className={tt.booted ? "active" : ""} onClick={() => void tt.boot().then(() => { void tt.playDeck(1); void tt.playDeck(2); })}>
+        <button
+          type="button"
+          className={tt.booted ? "active" : ""}
+          onClick={() =>
+            void tt.boot().then(() => {
+              void tt.playDeck(1);
+              void tt.playDeck(2);
+            })
+          }
+        >
           {tt.booted ? "Both decks on" : "Enable + play both"}
         </button>
       }
@@ -118,6 +156,11 @@ export function HardwareCrossfaderLab() {
           <p>
             <strong>Pass.</strong> Free play lets you pick different beds per deck.
           </p>
+          {timing && (
+            <p className={`mix-timing-tip ${timing.verdict}`}>
+              Timing coach: {timing.tip}
+            </p>
+          )}
         </HardwareGrade>
       )}
     </HardwareLabShell>
