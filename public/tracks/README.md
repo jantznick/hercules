@@ -16,4 +16,6 @@ If a file is missing, the app falls back to a simple synthesized bed for that ca
 
 ## Add from the app
 
-In **Free play** (or any hardware lab with the track bar), use **Add file** on Deck 1 or 2. Imports stay in the browser session only (not uploaded, not written to this folder).
+In **Free play** (or any lab with the track bar), use **Add file** on Deck 1 or 2. Set **Import BPM** (default 124) before adding so the catalog stores the right tempo.
+
+Imports are **session-only**: they live in the browser until you reload — not uploaded, not written to this folder, and not synced across devices.

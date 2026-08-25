@@ -57,20 +57,72 @@ export function cacheTrackBuffer(id: TrackId, buffer: AudioBuffer) {
   bufferCache.set(id, buffer);
 }
 
+function slugify(name: string): string {
+  return name.replace(/[^a-zA-Z0-9_-]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "") || "import";
+}
+
+/** Stable `user-*` id; appends -2, -3… when the base is already taken. */
+function uniqueUserId(baseName: string): string {
+  const slug = slugify(baseName).slice(0, 40);
+  const taken = new Set(getTrackCatalog().map((t) => t.id));
+  let id = `user-${slug}`;
+  let n = 2;
+  while (taken.has(id)) {
+    id = `user-${slug}-${n}`;
+    n += 1;
+  }
+  return id;
+}
+
+/** Dedupe display titles against the live catalog. */
+function uniqueTitle(baseName: string): string {
+  const base = (baseName || "import").slice(0, 40);
+  const taken = new Set(getTrackCatalog().map((t) => t.title));
+  if (!taken.has(base)) return base;
+  let n = 2;
+  for (;;) {
+    const suffix = ` (${n})`;
+    const title = `${base.slice(0, Math.max(1, 40 - suffix.length))}${suffix}`;
+    if (!taken.has(title)) return title;
+    n += 1;
+  }
+}
+
+/** Format buffer length for track menus (e.g. 0:08). */
+export function formatTrackDuration(seconds: number): string {
+  if (!Number.isFinite(seconds) || seconds < 0) return "";
+  const s = Math.round(seconds);
+  const m = Math.floor(s / 60);
+  const r = s % 60;
+  return `${m}:${r.toString().padStart(2, "0")}`;
+}
+
+/** BPM chosen in TrackPickerBar; applied on the next importUserTrack if callers omit/forward default. */
+let pendingImportBpm: number | undefined;
+
+export function setPendingImportBpm(bpm: number) {
+  pendingImportBpm =
+    Number.isFinite(bpm) && bpm > 0 ? bpm : undefined;
+}
+
 /** Decode a local file into the catalog (session-only; not persisted). */
 export async function importUserTrack(
   file: File,
   ctx: AudioContext,
   bpm = 124,
 ): Promise<TrackInfo> {
+  const fromPicker = pendingImportBpm;
+  pendingImportBpm = undefined;
   const ab = await file.arrayBuffer();
   const buffer = await ctx.decodeAudioData(ab.slice(0));
   const base = file.name.replace(/\.[^.]+$/, "") || "import";
-  const id = `user-${Date.now()}-${base}`.replace(/[^a-zA-Z0-9_-]/g, "-");
+  const raw = fromPicker ?? bpm;
+  const resolvedBpm = Number.isFinite(raw) && raw > 0 ? raw : 124;
+  const id = uniqueUserId(base);
   const info: TrackInfo = {
     id,
-    title: base.slice(0, 40),
-    bpm,
+    title: uniqueTitle(base),
+    bpm: resolvedBpm,
     user: true,
   };
   cacheTrackBuffer(id, buffer);
