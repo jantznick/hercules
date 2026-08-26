@@ -212,17 +212,39 @@ async function tidalApiFetch(path: string, accessToken: string, searchParams?: R
     headers: {
       Authorization: `Bearer ${accessToken}`,
       Accept: 'application/vnd.api+json',
-      'Content-Type': 'application/vnd.api+json',
     },
   });
 
-  const payload = (await response.json().catch(() => ({}))) as JsonApiDocument & { errors?: Array<{ detail?: string }> };
+  const rawText = await response.text();
+  let payload: JsonApiDocument & { errors?: Array<{ detail?: string; title?: string; code?: string }> } = {};
+  try {
+    payload = rawText ? (JSON.parse(rawText) as typeof payload) : {};
+  } catch {
+    payload = {};
+  }
+
   if (!response.ok) {
-    const detail = payload.errors?.[0]?.detail || response.statusText;
+    const detail =
+      payload.errors?.[0]?.detail ||
+      payload.errors?.[0]?.title ||
+      payload.errors?.[0]?.code ||
+      response.statusText;
+    const bodySnippet = rawText.replace(/\s+/g, ' ').slice(0, 400);
+    console.error(`Tidal API ${response.status} ${url.pathname}?${url.searchParams.toString()}: ${detail}`, bodySnippet);
     throw new Error(`Tidal API ${response.status}: ${detail}`);
   }
 
   return payload;
+}
+
+/** Primary searchResults resource from a collection document (exactly one per query). */
+function primarySearchResult(doc: JsonApiDocument): JsonApiResource | null {
+  const data = doc.data;
+  if (!data) return null;
+  if (Array.isArray(data)) {
+    return data.find((item) => item.type === 'searchResults') ?? data[0] ?? null;
+  }
+  return data.type === 'searchResults' || !data.type ? data : null;
 }
 
 function includedByType(included: JsonApiResource[] | undefined, type: string): Map<string, JsonApiResource> {
@@ -314,15 +336,35 @@ export async function searchTracks(userId: string, query: string, limit = 20): P
 
   const { countryCode } = requireTidalConfig();
   const accessToken = await getValidAccessToken(userId);
-  const encodedQuery = encodeURIComponent(trimmed);
 
-  const doc = await tidalApiFetch(`/searchResults/${encodedQuery}`, accessToken, {
-    countryCode,
-    include: 'tracks,artists,albums',
-  });
+  // Official catalog API (tidal-api-oas): GET /searchResults?filter[query]=…
+  // Path /searchResults/{id} expects an opaque result id, not the free-text query
+  // (that shape returns 400 "Invalid resource ID").
+  // Nested includes pull artist/album titles for matched tracks.
+  const include = 'tracks,tracks.artists,tracks.albums';
+  let doc: JsonApiDocument;
+  try {
+    doc = await tidalApiFetch('/searchResults', accessToken, {
+      'filter[query]': trimmed.slice(0, 256),
+      countryCode,
+      include,
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : '';
+    // Some tenants reject nested include paths; retry with tracks only.
+    if (message.includes('400') && include.includes('.')) {
+      doc = await tidalApiFetch('/searchResults', accessToken, {
+        'filter[query]': trimmed.slice(0, 256),
+        countryCode,
+        include: 'tracks',
+      });
+    } else {
+      throw err;
+    }
+  }
 
-  const searchResult = doc.data;
-  if (!searchResult || Array.isArray(searchResult)) {
+  const searchResult = primarySearchResult(doc);
+  if (!searchResult) {
     return [];
   }
 

@@ -56,7 +56,7 @@ flowchart TB
 | `TIDAL_CLIENT_ID` / `TIDAL_CLIENT_SECRET` | api | From [developer.tidal.com](https://developer.tidal.com/) |
 | `TIDAL_REDIRECT_URI` | api | **API** HTTPS callback: `https://api.hercules.nickjantz.com/api/tidal/callback` (must match dashboard exactly) |
 | `TIDAL_SCOPES` | api | Optional; default `search.read playback`. Enable the same scopes on the Tidal app. Avoid legacy `r_usr` |
-| `TIDAL_COUNTRY_CODE` | api | Optional, default `US` |
+| `TIDAL_COUNTRY_CODE` | api | Optional ISO 3166-1 alpha-2 for catalog search/metadata (default `US`) |
 | `TOKEN_ENCRYPTION_KEY` | api | Optional; defaults to `SESSION_SECRET` for Tidal token encryption |
 | `VITE_API_URL` | **web build** | Public API origin (no trailing slash). Vite inlines at build time — changing it requires a **rebuild** |
 
