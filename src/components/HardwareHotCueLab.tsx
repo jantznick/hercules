@@ -7,6 +7,7 @@ import {
 } from "../midi/mixUltraMap";
 import { useLiveController } from "../midi/useLiveController";
 import { useMidiMessages } from "../midi/useMidiBus";
+import { markLabPass } from "../tutorials/labPass";
 import { HardwareGrade, HardwareLabShell } from "./HardwareLabShell";
 import { MixUltraDeck } from "./MixUltraDeck";
 import { WaveformStrip } from "./WaveformStrip";
@@ -163,6 +164,10 @@ export function HardwareHotCueLab() {
     highlight: finished ? null : step.id === "mode" ? null : "deck1.play",
     syncLeds: true,
   });
+
+  useEffect(() => {
+    if (finished && (score ?? 0) >= 70) markLabPass("/labs/hot-cue");
+  }, [finished, score]);
 
   return (
     <HardwareLabShell

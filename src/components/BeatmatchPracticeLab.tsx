@@ -88,7 +88,8 @@ export function BeatmatchLearn() {
           </li>
           <li>
             Then try it in djay:{" "}
-            <Link to="/tutorials/mix-manual-beatmatch">Match BPM by hand</Link>.
+            <Link to="/tutorials/mix-manual-beatmatch">Full steps</Link> ·{" "}
+            <Link to="/tutorials/mix-manual-beatmatch?mode=drill">Drill on hardware</Link>.
           </li>
         </ol>
       </HowToUse>

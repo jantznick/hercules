@@ -7,6 +7,7 @@ import {
 } from "../djing/techniques";
 import { SOURCE_VIDEOS } from "../djing/videos";
 import { TUTORIALS } from "../tutorials/data";
+import { drillPath, tutorialHasDrill } from "../tutorials/drills";
 import { LevelBand } from "./SectionCards";
 
 function tutorialLabel(id: string) {
@@ -73,6 +74,20 @@ export function TechniqueCatalog({
                       </Link>
                     ))}
                   </p>
+                  {tech.tutorials.some(tutorialHasDrill) && (
+                    <p className="technique-links">
+                      <span className="technique-links-label">Drill</span>
+                      {tech.tutorials.filter(tutorialHasDrill).map((id) => {
+                        const to = drillPath(id);
+                        if (!to) return null;
+                        return (
+                          <Link key={id} to={to}>
+                            {tutorialLabel(id)}
+                          </Link>
+                        );
+                      })}
+                    </p>
+                  )}
                   {tech.labs && tech.labs.length > 0 && (
                     <p className="technique-links">
                       <span className="technique-links-label">Lab</span>

@@ -164,9 +164,14 @@ export function HotCueLabPage() {
       <RelatedExtras
         links={[
           {
+            to: "/tutorials/hot-cues?mode=drill",
+            label: "Tutorial drill: Hot cues",
+            blurb: "Same graded shell inside the tutorial",
+          },
+          {
             to: "/tutorials/hot-cues",
-            label: "Tutorial: Hot cues jump map",
-            blurb: "Build intro / drop / breakdown pads",
+            label: "Full steps: Hot cues jump map",
+            blurb: "Build intro / drop / breakdown pads in djay",
           },
           {
             to: "/labs/free",
@@ -333,9 +338,14 @@ export function BeatmatchLabPage() {
             blurb: "Full steps — Key Lock, SYNC off",
           },
           {
+            to: "/tutorials/mix-manual-beatmatch?mode=drill",
+            label: "Tutorial drill: Match BPM by hand",
+            blurb: "Same graded shell inside the tutorial",
+          },
+          {
             to: "/tutorials/mix-manual-beatmatch",
-            label: "Tutorial: Match BPM by hand",
-            blurb: "Same drill in djay with real songs",
+            label: "Full steps: Match BPM by hand",
+            blurb: "djay walkthrough with real songs",
           },
           {
             to: "/labs/blend",
@@ -384,9 +394,14 @@ export function IncomingCueLabPage() {
             blurb: "Graded LOW + crossfader after cue prep",
           },
           {
+            to: "/tutorials/two-deck-blend?mode=drill",
+            label: "Tutorial drill: First two-deck blend",
+            blurb: "Same graded blend shell inside the tutorial",
+          },
+          {
             to: "/tutorials/two-deck-blend",
-            label: "Tutorial: First two-deck blend",
-            blurb: "Same cue in djay with real songs",
+            label: "Full steps: First two-deck blend",
+            blurb: "djay walkthrough with real songs",
           },
           {
             to: "/djing/cueing",
@@ -438,6 +453,11 @@ export function BlendLabPage() {
             to: "/djing/blend",
             label: "Blend",
             blurb: "Longer mix strategy",
+          },
+          {
+            to: "/tutorials/two-deck-blend?mode=drill",
+            label: "Tutorial drill: First two-deck blend",
+            blurb: "Same graded shell inside the tutorial",
           },
           {
             to: "/labs/free",

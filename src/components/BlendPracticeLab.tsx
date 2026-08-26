@@ -96,7 +96,9 @@ export function BlendLearn() {
           </li>
           <li>
             Later, do the same idea in djay with real songs (
-            <Link to="/tutorials">Tutorials</Link> / <Link to="/djing/blend">Blend</Link>).
+            <Link to="/tutorials/two-deck-blend">Full steps</Link> /{" "}
+            <Link to="/tutorials/two-deck-blend?mode=drill">Drill on hardware</Link> /{" "}
+            <Link to="/djing/blend">Blend</Link>).
           </li>
         </ol>
       </HowToUse>
