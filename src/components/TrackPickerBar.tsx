@@ -260,7 +260,8 @@ export function TrackPickerBar({
   }, [isAuthenticated, controlled]);
 
   const tidalReady = isAuthenticated && tidalConnected && !tidalStatusLoading;
-  const showPracticeBeds = !freePlayMode || !tidalReady;
+  const showPracticeBed1 = !freePlayMode || !tidalReady || !tidal1;
+  const showPracticeBed2 = !freePlayMode || !tidalReady || !tidal2;
 
   return (
     <div className={`hw-free-bar track-picker-bar${freePlayMode ? " free-play" : ""}`}>
@@ -294,7 +295,7 @@ export function TrackPickerBar({
             />
           ) : null}
 
-          {showPracticeBeds ? (
+          {showPracticeBed1 ? (
             <label>
               {freePlayMode ? "Deck 1 · practice tones" : "Deck 1 · practice bed"}
               <select value={track1} onChange={(e) => onSelect(1, e.target.value)}>
@@ -341,7 +342,7 @@ export function TrackPickerBar({
             />
           ) : null}
 
-          {showPracticeBeds ? (
+          {showPracticeBed2 ? (
             <label>
               {freePlayMode ? "Deck 2 · practice tones" : "Deck 2 · practice bed"}
               <select value={track2} onChange={(e) => onSelect(2, e.target.value)}>

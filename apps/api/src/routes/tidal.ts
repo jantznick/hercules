@@ -19,6 +19,28 @@ import { requireAuth } from '../middleware/requireAuth.js';
 
 const router = Router();
 
+function tidalRouteError(err: unknown, res: Response, fallback: string): void {
+  const message = err instanceof Error ? err.message : fallback;
+  if (message === 'Tidal account not connected') {
+    res.status(403).json({ error: message });
+    return;
+  }
+  if (message === 'Playlist not found' || message === 'Track not found') {
+    res.status(404).json({ error: message });
+    return;
+  }
+  if (message.includes('timeout')) {
+    res.status(504).json({ error: message });
+    return;
+  }
+  const scopeHint =
+    message.includes('403') || /scope|permission|forbidden/i.test(message)
+      ? ' Reconnect Tidal in Settings so playlists.read and collection.read are granted.'
+      : '';
+  console.error(`${fallback}:`, err);
+  res.status(502).json({ error: fallback, detail: `${message}${scopeHint}`.trim() });
+}
+
 function isTidalConfigured(): boolean {
   return Boolean(
     (process.env.TIDAL_CLIENT_ID || '').trim() &&
@@ -172,13 +194,7 @@ router.get('/playlists', requireAuth, async (req: Request, res: Response) => {
     const result = await listUserPlaylists(req.session.userId!, limit, cursor);
     res.json(result);
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Playlist list failed';
-    if (message === 'Tidal account not connected') {
-      res.status(403).json({ error: message });
-      return;
-    }
-    console.error('Tidal playlists error:', err);
-    res.status(502).json({ error: 'Tidal playlist list failed' });
+    tidalRouteError(err, res, 'Tidal playlist list failed');
   }
 });
 
@@ -198,17 +214,7 @@ router.get('/playlists/:id/tracks', requireAuth, async (req: Request, res: Respo
     const result = await getPlaylistTracks(req.session.userId!, playlistId, limit, cursor);
     res.json(result);
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Playlist tracks failed';
-    if (message === 'Tidal account not connected') {
-      res.status(403).json({ error: message });
-      return;
-    }
-    if (message === 'Playlist not found') {
-      res.status(404).json({ error: message });
-      return;
-    }
-    console.error('Tidal playlist tracks error:', err);
-    res.status(502).json({ error: 'Tidal playlist tracks failed' });
+    tidalRouteError(err, res, 'Tidal playlist tracks failed');
   }
 });
 
@@ -221,13 +227,7 @@ router.get('/collection/tracks', requireAuth, async (req: Request, res: Response
     const result = await listCollectionTracks(req.session.userId!, limit, cursor);
     res.json(result);
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Collection tracks failed';
-    if (message === 'Tidal account not connected') {
-      res.status(403).json({ error: message });
-      return;
-    }
-    console.error('Tidal collection tracks error:', err);
-    res.status(502).json({ error: 'Tidal collection tracks failed' });
+    tidalRouteError(err, res, 'Tidal collection tracks failed');
   }
 });
 

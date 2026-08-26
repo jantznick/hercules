@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from "react";
 import { useFreePlayTidalPlayback } from "../audio/useFreePlayTidalPlayback";
 import { formatTidalKeyMeta, type TidalTrackRef } from "../audio/tracks";
 import { useTurntableSession } from "../audio/useTurntableSession";
+import { placeholderPeaks } from "../audio/waveform";
 import { usePublishDeckState } from "../deck/hooks";
 import { isNonHotCuePad } from "../midi/mixUltraMap";
 import { useLiveController } from "../midi/useLiveController";
@@ -57,6 +58,10 @@ export function HardwareFreePlay() {
   });
   padRef.current = (ev) => {
     setPadModeHint(null);
+    if (tidalPlayback.hasTidal(ev.deck)) {
+      void tidalPlayback.onPad(ev);
+      return;
+    }
     void tt.onPad(ev);
   };
   jogRef.current = (deck, delta) => {
@@ -73,13 +78,22 @@ export function HardwareFreePlay() {
   const playing1 = tidal1 ? tidalPlayback.isPlaying(1) : tt.playing1;
   const playing2 = tidal2 ? tidalPlayback.isPlaying(2) : tt.playing2;
 
+  const peaks1 = tidal1 ? placeholderPeaks(tidal1.id) : tt.peaks1;
+  const peaks2 = tidal2 ? placeholderPeaks(tidal2.id) : tt.peaks2;
+  const duration1 = tidal1 ? tidalPlayback.tidalDuration(1) : tt.duration1;
+  const duration2 = tidal2 ? tidalPlayback.tidalDuration(2) : tt.duration2;
+  const playhead1 = tidal1 ? tidalPlayback.tidalPlayhead(1) : tt.playhead1;
+  const playhead2 = tidal2 ? tidalPlayback.tidalPlayhead(2) : tt.playhead2;
+  const cues1 = tidal1 ? tidalPlayback.cues1 : tt.cues1;
+  const cues2 = tidal2 ? tidalPlayback.cues2 : tt.cues2;
+
   usePublishDeckState({
     playing1,
     playing2,
     track1: tt.track1,
     track2: tt.track2,
-    cues1: tt.cues1,
-    cues2: tt.cues2,
+    cues1,
+    cues2,
     values: live.values,
     pressed: live.pressed,
     pads1: live.pads1,
@@ -151,18 +165,18 @@ export function HardwareFreePlay() {
         <div className="wave-stack">
           <WaveformStrip
             label={deckWaveLabel(1, tidal1)}
-            peaks={tt.peaks1}
-            playhead={tt.playhead1}
-            duration={tt.duration1}
-            cues={tt.cues1}
+            peaks={peaks1}
+            playhead={playhead1}
+            duration={duration1}
+            cues={cues1}
             playing={playing1}
           />
           <WaveformStrip
             label={deckWaveLabel(2, tidal2)}
-            peaks={tt.peaks2}
-            playhead={tt.playhead2}
-            duration={tt.duration2}
-            cues={tt.cues2}
+            peaks={peaks2}
+            playhead={playhead2}
+            duration={duration2}
+            cues={cues2}
             playing={playing2}
           />
         </div>
@@ -176,8 +190,8 @@ export function HardwareFreePlay() {
         playing2={playing2}
         pads1={live.pads1}
         pads2={live.pads2}
-        cues1={tt.cues1}
-        cues2={tt.cues2}
+        cues1={cues1}
+        cues2={cues2}
         jogAngle1={live.jogAngle1}
         jogAngle2={live.jogAngle2}
         trackLabel1={deckTrackLabel(tidal1)}

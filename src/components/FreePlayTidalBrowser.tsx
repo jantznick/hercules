@@ -78,6 +78,7 @@ export function FreePlayTidalBrowser({ onLoad, tidal1, tidal2 }: Props) {
   const [selectedPlaylist, setSelectedPlaylist] = useState<TidalPlaylistSummary | null>(null);
   const [playlistTracks, setPlaylistTracks] = useState<TidalTrackSummary[]>([]);
   const [playlistTracksLoading, setPlaylistTracksLoading] = useState(false);
+  const [playlistTracksError, setPlaylistTracksError] = useState<string | null>(null);
 
   const [savedTracks, setSavedTracks] = useState<TidalTrackSummary[]>([]);
   const [savedLoading, setSavedLoading] = useState(false);
@@ -114,9 +115,9 @@ export function FreePlayTidalBrowser({ onLoad, tidal1, tidal2 }: Props) {
       tidalAPI
         .search(trimmed, 12)
         .then((data) => setSearchResults(data.tracks))
-        .catch(() => {
+        .catch((err) => {
           setSearchResults([]);
-          setSearchError("Search failed");
+          setSearchError(err instanceof Error ? err.message : "Search failed");
         })
         .finally(() => setSearching(false));
     }, 320);
@@ -134,10 +135,10 @@ export function FreePlayTidalBrowser({ onLoad, tidal1, tidal2 }: Props) {
       .then((data) => {
         if (!cancelled) setPlaylists(data.playlists);
       })
-      .catch(() => {
+      .catch((err) => {
         if (!cancelled) {
           setPlaylists([]);
-          setPlaylistsError("Could not load playlists");
+          setPlaylistsError(err instanceof Error ? err.message : "Could not load playlists");
         }
       })
       .finally(() => {
@@ -158,10 +159,10 @@ export function FreePlayTidalBrowser({ onLoad, tidal1, tidal2 }: Props) {
       .then((data) => {
         if (!cancelled) setSavedTracks(data.tracks);
       })
-      .catch(() => {
+      .catch((err) => {
         if (!cancelled) {
           setSavedTracks([]);
-          setSavedError("Could not load saved tracks");
+          setSavedError(err instanceof Error ? err.message : "Could not load saved tracks");
         }
       })
       .finally(() => {
@@ -175,17 +176,22 @@ export function FreePlayTidalBrowser({ onLoad, tidal1, tidal2 }: Props) {
   useEffect(() => {
     if (!selectedPlaylist) {
       setPlaylistTracks([]);
+      setPlaylistTracksError(null);
       return;
     }
     let cancelled = false;
     setPlaylistTracksLoading(true);
+    setPlaylistTracksError(null);
     tidalAPI
       .playlistTracks(selectedPlaylist.id, 50)
       .then((data) => {
         if (!cancelled) setPlaylistTracks(data.tracks);
       })
-      .catch(() => {
-        if (!cancelled) setPlaylistTracks([]);
+      .catch((err) => {
+        if (!cancelled) {
+          setPlaylistTracks([]);
+          setPlaylistTracksError(err instanceof Error ? err.message : "Could not load playlist tracks");
+        }
       })
       .finally(() => {
         if (!cancelled) setPlaylistTracksLoading(false);
@@ -281,6 +287,8 @@ export function FreePlayTidalBrowser({ onLoad, tidal1, tidal2 }: Props) {
                 <p className="track-tidal-status">Pick a playlist</p>
               ) : playlistTracksLoading ? (
                 <p className="track-tidal-status">Loading tracks…</p>
+              ) : playlistTracksError ? (
+                <p className="track-tidal-status warn">{playlistTracksError}</p>
               ) : playlistTracks.length === 0 ? (
                 <p className="track-tidal-status">No tracks in this playlist.</p>
               ) : (

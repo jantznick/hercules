@@ -6,8 +6,9 @@ const TIDAL_AUTH_BASE = 'https://login.tidal.com/authorize';
 const TIDAL_TOKEN_URL = 'https://auth.tidal.com/v1/oauth2/token';
 const TIDAL_API_BASE = 'https://openapi.tidal.com/v2';
 /** Modern OpenAPI scopes. Legacy `r_usr` / `w_usr` often trigger authorize Error 1002 (invalid_scope). */
-const DEFAULT_TIDAL_SCOPES = 'search.read playback';
+const DEFAULT_TIDAL_SCOPES = 'search.read playback playlists.read collection.read';
 const TOKEN_REFRESH_SKEW_MS = 60_000;
+const TIDAL_FETCH_TIMEOUT_MS = 20_000;
 
 export type TidalConfig = {
   clientId: string;
@@ -245,12 +246,27 @@ async function tidalApiFetch(path: string, accessToken: string, searchParams?: R
     }
   }
 
-  const response = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      Accept: 'application/vnd.api+json',
-    },
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), TIDAL_FETCH_TIMEOUT_MS);
+
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: 'application/vnd.api+json',
+      },
+      signal: controller.signal,
+    });
+  } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      console.error(`Tidal API timeout ${url.pathname}?${url.searchParams.toString()}`);
+      throw new Error(`Tidal API timeout after ${TIDAL_FETCH_TIMEOUT_MS / 1000}s`);
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeout);
+  }
 
   const rawText = await response.text();
   let payload: JsonApiDocument & { errors?: Array<{ detail?: string; title?: string; code?: string }> } = {};
@@ -712,33 +728,38 @@ export async function getPlaylistTracks(
   const accessToken = await getValidAccessToken(userId);
   const pageSize = Math.min(Math.max(limit, 1), 50);
 
+  // Playlist items live on the relationships endpoint; nested includes use type qualifiers (items.tracks:artists).
+  const includeFull = 'items.tracks:artists,items.tracks:albums,items.tracks:albums.coverArt';
   const params: Record<string, string> = {
     countryCode,
-    include: 'items.tracks,items.tracks.artists,items.tracks.albums,items.tracks.albums.coverArt',
+    include: includeFull,
   };
   if (cursor) params['page[cursor]'] = cursor;
 
   let doc: JsonApiDocument;
   try {
-    doc = await tidalApiFetch(`/playlists/${encodeURIComponent(playlistId)}`, accessToken, params);
+    doc = await tidalApiFetch(
+      `/playlists/${encodeURIComponent(playlistId)}/relationships/items`,
+      accessToken,
+      params,
+    );
   } catch (err) {
     const message = err instanceof Error ? err.message : '';
     if (message.includes('400')) {
-      doc = await tidalApiFetch(`/playlists/${encodeURIComponent(playlistId)}`, accessToken, {
-        countryCode,
-        include: 'items.tracks,items.tracks.artists,items.tracks.albums',
-      });
+      doc = await tidalApiFetch(
+        `/playlists/${encodeURIComponent(playlistId)}/relationships/items`,
+        accessToken,
+        { countryCode, include: 'items.tracks:artists,items.tracks:albums' },
+      );
+    } else if (message.includes('404')) {
+      throw new Error('Playlist not found');
     } else {
       throw err;
     }
   }
 
-  const playlist = doc.data;
-  if (!playlist || Array.isArray(playlist)) {
-    throw new Error('Playlist not found');
-  }
-
-  const itemRefs = relationshipRefs(playlist, 'items');
+  const data = doc.data;
+  const itemRefs = Array.isArray(data) ? data : data ? [data] : [];
   return {
     tracks: tracksFromItemRefs(itemRefs, doc.included, pageSize),
     nextCursor: nextCursorFromDoc(doc),
@@ -754,26 +775,14 @@ export async function listCollectionTracks(
   const accessToken = await getValidAccessToken(userId);
   const pageSize = Math.min(Math.max(limit, 1), 50);
 
+  // userCollectionTracks only documents include=items|owners — nested artist/album paths 400.
   const params: Record<string, string> = {
     countryCode,
-    include: 'items,items.artists,items.albums,items.albums.coverArt',
+    include: 'items',
   };
   if (cursor) params['page[cursor]'] = cursor;
 
-  let doc: JsonApiDocument;
-  try {
-    doc = await tidalApiFetch('/userCollectionTracks/me', accessToken, params);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : '';
-    if (message.includes('400')) {
-      doc = await tidalApiFetch('/userCollectionTracks/me', accessToken, {
-        countryCode,
-        include: 'items,items.artists,items.albums',
-      });
-    } else {
-      throw err;
-    }
-  }
+  const doc = await tidalApiFetch('/userCollectionTracks/me', accessToken, params);
 
   const collection = doc.data;
   if (!collection || Array.isArray(collection)) {

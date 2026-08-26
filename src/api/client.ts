@@ -27,18 +27,33 @@ export type AuthUser = {
 };
 
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const response = await fetch(`${API_BASE}${endpoint}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-    credentials: "include",
-  });
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), 25_000);
+
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE}${endpoint}`, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+      credentials: "include",
+      signal: controller.signal,
+    });
+  } catch (err) {
+    window.clearTimeout(timeout);
+    if (err instanceof Error && err.name === "AbortError") {
+      throw new Error("Request timed out — try again");
+    }
+    throw err;
+  }
+  window.clearTimeout(timeout);
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({ error: "Request failed" }));
-    throw new Error((error as { error?: string }).error || "Request failed");
+    const body = error as { error?: string; detail?: string };
+    throw new Error(body.detail || body.error || "Request failed");
   }
   if (response.status === 204) return null as T;
   return response.json() as Promise<T>;

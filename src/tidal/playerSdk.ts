@@ -4,6 +4,12 @@ export type TidalPlayerModule = typeof import("@tidal-music/player");
 
 let playerModulePromise: Promise<TidalPlayerModule> | null = null;
 let sdkReady = false;
+let cachedModule: TidalPlayerModule | null = null;
+
+/** Synchronous access after bootstrap — used for gesture-safe play(). */
+export function getCachedTidalPlayerModule(): TidalPlayerModule | null {
+  return cachedModule;
+}
 
 /** Demo / reference listening does not need analytics batching. */
 const noopEventSender = {
@@ -53,6 +59,7 @@ export async function ensureTidalPlayerSdk(): Promise<TidalPlayerModule> {
     });
 
     sdkReady = true;
+    cachedModule = mod;
   }
   return mod;
 }
@@ -100,6 +107,33 @@ export async function playTidalTrack(
 }
 
 export async function pauseTidalPlayback(): Promise<void> {
-  const mod = await ensureTidalPlayerSdk();
+  const mod = cachedModule ?? (await ensureTidalPlayerSdk());
   mod.pause();
+}
+
+export function getTidalPlaybackPosition(): number {
+  const mod = cachedModule;
+  if (!mod) return 0;
+  return mod.getAssetPosition();
+}
+
+export function getTidalPlaybackDuration(): number | null {
+  const mod = cachedModule;
+  if (!mod) return null;
+  const ctx = mod.getPlaybackContext();
+  return ctx?.actualDuration ?? null;
+}
+
+export async function seekTidalPlayback(seconds: number): Promise<void> {
+  const mod = await ensureTidalPlayerSdk();
+  await mod.seek(Math.max(0, seconds));
+}
+
+/** Load stream into the player without starting playback (DJ-style load). */
+export async function preloadTidalTrack(
+  productId: string,
+  sourceId: string,
+  host: HTMLElement | null,
+): Promise<TidalPlayerModule> {
+  return loadTidalTrack(productId, sourceId, host);
 }
