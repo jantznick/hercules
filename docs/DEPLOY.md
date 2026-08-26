@@ -1,8 +1,8 @@
 # Deploy Hercules
 
-End-to-end checklist: **Railway** (Postgres + api + web) → env / CORS / cookies → Tidal + Resend → verify.
+End-to-end checklist: **Railway** (Postgres + api) + **web** (Railway *or* [Render static](./RENDER.md)) → env / CORS / cookies → Tidal + Resend → verify.
 
-Platform URLs (`*.up.railway.app`) are fine until custom domains. Detail: [RAILWAY.md](./RAILWAY.md).
+Platform URLs (`*.up.railway.app` / `*.onrender.com`) are fine until custom domains. Detail: [RAILWAY.md](./RAILWAY.md), [RENDER.md](./RENDER.md).
 
 | Host (example) | Service |
 | --- | --- |
@@ -79,12 +79,22 @@ curl -s https://<api-public>/api/health
 
 ### 1.3 Web (public)
 
+**Option A — Railway** (Docker):
+
 | Setting | Value |
 | --- | --- |
 | Dockerfile path | `apps/web/Dockerfile` |
 | Build context | **Repo root** |
 | Public domain | Yes |
 | Build env | `VITE_API_URL=https://<api-public>` |
+
+**Option B — Render** (static site): see [RENDER.md](./RENDER.md).
+
+| Setting | Value |
+| --- | --- |
+| Build command | `npm install && npm run build` |
+| Publish directory | `dist` |
+| Env | `NPM_CONFIG_PRODUCTION=false`, `VITE_API_URL=https://<api-public>` |
 
 Changing `VITE_*` requires a **rebuild**.
 
@@ -138,4 +148,5 @@ If login fails with CORS or missing cookies:
 ## Related
 
 - [RAILWAY.md](./RAILWAY.md) — service map and runbook detail
+- [RENDER.md](./RENDER.md) — static SPA on Render
 - [`.env.example`](../.env.example) — full variable list

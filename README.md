@@ -2,7 +2,7 @@
 
 DJ practice app: Vite + React SPA, Express API, Postgres (Prisma).
 
-**[Deploy on Railway](docs/DEPLOY.md)** — Postgres + api + web. Detail: [RAILWAY.md](docs/RAILWAY.md).
+**[Deploy](docs/DEPLOY.md)** — Postgres + api on Railway; web on Railway or [Render static](docs/RENDER.md). Detail: [RAILWAY.md](docs/RAILWAY.md).
 
 ## Local
 

@@ -1,6 +1,6 @@
 # Railway deployment
 
-Postgres, API, and the Vite SPA run on **Railway** (same split shape as [api-security](https://github.com/jantznick/api-security): API + DB on Railway; static web is a separate service — here also on Railway instead of Render).
+Postgres, API, and (optionally) the Vite SPA run on **Railway** (same split shape as [api-security](https://github.com/jantznick/api-security): API + DB on Railway; static web is a separate service — Railway Docker or [Render static](./RENDER.md)).
 
 Platform URLs (`*.up.railway.app`) work until custom domains are attached.
 
