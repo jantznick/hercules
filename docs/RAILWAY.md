@@ -54,7 +54,8 @@ flowchart TB
 | `RESEND_API_KEY` | api | Required in production for magic-link email |
 | `RESEND_FROM_EMAIL` | api | Verified sender, e.g. `Hercules <noreply@yourdomain.com>` |
 | `TIDAL_CLIENT_ID` / `TIDAL_CLIENT_SECRET` | api | From [developer.tidal.com](https://developer.tidal.com/) |
-| `TIDAL_REDIRECT_URI` | api | **API** HTTPS callback: `https://<api-public>/api/tidal/callback` (register the same URI in the Tidal app) |
+| `TIDAL_REDIRECT_URI` | api | **API** HTTPS callback: `https://api.hercules.nickjantz.com/api/tidal/callback` (must match dashboard exactly) |
+| `TIDAL_SCOPES` | api | Optional; default `search.read playback`. Enable the same scopes on the Tidal app. Avoid legacy `r_usr` |
 | `TIDAL_COUNTRY_CODE` | api | Optional, default `US` |
 | `TOKEN_ENCRYPTION_KEY` | api | Optional; defaults to `SESSION_SECRET` for Tidal token encryption |
 | `VITE_API_URL` | **web build** | Public API origin (no trailing slash). Vite inlines at build time — changing it requires a **rebuild** |
@@ -125,11 +126,15 @@ Smoke: open the web URL → register / login → Network tab shows credentialed 
 
 ### 4. Wire CORS + Tidal
 
-1. Api `FRONTEND_URLS=https://<web-public>`
-2. Api `TIDAL_REDIRECT_URI=https://<api-public>/api/tidal/callback`
-3. In the Tidal developer portal, allow that redirect URI
+1. Api `FRONTEND_URLS=https://<web-public>` (production: `https://hercules.nickjantz.com`)
+2. Api `TIDAL_REDIRECT_URI=https://<api-public>/api/tidal/callback` (production: `https://api.hercules.nickjantz.com/api/tidal/callback`)
+3. In the [Tidal developer dashboard](https://developer.tidal.com/dashboard):
+   - Register that **exact** redirect URI (API host + `/api/tidal/callback`, not the SPA origin)
+   - Enable scopes **`search.read`** and **`playback`** (match `TIDAL_SCOPES` if overridden)
+   - Use Authorization Code + PKCE (Hercules sends `code_challenge_method=S256`)
 4. Leave `COOKIE_DOMAIN` unset until custom domains share a parent
 
+**Authorize Error 1002** on `login.tidal.com` usually means `invalid_scope` or `unauthorized_client`: wrong/legacy scopes (`r_usr`), scopes not ticked for the app, or `redirect_uri` not registered exactly. `geo` / `campaignId` on the error page are added by Tidal — not by Hercules.
 ### 5. Custom domains (optional)
 
 Attach e.g. `app.yourdomain.com` (web) and `api.yourdomain.com` (api), then:
@@ -145,8 +150,8 @@ Attach e.g. `app.yourdomain.com` (web) and `api.yourdomain.com` (api), then:
 1. `curl https://<api>/api/health` → ok  
 2. Web loads; register / login / magic link (Resend)  
 3. Browser: session cookie on api host, `Secure; SameSite=None`  
-4. Connect Tidal → callback hits api → redirect to `/settings` on web  
-5. Postgres has users / sessions after login  
+4. Connect Tidal (Settings → Connect Tidal must hit the **API** host via `apiHref("/tidal/login")`) → authorize → callback on api → redirect to `/settings?tidal=connected`  
+5. If connect fails, Settings shows the `reason` query (e.g. `invalid_scope`, `exchange`). Postgres has users / sessions after login  
 
 ---
 

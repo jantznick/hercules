@@ -68,7 +68,8 @@ Deploy in this order. **Docker build context = repo root** for both services.
 | `RESEND_API_KEY` | `re_…` |
 | `RESEND_FROM_EMAIL` | Verified sender |
 | `TIDAL_CLIENT_ID` / `TIDAL_CLIENT_SECRET` | From Tidal |
-| `TIDAL_REDIRECT_URI` | `https://<api-public>/api/tidal/callback` |
+| `TIDAL_REDIRECT_URI` | `https://<api-public>/api/tidal/callback` (exact match in dashboard) |
+| `TIDAL_SCOPES` | Optional; default `search.read playback` |
 
 `npm run start:api` runs Prisma migrate then the server.
 
@@ -124,7 +125,7 @@ After DNS:
 
 1. Api: `FRONTEND_URLS=https://app.yourdomain.com`, `TIDAL_REDIRECT_URI=https://api.yourdomain.com/api/tidal/callback`, optional `COOKIE_DOMAIN=.yourdomain.com`
 2. Rebuild web with `VITE_API_URL=https://api.yourdomain.com`
-3. Update Tidal app redirect URI
+3. Update Tidal app redirect URI to that **exact** API callback; enable scopes `search.read` and `playback`
 
 ---
 
@@ -133,9 +134,10 @@ After DNS:
 - [ ] `GET https://<api>/api/health` → ok
 - [ ] Register / login on web — CORS and cookies work
 - [ ] Magic link email arrives (Resend)
-- [ ] Connect Tidal → lands back on `/settings`
+- [ ] Connect Tidal → lands back on `/settings` (authorize URL uses `search.read playback`, not legacy `r_usr`)
 - [ ] Session survives refresh
 
+**Tidal Error 1002:** enable matching scopes on the developer app, register `TIDAL_REDIRECT_URI` exactly, redeploy api after env changes. Settings surfaces `?tidal=error&reason=…` when the callback runs; errors that stay on `login.tidal.com` are almost always dashboard misconfiguration.
 If login fails with CORS or missing cookies:
 
 - Confirm `FRONTEND_URLS` includes the exact browser origin (scheme + host, no path)

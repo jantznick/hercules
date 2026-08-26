@@ -24,15 +24,25 @@ function isTidalConfigured(): boolean {
   );
 }
 
-router.use((_req, res, next) => {
+router.use((req, res, next) => {
   if (!isTidalConfigured()) {
+    // Full-page Connect navigations should land back on Settings, not raw JSON.
+    if (req.method === 'GET' && (req.path === '/login' || req.path === '/callback')) {
+      res.redirect(frontendSettingsUrl({ tidal: 'error', reason: 'not_configured' }));
+      return;
+    }
     res.status(503).json({ error: 'Tidal integration is not configured' });
     return;
   }
   next();
 });
 
-router.get('/login', requireAuth, (req: Request, res: Response) => {
+router.get('/login', (req: Request, res: Response) => {
+  if (!req.session?.userId) {
+    res.redirect(frontendSettingsUrl({ tidal: 'error', reason: 'signin' }));
+    return;
+  }
+
   const { verifier, challenge } = createPkcePair();
   const state = createOAuthState();
 
@@ -42,7 +52,7 @@ router.get('/login', requireAuth, (req: Request, res: Response) => {
   req.session.save((err) => {
     if (err) {
       console.error('Failed to save Tidal OAuth session:', err);
-      res.status(500).json({ error: 'Failed to start Tidal login' });
+      res.redirect(frontendSettingsUrl({ tidal: 'error', reason: 'session_save' }));
       return;
     }
 
@@ -59,6 +69,9 @@ router.get('/callback', (req: Request, res: Response) => {
 
   const error = typeof req.query.error === 'string' ? req.query.error : null;
   if (error) {
+    const description =
+      typeof req.query.error_description === 'string' ? req.query.error_description : '';
+    console.error('Tidal OAuth authorize error:', error, description);
     res.redirect(frontendSettingsUrl({ tidal: 'error', reason: error }));
     return;
   }

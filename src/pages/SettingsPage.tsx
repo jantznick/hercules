@@ -5,6 +5,31 @@ import { TidalPlayerPanel } from "../components/TidalPlayerPanel";
 import { useAuth } from "../context/AuthContext";
 import { PageHeader } from "./HomePage";
 
+function tidalConnectErrorMessage(reason: string): string {
+  switch (reason) {
+    case "signin":
+      return "Sign in to Hercules first, then connect Tidal.";
+    case "session":
+      return "Your Hercules session expired during Tidal login. Sign in again and retry Connect Tidal.";
+    case "session_save":
+      return "Could not start Tidal login (session save failed). Try again.";
+    case "state":
+      return "Tidal login was interrupted (state mismatch). Try Connect Tidal again from this browser.";
+    case "exchange":
+      return "Tidal authorized, but token exchange failed. Check TIDAL_CLIENT_SECRET and redirect URI match the developer dashboard.";
+    case "not_configured":
+      return "Tidal is not configured on the API (missing TIDAL_CLIENT_ID / SECRET / REDIRECT_URI).";
+    case "access_denied":
+      return "Tidal access was denied. Approve the app on the consent screen, or enable the requested scopes in the Tidal developer dashboard.";
+    case "invalid_scope":
+      return "Tidal rejected the requested scopes (often Error 1002). In the developer dashboard enable search.read and playback (or set TIDAL_SCOPES to match), and avoid legacy r_usr.";
+    case "unauthorized_client":
+      return "Tidal rejected this client (Error 1002). Confirm client ID, that the redirect URI is registered exactly, and that Authorization Code + PKCE is enabled for the app.";
+    default:
+      return `Could not connect Tidal (${reason}). If you saw Error 1002 on login.tidal.com, check redirect URI registration and that scopes search.read + playback are enabled for the app.`;
+  }
+}
+
 export function SettingsPage() {
   const { user, isAuthenticated, isLoading, openAuthModal, logout } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -20,7 +45,7 @@ export function SettingsPage() {
       setSearchParams(searchParams, { replace: true });
     } else if (tidalParam === "error") {
       const reason = searchParams.get("reason") || "unknown";
-      setTidalNotice(`Could not connect Tidal (${reason}). Try again.`);
+      setTidalNotice(tidalConnectErrorMessage(reason));
       searchParams.delete("tidal");
       searchParams.delete("reason");
       setSearchParams(searchParams, { replace: true });

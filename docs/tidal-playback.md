@@ -102,10 +102,26 @@ Implementation: `src/components/TidalPlayerPanel.tsx` (Settings → reference pl
 
 ---
 
+## OAuth (Connect Tidal)
+
+Flow: Settings → `apiHref("/tidal/login")` (API host) → PKCE authorize at `https://login.tidal.com/authorize` → `GET /api/tidal/callback` → redirect to SPA `/settings`.
+
+| Item | Value |
+|------|--------|
+| Authorize | `https://login.tidal.com/authorize` |
+| Token | `https://auth.tidal.com/v1/oauth2/token` |
+| Default scopes | `search.read playback` (override with `TIDAL_SCOPES`) |
+| Redirect URI (prod) | `https://api.hercules.nickjantz.com/api/tidal/callback` |
+
+Register the redirect URI **exactly** in the [developer dashboard](https://developer.tidal.com/dashboard) and enable the same scopes. Do **not** request legacy `r_usr` / `w_usr` — they commonly produce authorize **Error 1002** (`invalid_scope` / `unauthorized_client`). Params like `geo` and `campaignId` on Tidal’s error page are added by their login UI, not by Hercules.
+
+---
+
 ## Related files
 
 - Backend OAuth + search: `apps/api/src/routes/tidal.ts`, `apps/api/src/lib/tidal.ts`
-- Frontend API: `src/api/client.ts`
+- Frontend API: `src/api/client.ts` (`apiHref` for Connect)
 - Sidecar UI: `src/components/TidalPlayerPanel.tsx`
 - Bundled catalog: `src/audio/tracks.ts`, `public/tracks/README.md`
+- Deploy env: `docs/RAILWAY.md`, `.env.example`
 - Master plan: `docs/plans/hercules-master-roadmap.md`

@@ -5,7 +5,8 @@ import { decryptToken, encryptToken } from './tokenCrypto.js';
 const TIDAL_AUTH_BASE = 'https://login.tidal.com/authorize';
 const TIDAL_TOKEN_URL = 'https://auth.tidal.com/v1/oauth2/token';
 const TIDAL_API_BASE = 'https://openapi.tidal.com/v2';
-const TIDAL_SCOPES = 'r_usr search.read';
+/** Modern OpenAPI scopes. Legacy `r_usr` / `w_usr` often trigger authorize Error 1002 (invalid_scope). */
+const DEFAULT_TIDAL_SCOPES = 'search.read playback';
 const TOKEN_REFRESH_SKEW_MS = 60_000;
 
 export type TidalConfig = {
@@ -13,6 +14,8 @@ export type TidalConfig = {
   clientSecret: string;
   redirectUri: string;
   countryCode: string;
+  /** Space-separated scopes enabled on the Tidal developer app. */
+  scopes: string;
 };
 
 export type TidalOAuthTokens = {
@@ -51,17 +54,23 @@ type JsonApiDocument = {
   included?: JsonApiResource[];
 };
 
+function resolveScopes(): string {
+  const fromEnv = (process.env.TIDAL_SCOPES || '').trim();
+  return fromEnv || DEFAULT_TIDAL_SCOPES;
+}
+
 function requireTidalConfig(): TidalConfig {
   const clientId = (process.env.TIDAL_CLIENT_ID || '').trim();
   const clientSecret = (process.env.TIDAL_CLIENT_SECRET || '').trim();
   const redirectUri = (process.env.TIDAL_REDIRECT_URI || '').trim();
   const countryCode = (process.env.TIDAL_COUNTRY_CODE || 'US').trim().toUpperCase();
+  const scopes = resolveScopes();
 
   if (!clientId || !clientSecret || !redirectUri) {
     throw new Error('Tidal OAuth is not configured (TIDAL_CLIENT_ID, TIDAL_CLIENT_SECRET, TIDAL_REDIRECT_URI)');
   }
 
-  return { clientId, clientSecret, redirectUri, countryCode };
+  return { clientId, clientSecret, redirectUri, countryCode, scopes };
 }
 
 function base64Url(buffer: Buffer): string {
@@ -79,16 +88,19 @@ export function createOAuthState(): string {
 }
 
 export function buildAuthorizeUrl(challenge: string, state: string): string {
-  const { clientId, redirectUri } = requireTidalConfig();
+  const { clientId, redirectUri, scopes } = requireTidalConfig();
+  // Official authorize params only — do not add geo/campaignId (login.tidal.com may append those on error pages).
   const params = new URLSearchParams({
     response_type: 'code',
     client_id: clientId,
     redirect_uri: redirectUri,
-    scope: TIDAL_SCOPES,
     code_challenge_method: 'S256',
     code_challenge: challenge,
     state,
   });
+  if (scopes) {
+    params.set('scope', scopes);
+  }
   return `${TIDAL_AUTH_BASE}?${params.toString()}`;
 }
 
