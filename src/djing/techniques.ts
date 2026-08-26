@@ -140,6 +140,7 @@ export const TECHNIQUES: NamedTechnique[] = [
       { to: "/djing/eq", label: "EQ, bass & filter" },
     ],
     labs: [
+      { to: "/labs/eq", label: "Bass kill (LOW)" },
       { to: "/labs/incoming-cue", label: "Incoming cue (Deck 2)" },
       { to: "/labs/blend", label: "Two-deck blend" },
     ],
@@ -219,6 +220,7 @@ export const TECHNIQUES: NamedTechnique[] = [
       { to: "/djing/transitions#crossfader-cut", label: "Full steps" },
       { to: "/settings", label: "djay settings" },
     ],
+    labs: [{ to: "/labs/crossfader", label: "Crossfader" }],
     tutorials: ["mix-xfader-cut"],
     sourceVideos: ["blakey5"],
   },
@@ -456,6 +458,12 @@ export type LabLink = { to: string; label: string };
 export const TUTORIAL_COACH_LABS: Record<string, LabLink> = {
   "two-deck-blend": { to: "/labs/blend", label: "Blend" },
   "mix-manual-beatmatch": { to: "/labs/beatmatch", label: "Beatmatch" },
+  "hot-cues": { to: "/labs/hot-cue", label: "Hot cues" },
+  "cue-home": { to: "/labs/cue", label: "CUE button" },
+  "filter-sweep": { to: "/labs/filter", label: "Filter" },
+  "eq-vs-neural": { to: "/labs/eq", label: "Bass kill (LOW)" },
+  "mix-bass-swap": { to: "/labs/eq", label: "Bass kill (LOW)" },
+  "mix-xfader-cut": { to: "/labs/crossfader", label: "Crossfader" },
 };
 
 export function coachLabForTutorial(tutorialId: string): LabLink | null {
@@ -485,6 +493,12 @@ const EXTRA_TUTORIAL_LABS: Record<string, LabLink[]> = {
     { to: "/labs/beatmatch", label: "Beatmatch" },
     { to: "/labs/blend", label: "Two-deck blend" },
   ],
+  "mix-bass-swap": [
+    { to: "/labs/eq", label: "Bass kill (LOW)" },
+    { to: "/labs/incoming-cue", label: "Incoming cue (Deck 2)" },
+    { to: "/labs/blend", label: "Two-deck blend" },
+  ],
+  "mix-xfader-cut": [{ to: "/labs/crossfader", label: "Crossfader" }],
 };
 
 export function labsForTutorial(tutorialId: string): LabLink[] {

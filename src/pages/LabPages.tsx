@@ -118,14 +118,19 @@ export function CueLabPage() {
       <RelatedExtras
         links={[
           {
+            to: "/tutorials/cue-home?mode=drill",
+            label: "Tutorial drill: Plant your home CUE",
+            blurb: "Same graded shell inside the tutorial",
+          },
+          {
             to: "/tutorials/first-session",
             label: "Tutorial: First session",
             blurb: "Pair Mix Ultra, play one song in the room",
           },
           {
             to: "/tutorials/cue-home",
-            label: "Tutorial: Plant your home CUE",
-            blurb: "Same ideas on the real Mix Ultra",
+            label: "Full steps: Plant your home CUE",
+            blurb: "Same ideas on the real Mix Ultra in djay",
           },
           {
             to: "/labs/free",
@@ -210,9 +215,14 @@ export function FilterLabPage() {
       <RelatedExtras
         links={[
           {
+            to: "/tutorials/filter-sweep?mode=drill",
+            label: "Tutorial drill: Filter sweep",
+            blurb: "Same graded shell inside the tutorial",
+          },
+          {
             to: "/tutorials/filter-sweep",
-            label: "Tutorial: Filter sweep",
-            blurb: "Feel left vs right on one deck",
+            label: "Full steps: Filter sweep",
+            blurb: "Feel left vs right on one deck in djay",
           },
           {
             to: "/labs/eq",
@@ -251,6 +261,16 @@ export function EqLabPage() {
       <RelatedExtras
         links={[
           {
+            to: "/tutorials/eq-vs-neural?mode=drill",
+            label: "Tutorial drill: EQ vs Neural Mix",
+            blurb: "Graded LOW kill inside the tutorial",
+          },
+          {
+            to: "/tutorials/mix-bass-swap?mode=drill",
+            label: "Tutorial drill: Bass swap",
+            blurb: "Same LOW kill shell before the song sheet",
+          },
+          {
             to: "/djing/eq",
             label: "EQ & Filter",
             blurb: "Why you kill bass when blending",
@@ -262,7 +282,7 @@ export function EqLabPage() {
           },
           {
             to: "/tutorials/eq-vs-neural",
-            label: "Tutorial: EQ vs Neural Mix",
+            label: "Full steps: EQ vs Neural Mix",
             blurb: "Do it in djay next",
           },
         ]}
@@ -291,6 +311,16 @@ export function CrossfaderLabPage() {
       />
       <RelatedExtras
         links={[
+          {
+            to: "/tutorials/mix-xfader-cut?mode=drill",
+            label: "Tutorial drill: Crossfader cut",
+            blurb: "Same graded shell inside the tutorial",
+          },
+          {
+            to: "/tutorials/mix-xfader-cut",
+            label: "Full steps: Crossfader cut",
+            blurb: "Throw between two drops in djay",
+          },
           {
             to: "/labs/free",
             label: "Free play",

@@ -1,10 +1,21 @@
 import type { ReactNode } from "react";
 import { BeatmatchHardware } from "../components/BeatmatchPracticeLab";
 import { BlendHardware } from "../components/BlendPracticeLab";
+import { HardwareCrossfaderLab } from "../components/HardwareCrossfaderLab";
+import { HardwareEqLab } from "../components/HardwareEqLab";
+import { HardwareFilterLab } from "../components/HardwareFilterLab";
 import { HardwareHotCueLab } from "../components/HardwareHotCueLab";
+import { HardwarePlayCueLab } from "../components/HardwarePlayCueLab";
 
 /** Which graded HW shell a tutorial embeds (reuse lab code — don’t clone). */
-export type TutorialDrillKind = "blend" | "beatmatch" | "hot-cue";
+export type TutorialDrillKind =
+  | "blend"
+  | "beatmatch"
+  | "hot-cue"
+  | "play-cue"
+  | "filter"
+  | "eq"
+  | "crossfader";
 
 export type TutorialDrill = {
   kind: TutorialDrillKind;
@@ -49,6 +60,47 @@ export const TUTORIAL_DRILLS: Record<string, TutorialDrill> = {
     labTo: "/labs/hot-cue",
     labLabel: "Hot cues",
   },
+  "cue-home": {
+    kind: "play-cue",
+    label: "Play & CUE",
+    note:
+      "Graded plant · play · CUE-return on Deck 1 with laptop audio. Quit djay first. Full steps set the same home CUE in djay on your track.",
+    labTo: "/labs/cue",
+    labLabel: "CUE button",
+  },
+  "filter-sweep": {
+    kind: "filter",
+    label: "Filter",
+    note:
+      "Graded FILTER left · center · right on Deck 1 with laptop audio. Quit djay first. Full steps are the same sweep gesture in djay on one song.",
+    labTo: "/labs/filter",
+    labLabel: "Filter",
+  },
+  "eq-vs-neural": {
+    kind: "eq",
+    label: "Bass kill",
+    note:
+      "Graded LOW kill on Deck 1 with laptop audio — Neural Mix stays off here. Quit djay first. Full steps contrast EQ vs Neural Mix knobs in djay.",
+    labTo: "/labs/eq",
+    labLabel: "Bass kill (LOW)",
+  },
+  "mix-bass-swap": {
+    kind: "eq",
+    label: "Bass kill",
+    note:
+      "Graded LOW kill timing on laptop audio — the core hand move before a real bass swap. Quit djay first. Full steps trade bass between two songs in djay.",
+    labTo: "/labs/eq",
+    labLabel: "Bass kill (LOW)",
+    prepLab: { to: "/labs/incoming-cue?mode=hardware", label: "Incoming cue (Deck 2)" },
+  },
+  "mix-xfader-cut": {
+    kind: "crossfader",
+    label: "Crossfader",
+    note:
+      "Graded left · center · right on laptop audio with both beds playing. Quit djay first. Full steps throw/cut between two real drops in djay.",
+    labTo: "/labs/crossfader",
+    labLabel: "Crossfader",
+  },
 };
 
 export function drillForTutorial(tutorialId: string): TutorialDrill | null {
@@ -71,5 +123,13 @@ export function TutorialDrillMount({ kind }: { kind: TutorialDrillKind }): React
       return <BeatmatchHardware />;
     case "hot-cue":
       return <HardwareHotCueLab />;
+    case "play-cue":
+      return <HardwarePlayCueLab />;
+    case "filter":
+      return <HardwareFilterLab />;
+    case "eq":
+      return <HardwareEqLab />;
+    case "crossfader":
+      return <HardwareCrossfaderLab />;
   }
 }

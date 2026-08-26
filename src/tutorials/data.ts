@@ -24,7 +24,7 @@ export type Tutorial = {
   trackRecipe?: string;
   decks?: "one" | "two";
   needsHeadphones?: boolean;
-  /** Click-around lab to try before the hardware drill (Blend / Beatmatch). */
+  /** Click-around lab to try before the hardware drill. */
   coachLabFirst?: { to: string; label: string };
 };
 
@@ -152,6 +152,7 @@ export const TUTORIALS: Tutorial[] = [
     title: "Plant your home CUE",
     time: "~3 min",
     level: "Start here",
+    coachLabFirst: { to: "/labs/cue", label: "CUE button" },
     summary:
       "Learn why Play blinks when paused, how to set the one main cue, and how CUE behaves differently while playing.",
     needs: ["Mix Ultra powered on + paired", "djay open with a track on Deck 1"],
@@ -262,6 +263,7 @@ export const TUTORIALS: Tutorial[] = [
     title: "Hot cues: jump map",
     time: "~5 min",
     level: "Basics",
+    coachLabFirst: { to: "/labs/hot-cue", label: "Hot cues" },
     summary:
       "Enter HOT CUE mode, plant a few pads, jump around while playing, then erase one with SHIFT.",
     needs: ["Track loaded on Deck 1", "You already understand the main CUE button"],
@@ -309,6 +311,7 @@ export const TUTORIALS: Tutorial[] = [
     title: "Filter sweep (one deck)",
     time: "~4 min",
     level: "Basics",
+    coachLabFirst: { to: "/labs/filter", label: "Filter" },
     summary:
       "Feel low-pass vs high-pass on one track so the Filter knob stops being mysterious.",
     needs: ["Track playing on Deck 1", "Channel fader up", "Crossfader toward that deck"],
@@ -386,6 +389,7 @@ export const TUTORIALS: Tutorial[] = [
     title: "EQ vs Neural Mix knobs",
     time: "~5 min",
     level: "Basics",
+    coachLabFirst: { to: "/labs/eq", label: "Bass kill (LOW)" },
     summary:
       "Same HIGH / MID / LOW knobs, two jobs: frequency EQ, or stem volumes when Neural Mix is on.",
     needs: ["Track on Deck 1 that has clear vocals + drums (pop/electronic works well)"],
@@ -1436,6 +1440,7 @@ export const TUTORIALS: Tutorial[] = [
     title: "Bass swap: Losing It → Ferrari",
     time: "~10 min",
     level: "Mixing",
+    coachLabFirst: { to: "/labs/eq", label: "Bass kill (LOW)" },
     trackRecipe:
       "SONG SHEET — this is the LOW-knob drill, not the filter-open Advanced recipe.\n\nDeck 1 (outgoing): FISHER – Losing It · ~125 BPM\n• Hot cue 4 → last FULL groove (kick+bass still there)\n\nDeck 2 (incoming): James Hype & Miggy Dela Rosa – Ferrari · ~125–126 BPM\n• Hot cue 1 → first useful kick / DJ intro (not the drop — you want drums to blend)\n\nMatch Deck 2 by hand (tempo fader + jog; leave SYNC off). Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). Channel faders can both be up; only one LOW sits at 12 o’clock.\n\nBackup: Saving Up (A) → Turn Off The Lights (B), same LOW trade.",
     summary:
@@ -1572,6 +1577,7 @@ export const TUTORIALS: Tutorial[] = [
     title: "Crossfader cut: Ferrari vs Turn Off The Lights",
     time: "~8 min",
     level: "Mixing",
+    coachLabFirst: { to: "/labs/crossfader", label: "Crossfader" },
     trackRecipe:
       "SONG SHEET — two drops, one slider. Not the Advanced double-drop (that one layers both kicks).\n\nDeck 1: James Hype & Miggy Dela Rosa – Ferrari · ~125–126 BPM\n• Hot cue 2 → first kick of the MAIN DROP\n\nDeck 2: Chris Lake – Turn Off The Lights (feat. stef) · ~126–128 BPM\n• Hot cue 2 → first kick of the MAIN DROP\n\nMatch Deck 2 by hand (tempo fader + jog; leave SYNC off). Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). Both channel faders UP. HIGH / MID / LOW at 12 o’clock. The crossfader does the work.\n\ndjay Sound: Crossfader curve = Cut (sharp). If a paused deck starts when you move the crossfader, turn off Auto-play when moving crossfader.\n\nBackup: Losing It drop (A) × Saving Up drop (B).",
     summary:
