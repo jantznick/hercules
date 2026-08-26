@@ -377,7 +377,11 @@ export async function getPlayerSession(userId: string): Promise<TidalPlayerSessi
 }
 
 export function frontendSettingsUrl(query?: Record<string, string>): string {
-  const base = (process.env.FRONTEND_URL || process.env.FRONTEND_URLS?.split(',')[0] || 'http://localhost:5173').trim();
+  const fromList = (process.env.FRONTEND_URLS || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)[0];
+  const base = (process.env.FRONTEND_URL || fromList || 'http://localhost:5173').trim();
   const url = new URL('/settings', base.replace(/\/$/, ''));
   if (query) {
     for (const [key, value] of Object.entries(query)) {

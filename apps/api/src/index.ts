@@ -1,7 +1,9 @@
-import 'dotenv/config';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import connectPgSimple from 'connect-pg-simple';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import dotenv from 'dotenv';
 import express from 'express';
 import session from 'express-session';
 import { Pool } from 'pg';
@@ -9,12 +11,22 @@ import { sessionCookieName, sessionCookieOptions } from './lib/sessionCookie.js'
 import authRoutes from './routes/auth.js';
 import tidalRoutes from './routes/tidal.js';
 
+// Monorepo: load repo-root `.env` (cwd may be apps/api when using workspaces).
+dotenv.config({
+  path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../.env'),
+});
+
 const app = express();
 const PORT = Number(process.env.PORT || 3001);
 const isProduction = process.env.NODE_ENV === 'production';
 
 if (isProduction) {
   app.set('trust proxy', 1);
+  const secret = (process.env.SESSION_SECRET || '').trim();
+  if (!secret || secret === 'change-this-in-development' || secret === 'dev-secret-change-me') {
+    console.error('SESSION_SECRET must be set to a strong value in production');
+    process.exit(1);
+  }
 }
 
 function resolveCorsOrigins(): string[] {
@@ -61,7 +73,7 @@ app.use(
       tableName: 'session',
       createTableIfMissing: false,
     }),
-    secret: process.env.SESSION_SECRET || 'dev-secret-change-me',
+    secret: process.env.SESSION_SECRET || (isProduction ? '' : 'dev-secret-change-me'),
     resave: false,
     saveUninitialized: false,
     name: sessionCookieName,
