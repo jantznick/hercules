@@ -16,10 +16,11 @@ type HardwareArmContextValue = {
   status: MidiBusStatus;
   midiReady: boolean;
   audioBooted: boolean;
-  /** MIDI connected and Web Audio unlocked via user gesture. */
+  /** Web Audio unlocked — enough for click/pointer free play. MIDI is optional. */
   armed: boolean;
   arming: boolean;
   error: string | null;
+  /** Unlock audio; connects MIDI when available but does not require a controller. */
   arm: () => Promise<void>;
 };
 
@@ -43,7 +44,11 @@ export function HardwareArmProvider({ children }: { children: ReactNode }) {
     setArming(true);
     setError(null);
     try {
-      await connect();
+      try {
+        await connect();
+      } catch {
+        /* MIDI optional — pointer deck still works */
+      }
       if (!engineRef.current) {
         engineRef.current = await createTurntable();
       }
@@ -61,7 +66,7 @@ export function HardwareArmProvider({ children }: { children: ReactNode }) {
       status,
       midiReady,
       audioBooted,
-      armed: midiReady && audioBooted,
+      armed: audioBooted,
       arming,
       error,
       arm,

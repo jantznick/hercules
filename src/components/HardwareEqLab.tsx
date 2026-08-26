@@ -36,7 +36,7 @@ export function HardwareEqLab() {
   const live = useLiveController(true);
   const tt = useTurntableSession({
     values: live.values,
-    midiEnabled: live.ready,
+    midiEnabled: true,
     transportFromMidi: true,
   });
   const [stepIndex, setStepIndex] = useState(0);
@@ -58,7 +58,7 @@ export function HardwareEqLab() {
 
   const { samples, reset: resetMotion } = useMotionRecorder(
     value,
-    live.ready && !finished,
+    !finished,
   );
 
   const timing = useMemo(() => {
@@ -91,7 +91,7 @@ export function HardwareEqLab() {
   useCcZonePass({
     value: value ?? null,
     inZone,
-    enabled: live.ready && !finished,
+    enabled: !finished,
     dwellMs: 200,
     onPass: advance,
   });
@@ -146,6 +146,7 @@ export function HardwareEqLab() {
       )}
 
       <MixUltraDeck
+        interactive
         highlight={finished ? null : "deck1.low"}
         values={live.values}
         pressed={live.pressed}

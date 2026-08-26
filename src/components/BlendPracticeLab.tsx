@@ -115,7 +115,7 @@ export function BlendHardware() {
   const live = useLiveController(true);
   const tt = useTurntableSession({
     values: live.values,
-    midiEnabled: live.ready,
+    midiEnabled: true,
     transportFromMidi: true,
   });
   const [stepIndex, setStepIndex] = useState(0);
@@ -133,11 +133,11 @@ export function BlendHardware() {
 
   const startedBoth = useRef(false);
   useEffect(() => {
-    if (!live.ready || !tt.booted || startedBoth.current) return;
+    if (!tt.booted || startedBoth.current) return;
     startedBoth.current = true;
     void tt.playDeck(1);
     void tt.playDeck(2);
-  }, [live.ready, tt.booted, tt.playDeck]);
+  }, [tt.booted, tt.playDeck]);
 
   const step = STEPS[stepIndex]!;
   const inZone = step.pass(live.values);
@@ -146,7 +146,7 @@ export function BlendHardware() {
   const { samples, reset: resetMotion } = useBlendMotionRecorder(
     live.values["deck2.low"],
     live.values.crossfader,
-    live.ready && !finished,
+    !finished,
   );
 
   const timing = useMemo(() => {
@@ -175,7 +175,7 @@ export function BlendHardware() {
   useCcZonePass({
     value: watchValue ?? null,
     inZone,
-    enabled: live.ready && !finished,
+    enabled: !finished,
     dwellMs: 220,
     onPass: advance,
   });
@@ -199,7 +199,11 @@ export function BlendHardware() {
   });
 
   const arm = async () => {
-    await live.connect();
+    try {
+      await live.connect();
+    } catch {
+      /* MIDI optional */
+    }
     await tt.boot();
     void tt.playDeck(1);
     void tt.playDeck(2);
@@ -215,15 +219,15 @@ export function BlendHardware() {
       extraToolbar={
         <button
           type="button"
-          className={live.ready && tt.booted ? "active" : ""}
+          className={tt.booted ? "active" : ""}
           onClick={() => void arm()}
         >
-          {live.ready && tt.booted ? "Both decks on" : "Connect + arm audio"}
+          {tt.booted ? "Both decks on" : "Arm audio"}
         </button>
       }
     >
       {tt.error && <p className="midi-banner warn">{tt.error}</p>}
-      {live.ready && tt.booted && (!tt.playing1 || !tt.playing2) && (
+      {tt.booted && (!tt.playing1 || !tt.playing2) && (
         <p className="midi-banner warn">Start both decks — Play on D1 and D2, or re-arm.</p>
       )}
 
@@ -266,6 +270,7 @@ export function BlendHardware() {
       </div>
 
       <MixUltraDeck
+        interactive
         highlight={finished ? null : step.highlight}
         values={live.values}
         pressed={live.pressed}

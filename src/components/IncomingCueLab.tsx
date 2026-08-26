@@ -62,7 +62,7 @@ export function HardwareIncomingCueLab() {
   const live = useLiveController(true);
   const tt = useTurntableSession({
     values: live.values,
-    midiEnabled: live.ready,
+    midiEnabled: true,
     transportFromMidi: true,
   });
   const [stepIndex, setStepIndex] = useState(0);
@@ -170,7 +170,7 @@ export function HardwareIncomingCueLab() {
         advance("jump", "That’s your incoming restart. Next: EQ + crossfader in the blend lab.");
       }
     },
-    live.ready && !finished,
+    !finished,
   );
 
   const step = STEPS[stepIndex]!;
@@ -238,6 +238,7 @@ export function HardwareIncomingCueLab() {
       )}
 
       <MixUltraDeck
+        interactive
         highlight={null}
         values={live.values}
         pressed={live.pressed}
@@ -250,6 +251,21 @@ export function HardwareIncomingCueLab() {
         padMode2={hotCueMode ? "HOT CUE" : "—"}
         prompt={finished ? "Incoming cue ready" : step.prompt}
         status={status}
+        onPadModeChange={(deck, mode) => {
+          if (finishedRef.current || deck !== 2) return;
+          if (mode !== "HOT CUE") {
+            setHotCueMode(false);
+            hotCueModeRef.current = false;
+            setStatus("Press HOT CUE mode on Deck 2 first — that was another pad mode.");
+            setMisses((m) => m + 1);
+            return;
+          }
+          setHotCueMode(true);
+          hotCueModeRef.current = true;
+          if (STEPS[stepIndexRef.current]?.id === "mode") {
+            advance("mode", "Good — Deck 2 HOT CUE pads are live. Find the mix-in, tap pad 1.");
+          }
+        }}
       />
 
       {finished && (

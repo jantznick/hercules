@@ -25,7 +25,7 @@ export function HardwareHotCueLab() {
   const live = useLiveController(true);
   const tt = useTurntableSession({
     values: live.values,
-    midiEnabled: live.ready,
+    midiEnabled: true,
     transportFromMidi: true,
   });
   const [stepIndex, setStepIndex] = useState(0);
@@ -142,7 +142,7 @@ export function HardwareHotCueLab() {
         advance("clear", "Pad cleared. Hot cues jump and keep playing — unlike CUE.");
       }
     },
-    live.ready && !finished,
+    !finished,
   );
 
   const step = STEPS[stepIndex]!;
@@ -214,6 +214,7 @@ export function HardwareHotCueLab() {
       )}
 
       <MixUltraDeck
+        interactive
         highlight={null}
         values={live.values}
         pressed={live.pressed}
@@ -226,6 +227,21 @@ export function HardwareHotCueLab() {
         padMode1={hotCueMode ? "HOT CUE" : "—"}
         prompt={finished ? "Hot cue drill complete" : step.prompt}
         status={status}
+        onPadModeChange={(deck, mode) => {
+          if (finishedRef.current || deck !== 1) return;
+          if (mode !== "HOT CUE") {
+            setHotCueMode(false);
+            hotCueModeRef.current = false;
+            setStatus("Press HOT CUE mode first — that was another pad mode (e.g. LOOP).");
+            setMisses((m) => m + 1);
+            return;
+          }
+          setHotCueMode(true);
+          hotCueModeRef.current = true;
+          if (STEPS[stepIndexRef.current]?.id === "mode") {
+            advance("mode", "Good — HOT CUE pads are live. Tap pad 1 to set.");
+          }
+        }}
       />
 
       {finished && (

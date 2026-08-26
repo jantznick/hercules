@@ -103,7 +103,7 @@ export function useLiveController(
         else if (msg.kind === "noteoff") setPressed((p) => ({ ...p, [id]: false }));
       }
     },
-    enabled && ready,
+    enabled,
   );
 
   const resetVisuals = useCallback(() => {

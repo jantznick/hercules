@@ -2654,6 +2654,45 @@ button.linkish {
   background: #16382c;
 }
 
+.mx-interactive .mx-knob.interactive,
+.mx-interactive .mx-fader.interactive,
+.mx-interactive .mx-btn.interactive,
+.mx-interactive .mx-pad.interactive,
+.mx-interactive .mx-jog.interactive,
+.mx-interactive .mx-mode.interactive {
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+}
+
+.mx-interactive .mx-knob.interactive:focus-visible,
+.mx-interactive .mx-fader.interactive:focus-visible,
+.mx-interactive .mx-btn.interactive:focus-visible,
+.mx-interactive .mx-pad.interactive:focus-visible,
+.mx-interactive .mx-mode.interactive:focus-visible {
+  outline: 2px solid var(--led);
+  outline-offset: 2px;
+}
+
+.mx-shift {
+  margin-top: 0.2rem;
+  font-family: var(--mono);
+  font-size: 0.48rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+  padding: 0.28rem 0.1rem;
+  border-radius: 5px;
+  border: 1px solid #3a3630;
+  background: #221f1b;
+  color: #7a7268;
+}
+
+.mx-shift.on {
+  border-color: #d4a15a;
+  color: #d4a15a;
+  background: #382816;
+}
+
 .mx-pads {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

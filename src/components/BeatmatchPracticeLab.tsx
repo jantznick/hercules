@@ -108,7 +108,7 @@ export function BeatmatchHardware() {
   const live = useLiveController(true, undefined, (deck, delta) => jogRef.current(deck, delta));
   const tt = useTurntableSession({
     values: live.values,
-    midiEnabled: live.ready,
+    midiEnabled: true,
     transportFromMidi: true,
   });
 
@@ -133,11 +133,11 @@ export function BeatmatchHardware() {
 
   const startedBoth = useRef(false);
   useEffect(() => {
-    if (!live.ready || !tt.booted || startedBoth.current) return;
+    if (!tt.booted || startedBoth.current) return;
     startedBoth.current = true;
     void tt.playDeck(1);
     void tt.playDeck(2);
-  }, [live.ready, tt.booted, tt.playDeck]);
+  }, [tt.booted, tt.playDeck]);
 
   const pitch = live.values["deck2.pitch"];
   const pitch1 = live.values["deck1.pitch"] ?? 64;
@@ -145,7 +145,7 @@ export function BeatmatchHardware() {
   const inZone = step.pass(pitch, jogNudges);
 
   useEffect(() => {
-    if (!live.ready || !tt.booted || finished || !tt.playing1 || !tt.playing2) return;
+    if (!tt.booted || finished || !tt.playing1 || !tt.playing2) return;
     const bpm1 = trackById(tt.track1).bpm;
     const bpm2 = trackById(tt.track2).bpm;
     setAlignSamples((prev) =>
@@ -159,7 +159,6 @@ export function BeatmatchHardware() {
       }),
     );
   }, [
-    live.ready,
     tt.booted,
     finished,
     tt.playing1,
@@ -174,11 +173,11 @@ export function BeatmatchHardware() {
 
   const { samples: pitchSamples, reset: resetPitchMotion } = useMotionRecorder(
     pitch,
-    live.ready && !finished,
+    !finished,
   );
   const { samples: jogSamples, reset: resetJogMotion } = useMotionRecorder(
     live.jogAngle2,
-    live.ready && !finished,
+    !finished,
   );
 
   const tempoTiming = useMemo(() => {
@@ -257,7 +256,7 @@ export function BeatmatchHardware() {
   useCcZonePass({
     value: pitch ?? null,
     inZone: step.ccPass === true && inZone,
-    enabled: live.ready && !finished && step.ccPass === true,
+    enabled: !finished && step.ccPass === true,
     dwellMs: 220,
     onPass: advance,
   });
@@ -325,6 +324,7 @@ export function BeatmatchHardware() {
       )}
 
       <MixUltraDeck
+        interactive
         highlight={finished ? null : step.highlight}
         values={live.values}
         pressed={live.pressed}

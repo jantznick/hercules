@@ -25,6 +25,11 @@ function emit(msg: ParsedMidi) {
   for (const fn of messageListeners) fn(msg);
 }
 
+/** Software / pointer input — same listeners as physical MIDI. */
+export function injectMidi(msg: ParsedMidi) {
+  emit(msg);
+}
+
 function attachInputs(a: MIDIAccess) {
   for (const input of a.inputs.values()) {
     input.onmidimessage = (event: MIDIMessageEvent) => {

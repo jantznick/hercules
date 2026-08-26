@@ -8,7 +8,7 @@ type Props = {
 };
 
 export function HardwareLabShell({ children, onRestart, extraToolbar }: Props) {
-  const { status, armed, arming, arm } = useHardwareArm();
+  const { status, armed, arming, arm, midiReady } = useHardwareArm();
 
   return (
     <div className="lab hw-lab hw-lab-deck">
@@ -24,7 +24,7 @@ export function HardwareLabShell({ children, onRestart, extraToolbar }: Props) {
               ? status.status === "connecting"
                 ? "Connecting…"
                 : "Arming…"
-              : "Connect MIDI"}
+              : "Arm audio"}
           </button>
         )}
         <button type="button" onClick={onRestart}>
@@ -34,16 +34,25 @@ export function HardwareLabShell({ children, onRestart, extraToolbar }: Props) {
       </div>
 
       {status.status === "unsupported" && (
-        <p className="midi-banner warn">Use Chrome/Edge/Firefox on desktop — not Safari.</p>
+        <p className="midi-banner warn">
+          MIDI isn’t available in this browser — you can still click the on-screen Mix Ultra after
+          Arm audio. Use Chrome/Edge/Firefox on desktop for a physical controller.
+        </p>
       )}
       {status.status === "denied" && (
-        <p className="midi-banner warn">Allow MIDI permission, then Connect again.</p>
+        <p className="midi-banner warn">
+          MIDI permission denied — click the deck to practice. Allow MIDI and Arm again to use the
+          box.
+        </p>
       )}
       {!armed && status.status === "idle" && (
         <p className="midi-banner warn">
-          Arm MIDI + audio from the sidebar (or Connect here). Quit djay so it isn’t holding the
-          box.
+          Arm audio to hear the turntables. You can click the on-screen Mix Ultra with or without a
+          controller. Quit djay if you’re also connecting the box.
         </p>
+      )}
+      {armed && !midiReady && status.status === "ready" && (
+        <p className="midi-banner">No Mix Ultra input yet — on-screen controls are live.</p>
       )}
 
       {children}

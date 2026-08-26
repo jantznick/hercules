@@ -29,7 +29,7 @@ export function HardwarePlayCueLab() {
   const live = useLiveController(true);
   const tt = useTurntableSession({
     values: live.values,
-    midiEnabled: live.ready,
+    midiEnabled: true,
     transportFromMidi: false,
   });
   const { playDeck, stopDeck, playing1, playing2 } = tt;
@@ -83,7 +83,7 @@ export function HardwarePlayCueLab() {
       setMisses((m) => m + 1);
       setStatus(`That was ${LABELS[known] ?? known} — look for the glow.`);
     },
-    live.ready && !finished,
+    !finished,
   );
 
   const step = STEPS[stepIndex]!;
@@ -130,6 +130,7 @@ export function HardwarePlayCueLab() {
       )}
 
       <MixUltraDeck
+        interactive
         highlight={finished ? null : step.expect}
         values={live.values}
         pressed={live.pressed}

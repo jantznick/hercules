@@ -34,7 +34,7 @@ export function HardwareCrossfaderLab() {
   const live = useLiveController(true);
   const tt = useTurntableSession({
     values: live.values,
-    midiEnabled: live.ready,
+    midiEnabled: true,
     transportFromMidi: true,
   });
   const [stepIndex, setStepIndex] = useState(0);
@@ -52,11 +52,11 @@ export function HardwareCrossfaderLab() {
 
   const startedBoth = useRef(false);
   useEffect(() => {
-    if (!live.ready || !tt.booted || startedBoth.current) return;
+    if (!tt.booted || startedBoth.current) return;
     startedBoth.current = true;
     void tt.playDeck(1);
     void tt.playDeck(2);
-  }, [live.ready, tt.booted, tt.playDeck]);
+  }, [tt.booted, tt.playDeck]);
 
   const value = live.values.crossfader;
   const step = STEPS[stepIndex]!;
@@ -64,7 +64,7 @@ export function HardwareCrossfaderLab() {
 
   const { samples, reset: resetMotion } = useMotionRecorder(
     value,
-    live.ready && !finished,
+    !finished,
   );
 
   const timing = useMemo(() => {
@@ -99,7 +99,7 @@ export function HardwareCrossfaderLab() {
   useCcZonePass({
     value: value ?? null,
     inZone,
-    enabled: live.ready && !finished,
+    enabled: !finished,
     dwellMs: 200,
     onPass: advance,
   });
@@ -160,6 +160,7 @@ export function HardwareCrossfaderLab() {
       )}
 
       <MixUltraDeck
+        interactive
         highlight={finished ? null : "crossfader"}
         values={live.values}
         pressed={live.pressed}

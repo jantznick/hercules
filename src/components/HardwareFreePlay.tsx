@@ -14,12 +14,8 @@ import { WaveformStrip } from "./WaveformStrip";
 function deckWaveLabel(deck: 1 | 2, tidal: TidalTrackRef | null): string {
   if (!tidal) return `Deck ${deck}`;
   const bpm = tidal.bpm != null ? ` · ${Math.round(tidal.bpm)} BPM` : "";
-  const key =
-    tidal.keyLabel || tidal.camelot
-      ? ` · ${tidal.keyLabel && tidal.camelot ? `${tidal.keyLabel} (${tidal.camelot})` : tidal.keyLabel || tidal.camelot}`
-      : "";
   const artist = tidal.artists[0] ?? "Unknown";
-  return `D${deck} · ${artist} — ${tidal.title}${bpm}${key}`;
+  return `D${deck} · ${artist} — ${tidal.title}${bpm}`;
 }
 
 export function HardwareFreePlay() {
@@ -37,7 +33,7 @@ export function HardwareFreePlay() {
 
   const tt = useTurntableSession({
     values: live.values,
-    midiEnabled: live.ready,
+    midiEnabled: true,
     transportFromMidi: true,
   });
   padRef.current = (ev) => {
@@ -48,15 +44,12 @@ export function HardwareFreePlay() {
     tt.onJog(deck, delta);
   };
 
-  useMidiMessages(
-    (msg) => {
-      if (msg.kind !== "noteon") return;
-      if (isNonHotCuePad(msg)) {
-        setPadModeHint("Press HOT CUE mode first — LOOP/FX pads aren’t treated as cues.");
-      }
-    },
-    live.ready,
-  );
+  useMidiMessages((msg) => {
+    if (msg.kind !== "noteon") return;
+    if (isNonHotCuePad(msg)) {
+      setPadModeHint("Press HOT CUE mode first — LOOP/FX pads aren’t treated as cues.");
+    }
+  }, true);
 
   usePublishDeckState({
     playing1: tt.playing1,
@@ -75,7 +68,11 @@ export function HardwareFreePlay() {
   });
 
   const arm = async () => {
-    await live.connect();
+    try {
+      await live.connect();
+    } catch {
+      /* MIDI optional */
+    }
     await tt.boot();
   };
 
@@ -89,10 +86,10 @@ export function HardwareFreePlay() {
       extraToolbar={
         <button
           type="button"
-          className={live.ready && tt.booted ? "active" : ""}
+          className={tt.booted ? "active" : ""}
           onClick={() => void arm()}
         >
-          {live.ready && tt.booted ? "Ready" : "Connect + arm audio"}
+          {tt.booted ? (live.ready ? "Ready" : "Audio ready") : "Arm audio"}
         </button>
       }
     >
@@ -111,7 +108,7 @@ export function HardwareFreePlay() {
           else setTidal2(ref);
         }}
         freePlayMode
-        hint="Play toggles · HOT CUE pads = cues · jog nudges · LEDs follow play/cues"
+        hint="Click the deck or use Mix Ultra · Play toggles · HOT CUE pads = cues · SHIFT+pad clears · jog nudges"
       />
 
       {(tidal1 || tidal2) && (
@@ -153,6 +150,7 @@ export function HardwareFreePlay() {
       )}
 
       <MixUltraDeck
+        interactive
         values={live.values}
         pressed={live.pressed}
         playing1={tt.playing1}

@@ -55,7 +55,7 @@ export function HardwareFilterLab() {
   const live = useLiveController(true);
   const tt = useTurntableSession({
     values: live.values,
-    midiEnabled: live.ready,
+    midiEnabled: true,
     transportFromMidi: true,
   });
   const [stepIndex, setStepIndex] = useState(0);
@@ -94,7 +94,7 @@ export function HardwareFilterLab() {
   useCcZonePass({
     value: value ?? null,
     inZone,
-    enabled: live.ready && !finished,
+    enabled: !finished,
     dwellMs: 200,
     onPass: advance,
   });
@@ -151,6 +151,7 @@ export function HardwareFilterLab() {
       )}
 
       <MixUltraDeck
+        interactive
         highlight={finished ? null : "deck1.filter"}
         values={live.values}
         pressed={live.pressed}
