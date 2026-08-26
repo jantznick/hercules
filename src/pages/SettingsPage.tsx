@@ -1,32 +1,56 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { apiHref, authAPI, tidalAPI, type TidalConnectionStatus } from "../api/client";
+import {
+  apiHref,
+  authAPI,
+  practiceAPI,
+  tidalAPI,
+  type PracticeEvent,
+  type TidalConnectionStatus,
+} from "../api/client";
 import { TidalPlayerPanel } from "../components/TidalPlayerPanel";
 import { useAuth } from "../context/AuthContext";
+import { TUTORIALS } from "../tutorials/data";
 import { PageHeader } from "./HomePage";
 
-function tidalConnectErrorMessage(reason: string): string {
-  switch (reason) {
-    case "signin":
-      return "Sign in to Hercules first, then connect Tidal.";
-    case "session":
-      return "Your Hercules session expired during Tidal login. Sign in again and retry Connect Tidal.";
-    case "session_save":
-      return "Could not start Tidal login (session save failed). Try again.";
-    case "state":
-      return "Tidal login was interrupted (state mismatch). Try Connect Tidal again from this browser.";
-    case "exchange":
-      return "Tidal authorized, but token exchange failed. Check TIDAL_CLIENT_SECRET and redirect URI match the developer dashboard.";
-    case "not_configured":
-      return "Tidal is not configured on the API (missing TIDAL_CLIENT_ID / SECRET / REDIRECT_URI).";
-    case "access_denied":
-      return "Tidal access was denied. Approve the app on the consent screen, or enable the requested scopes in the Tidal developer dashboard.";
-    case "invalid_scope":
-      return "Tidal rejected the requested scopes (often Error 1002). In the developer dashboard enable search.read and playback (or set TIDAL_SCOPES to match), and avoid legacy r_usr.";
-    case "unauthorized_client":
-      return "Tidal rejected this client (Error 1002). Confirm client ID, that the redirect URI is registered exactly, and that Authorization Code + PKCE is enabled for the app.";
-    default:
-      return `Could not connect Tidal (${reason}). If you saw Error 1002 on login.tidal.com, check redirect URI registration and that scopes search.read + playback are enabled for the app.`;
+const LAB_LABELS: Record<string, string> = {
+  "/labs/blend": "Blend lab",
+  "/labs/beatmatch": "Beatmatch lab",
+  "/labs/hot-cue": "Hot cues lab",
+  "/labs/cue": "Play & CUE lab",
+  "/labs/filter": "Filter lab",
+  "/labs/eq": "EQ lab",
+  "/labs/crossfader": "Crossfader lab",
+  "/labs/incoming-cue": "Incoming cue lab",
+};
+
+function practiceEventLabel(event: PracticeEvent): string {
+  if (event.kind === "tutorial") {
+    const tut = TUTORIALS.find((t) => t.id === event.targetId);
+    const title = tut?.title ?? event.targetId;
+    if (event.passed) return `Finished tutorial · ${title}`;
+    const step =
+      event.meta && typeof event.meta.stepIndex === "number"
+        ? `step ${(event.meta.stepIndex as number) + 1}`
+        : "progress";
+    return `Tutorial · ${title} (${step})`;
+  }
+  if (event.kind === "drill") {
+    return `Drill · ${LAB_LABELS[event.targetId] ?? event.targetId}`;
+  }
+  return LAB_LABELS[event.targetId] ?? event.targetId;
+}
+
+function formatPracticeWhen(iso: string): string {
+  try {
+    return new Date(iso).toLocaleString(undefined, {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  } catch {
+    return iso;
   }
 }
 
@@ -36,6 +60,8 @@ export function SettingsPage() {
   const [tidalStatus, setTidalStatus] = useState<TidalConnectionStatus | null>(null);
   const [tidalLoading, setTidalLoading] = useState(false);
   const [tidalNotice, setTidalNotice] = useState<string | null>(null);
+  const [practiceEvents, setPracticeEvents] = useState<PracticeEvent[] | null>(null);
+  const [practiceLoading, setPracticeLoading] = useState(false);
 
   useEffect(() => {
     const tidalParam = searchParams.get("tidal");
@@ -45,7 +71,7 @@ export function SettingsPage() {
       setSearchParams(searchParams, { replace: true });
     } else if (tidalParam === "error") {
       const reason = searchParams.get("reason") || "unknown";
-      setTidalNotice(tidalConnectErrorMessage(reason));
+      setTidalNotice(`Could not connect Tidal (${reason}). Try again.`);
       searchParams.delete("tidal");
       searchParams.delete("reason");
       setSearchParams(searchParams, { replace: true });
@@ -76,6 +102,31 @@ export function SettingsPage() {
       cancelled = true;
     };
   }, [isAuthenticated, tidalNotice]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setPracticeEvents(null);
+      return;
+    }
+
+    let cancelled = false;
+    setPracticeLoading(true);
+    practiceAPI
+      .listEvents(30)
+      .then(({ events }) => {
+        if (!cancelled) setPracticeEvents(events);
+      })
+      .catch(() => {
+        if (!cancelled) setPracticeEvents([]);
+      })
+      .finally(() => {
+        if (!cancelled) setPracticeLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated]);
 
   const handleSignOut = async () => {
     try {
@@ -146,14 +197,47 @@ export function SettingsPage() {
                 </div>
               </>
             )}
-            <button type="button" className="auth-inline-btn" onClick={handleSignOut}>
+
+            <div id="practice" style={{ marginTop: "1.25rem" }}>
+              <h3>Your practice</h3>
+              <p style={{ marginBottom: "0.5rem" }}>
+                Quiet history of labs and tutorials you finished while signed in — not a path to
+                follow. The plan on Home stays the same on every device.
+              </p>
+              {practiceLoading ? (
+                <p>Loading practice…</p>
+              ) : practiceEvents && practiceEvents.length > 0 ? (
+                <ul className="practice-history-list" style={{ margin: 0, paddingLeft: "1.25rem" }}>
+                  {practiceEvents.map((event) => (
+                    <li key={event.id} style={{ marginBottom: "0.35rem" }}>
+                      {practiceEventLabel(event)}
+                      <span className="muted" style={{ marginLeft: "0.5rem", opacity: 0.75 }}>
+                        {formatPracticeWhen(event.createdAt)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="muted">
+                  Nothing synced yet. Pass a lab or finish a tutorial step while signed in and it
+                  shows up here.
+                </p>
+              )}
+            </div>
+
+            <button
+              type="button"
+              className="auth-inline-btn"
+              onClick={handleSignOut}
+              style={{ marginTop: "1rem" }}
+            >
               Sign out
             </button>
           </>
         ) : (
           <>
             <p>
-              Sign in to connect Tidal and save track picks across devices. Use your email and
+              Sign in to connect Tidal and save practice across devices. Use your email and
               password, or request a magic link with a 6-digit code.
             </p>
             <div className="auth-inline-actions">

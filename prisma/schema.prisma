@@ -8,12 +8,13 @@ datasource db {
 }
 
 model User {
-  id        String      @id @default(uuid())
-  email     String      @unique
-  password  String?
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  tidal     TidalToken?
+  id             String          @id @default(uuid())
+  email          String          @unique
+  password       String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  tidal          TidalToken?
+  practiceEvents PracticeEvent[]
 }
 
 model MagicToken {
@@ -53,4 +54,21 @@ model PracticeTrack {
   title        String
   bpm          Int?
   sortOrder    Int     @default(0)
+}
+
+/** Completion / progress events for signed-in practice sync (not the curriculum spine). */
+model PracticeEvent {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /** lab | tutorial | drill */
+  kind      String
+  /** Lab path (e.g. /labs/blend) or tutorial id */
+  targetId  String
+  passed    Boolean?
+  meta      Json?
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([userId, kind, targetId])
 }

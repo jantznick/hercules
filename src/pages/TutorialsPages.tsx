@@ -9,8 +9,10 @@ import {
   type Tutorial,
 } from "../tutorials/data";
 import { drillForTutorial, TutorialDrillMount } from "../tutorials/drills";
-import { hasLabPass, LAB_PASS_KEY } from "../tutorials/labPass";
-import { loadProgress, saveProgress } from "../tutorials/progress";
+import { hasLabPass, LAB_PASS_KEY, mergeRemoteLabPasses } from "../tutorials/labPass";
+import { loadProgress, recordTutorialProgress, mergeRemoteTutorialProgress } from "../tutorials/progress";
+import { practiceAPI } from "../api/client";
+import { useAuth } from "../context/AuthContext";
 import { tutorialsInSpineOrder } from "../spine";
 import { labsForTutorial, techniquePath, techniquesForTutorial } from "../djing/techniques";
 import { PageHeader } from "./HomePage";
@@ -233,6 +235,7 @@ export function TutorialsIndexPage() {
 
 function TutorialRunner({ tutorial }: { tutorial: Tutorial }) {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [params, setParams] = useSearchParams();
   const [stepIndex, setStepIndex] = useState(0);
   const drill = drillForTutorial(tutorial.id);
@@ -242,7 +245,38 @@ function TutorialRunner({ tutorial }: { tutorial: Tutorial }) {
   useEffect(() => {
     const p = loadProgress();
     setStepIndex(p[tutorial.id] ?? 0);
-  }, [tutorial.id]);
+
+    if (!isAuthenticated) return;
+    let cancelled = false;
+    practiceAPI
+      .summary()
+      .then(({ summary }) => {
+        if (cancelled) return;
+        const tutorialItems = summary
+          .filter((s) => s.kind === "tutorial")
+          .map((s) => {
+            const stepIndexMeta =
+              s.meta && typeof s.meta.stepIndex === "number" ? s.meta.stepIndex : null;
+            const passedAsDone = s.passed === true ? tutorial.steps.length : 0;
+            return {
+              targetId: s.targetId,
+              stepIndex: Math.max(stepIndexMeta ?? 0, passedAsDone),
+            };
+          });
+        const labIds = summary
+          .filter((s) => (s.kind === "lab" || s.kind === "drill") && s.passed === true)
+          .map((s) => s.targetId);
+        mergeRemoteLabPasses(labIds);
+        const merged = mergeRemoteTutorialProgress(tutorialItems);
+        setStepIndex(merged[tutorial.id] ?? 0);
+      })
+      .catch(() => {
+        /* keep local */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [tutorial.id, tutorial.steps.length, isAuthenticated]);
 
   const setMode = (next: "steps" | "drill") => {
     const p = new URLSearchParams(params);
@@ -253,8 +287,7 @@ function TutorialRunner({ tutorial }: { tutorial: Tutorial }) {
 
   const persist = (next: number) => {
     setStepIndex(next);
-    const p = loadProgress();
-    saveProgress({ ...p, [tutorial.id]: next });
+    recordTutorialProgress(tutorial.id, next, tutorial.steps.length);
   };
 
   const done = stepIndex >= tutorial.steps.length;

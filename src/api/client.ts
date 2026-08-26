@@ -106,3 +106,43 @@ export const tidalAPI = {
     request<{ track: TidalTrackSummary }>(`/tidal/tracks/${encodeURIComponent(id)}`),
   playerSession: () => request<TidalPlayerSession>("/tidal/player-session"),
 };
+
+export type PracticeKind = "lab" | "tutorial" | "drill";
+
+export type PracticeEvent = {
+  id: string;
+  userId: string;
+  kind: PracticeKind | string;
+  targetId: string;
+  passed: boolean | null;
+  meta: Record<string, unknown> | null;
+  createdAt: string;
+};
+
+export type PracticeSummaryItem = {
+  kind: PracticeKind | string;
+  targetId: string;
+  passed: boolean | null;
+  createdAt: string;
+  meta: Record<string, unknown> | null;
+};
+
+export type RecordPracticeEventInput = {
+  kind: PracticeKind;
+  targetId: string;
+  passed?: boolean | null;
+  meta?: Record<string, unknown>;
+};
+
+export const practiceAPI = {
+  recordEvent: (input: RecordPracticeEventInput) =>
+    request<{ event: PracticeEvent }>("/practice/events", {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
+  listEvents: (limit?: number) => {
+    const params = limit != null ? `?limit=${limit}` : "";
+    return request<{ events: PracticeEvent[] }>(`/practice/events${params}`);
+  },
+  summary: () => request<{ summary: PracticeSummaryItem[] }>("/practice/summary"),
+};

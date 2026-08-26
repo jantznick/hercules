@@ -9,6 +9,7 @@ import session from 'express-session';
 import { Pool } from 'pg';
 import { sessionCookieName, sessionCookieOptions } from './lib/sessionCookie.js';
 import authRoutes from './routes/auth.js';
+import practiceRoutes from './routes/practice.js';
 import tidalRoutes from './routes/tidal.js';
 
 // Monorepo: load repo-root `.env` (cwd may be apps/api when using workspaces).
@@ -87,6 +88,7 @@ app.use(
 );
 
 app.use('/api/auth', authRoutes);
+app.use('/api/practice', practiceRoutes);
 app.use('/api/tidal', tidalRoutes);
 
 app.get('/api/health', (_req, res) => {
