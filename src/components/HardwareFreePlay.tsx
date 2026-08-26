@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from "react";
+import { useFreePlayTidalPlayback } from "../audio/useFreePlayTidalPlayback";
 import { formatTidalKeyMeta, type TidalTrackRef } from "../audio/tracks";
 import { useTurntableSession } from "../audio/useTurntableSession";
 import { usePublishDeckState } from "../deck/hooks";
@@ -32,7 +33,8 @@ export function HardwareFreePlay() {
   const [padModeHint, setPadModeHint] = useState<string | null>(null);
   const [tidal1, setTidal1] = useState<TidalTrackRef | null>(null);
   const [tidal2, setTidal2] = useState<TidalTrackRef | null>(null);
-  const [listeningDeck, setListeningDeck] = useState<1 | 2>(1);
+
+  const tidalPlayback = useFreePlayTidalPlayback(tidal1, tidal2);
 
   const live = useLiveController(
     true,
@@ -46,6 +48,12 @@ export function HardwareFreePlay() {
     transportFromMidi: true,
     muteBed1: !!tidal1,
     muteBed2: !!tidal2,
+    tidalTransport: {
+      hasTidal: tidalPlayback.hasTidal,
+      playTidal: (deck) => void tidalPlayback.playDeck(deck),
+      stopTidal: (deck) => void tidalPlayback.stopDeck(deck),
+      isTidalPlaying: tidalPlayback.isPlaying,
+    },
   });
   padRef.current = (ev) => {
     setPadModeHint(null);
@@ -62,9 +70,12 @@ export function HardwareFreePlay() {
     }
   }, true);
 
+  const playing1 = tidal1 ? tidalPlayback.isPlaying(1) : tt.playing1;
+  const playing2 = tidal2 ? tidalPlayback.isPlaying(2) : tt.playing2;
+
   usePublishDeckState({
-    playing1: tt.playing1,
-    playing2: tt.playing2,
+    playing1,
+    playing2,
     track1: tt.track1,
     track2: tt.track2,
     cues1: tt.cues1,
@@ -91,17 +102,20 @@ export function HardwareFreePlay() {
     (deck: 1 | 2, ref: TidalTrackRef | null) => {
       if (deck === 1) setTidal1(ref);
       else setTidal2(ref);
-      if (ref) {
-        setListeningDeck(deck);
+      if (tidalPlayback.isPlaying(deck)) {
+        void tidalPlayback.stopDeck(deck);
+      }
+      if (!ref) {
         tt.stopDeck(deck);
       }
     },
-    [tt.stopDeck],
+    [tidalPlayback, tt.stopDeck],
   );
 
   return (
     <HardwareLabShell
       onRestart={() => {
+        void tidalPlayback.pause();
         tt.stopDeck(1);
         tt.stopDeck(2);
         setPadModeHint(null);
@@ -128,15 +142,10 @@ export function HardwareFreePlay() {
         tidal2={tidal2}
         onTidalSelect={onTidalSelect}
         freePlayMode
-        hint="Click the deck or use Mix Ultra · Play toggles · HOT CUE pads = cues · SHIFT+pad clears · jog nudges"
+        hint="Load a track, then PLAY on the deck · HOT CUE pads = cues · SHIFT+pad clears · jog nudges"
       />
 
-      <FreePlayTidalReference
-        deck1={tidal1}
-        deck2={tidal2}
-        listeningDeck={listeningDeck}
-        onListeningDeckChange={setListeningDeck}
-      />
+      <FreePlayTidalReference audioHostRef={tidalPlayback.audioHostRef} error={tidalPlayback.error} />
 
       {tt.booted && (
         <div className="wave-stack">
@@ -146,7 +155,7 @@ export function HardwareFreePlay() {
             playhead={tt.playhead1}
             duration={tt.duration1}
             cues={tt.cues1}
-            playing={tt.playing1}
+            playing={playing1}
           />
           <WaveformStrip
             label={deckWaveLabel(2, tidal2)}
@@ -154,7 +163,7 @@ export function HardwareFreePlay() {
             playhead={tt.playhead2}
             duration={tt.duration2}
             cues={tt.cues2}
-            playing={tt.playing2}
+            playing={playing2}
           />
         </div>
       )}
@@ -163,8 +172,8 @@ export function HardwareFreePlay() {
         interactive
         values={live.values}
         pressed={live.pressed}
-        playing1={tt.playing1}
-        playing2={tt.playing2}
+        playing1={playing1}
+        playing2={playing2}
         pads1={live.pads1}
         pads2={live.pads2}
         cues1={tt.cues1}

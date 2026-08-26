@@ -5,12 +5,12 @@ import {
   formatTidalKeyMeta,
   formatTrackDuration,
   getCachedBuffer,
-  tidalRefFromApiTrack,
   type TidalTrackRef,
   type TrackId,
   type TrackInfo,
 } from "../audio/tracks";
 import { useAuth } from "../context/AuthContext";
+import { FreePlayTidalBrowser } from "./FreePlayTidalBrowser";
 
 type Props = {
   tracks: TrackInfo[];
@@ -36,6 +36,41 @@ function trackLabel(t: TrackInfo): string {
 
 function bundledTracks(tracks: TrackInfo[]): TrackInfo[] {
   return tracks.filter((t) => t.source === "bundled");
+}
+
+function DeckLoadedCard({
+  deck,
+  tidalRef,
+  onClear,
+}: {
+  deck: 1 | 2;
+  tidalRef: TidalTrackRef;
+  onClear: () => void;
+}) {
+  const artist = tidalRef.artists[0] ?? "Unknown artist";
+  const key = formatTidalKeyMeta(tidalRef);
+  const bpm = tidalRef.bpm != null ? `${Math.round(tidalRef.bpm)} BPM` : "";
+
+  return (
+    <div className="track-tidal-card deck-loaded">
+      {tidalRef.coverArtUrl ? (
+        <img className="track-tidal-card-art" src={tidalRef.coverArtUrl} alt="" loading="lazy" />
+      ) : (
+        <div className="track-tidal-card-art track-tidal-card-art-fallback" aria-hidden="true" />
+      )}
+      <div className="track-tidal-card-body">
+        <p className="track-tidal-deck-label">Deck {deck}</p>
+        <p className="track-tidal-card-title">{tidalRef.title}</p>
+        <p className="track-tidal-card-artist">{artist}</p>
+        <p className="track-tidal-card-meta">
+          {[bpm, key].filter(Boolean).join(" · ") || "Loaded — press PLAY to hear it"}
+        </p>
+      </div>
+      <button type="button" className="track-tidal-clear" onClick={onClear}>
+        Eject
+      </button>
+    </div>
+  );
 }
 
 type DeckTidalSearchProps = {
@@ -67,7 +102,17 @@ function DeckTidalSearch({ deck, tidalRef, onSelectRef, freePlayMode }: DeckTida
       tidalAPI
         .search(trimmed, 8)
         .then((data) => {
-          setResults(data.tracks.map(tidalRefFromApiTrack));
+          setResults(data.tracks.map((t) => ({
+            id: t.id,
+            title: t.title,
+            artists: t.artists,
+            bpm: t.bpm,
+            durationSeconds: t.durationSeconds,
+            keyLabel: t.keyLabel,
+            camelot: t.camelot,
+            isrc: t.isrc,
+            coverArtUrl: t.coverArtUrl,
+          })));
           setOpen(true);
         })
         .catch(() => {
@@ -227,12 +272,20 @@ export function TrackPickerBar({
       ) : null}
 
       {freePlayMode && tidalReady ? (
-        <p className="track-picker-lead">Search a song, put it on a deck, and that&apos;s what you hear.</p>
+        <FreePlayTidalBrowser
+          tidal1={tidal1}
+          tidal2={tidal2}
+          onLoad={(deck, ref) => setTidal(deck, ref)}
+        />
       ) : null}
 
       <div className="track-picker-decks">
         <div className="track-picker-deck">
-          {tidalReady ? (
+          {freePlayMode && tidalReady && tidal1 ? (
+            <DeckLoadedCard deck={1} tidalRef={tidal1} onClear={() => setTidal(1, null)} />
+          ) : null}
+
+          {!freePlayMode && tidalReady ? (
             <DeckTidalSearch
               deck={1}
               tidalRef={tidal1}
@@ -243,7 +296,7 @@ export function TrackPickerBar({
 
           {showPracticeBeds ? (
             <label>
-              {freePlayMode ? "Deck 1" : "Deck 1 · practice bed"}
+              {freePlayMode ? "Deck 1 · practice tones" : "Deck 1 · practice bed"}
               <select value={track1} onChange={(e) => onSelect(1, e.target.value)}>
                 {beds.map((t) => (
                   <option key={t.id} value={t.id}>
@@ -275,7 +328,11 @@ export function TrackPickerBar({
         </div>
 
         <div className="track-picker-deck">
-          {tidalReady ? (
+          {freePlayMode && tidalReady && tidal2 ? (
+            <DeckLoadedCard deck={2} tidalRef={tidal2} onClear={() => setTidal(2, null)} />
+          ) : null}
+
+          {!freePlayMode && tidalReady ? (
             <DeckTidalSearch
               deck={2}
               tidalRef={tidal2}
@@ -286,7 +343,7 @@ export function TrackPickerBar({
 
           {showPracticeBeds ? (
             <label>
-              {freePlayMode ? "Deck 2" : "Deck 2 · practice bed"}
+              {freePlayMode ? "Deck 2 · practice tones" : "Deck 2 · practice bed"}
               <select value={track2} onChange={(e) => onSelect(2, e.target.value)}>
                 {beds.map((t) => (
                   <option key={t.id} value={t.id}>

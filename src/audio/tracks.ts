@@ -26,6 +26,7 @@ export type TidalTrackRef = {
   keyLabel: string | null;
   camelot: string | null;
   isrc: string | null;
+  coverArtUrl: string | null;
 };
 
 /** Deck pick: bundled bed for Web Audio EQ; optional Tidal ref for Free Play listening. */
@@ -88,6 +89,7 @@ export function tidalRefFromApiTrack(track: {
   keyLabel?: string | null;
   camelot?: string | null;
   isrc?: string | null;
+  coverArtUrl?: string | null;
 }): TidalTrackRef {
   return {
     id: track.id,
@@ -98,6 +100,7 @@ export function tidalRefFromApiTrack(track: {
     keyLabel: track.keyLabel ?? null,
     camelot: track.camelot ?? null,
     isrc: track.isrc ?? null,
+    coverArtUrl: track.coverArtUrl ?? null,
   };
 }
 

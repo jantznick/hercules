@@ -3299,6 +3299,238 @@ button.linkish {
   background: rgba(0, 0, 0, 0.18);
 }
 
+.free-play-tidal-error {
+  margin: 0.35rem 0 0.75rem;
+}
+
+.free-play-tidal-browser {
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 0.35rem;
+}
+
+.free-play-tidal-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.free-play-tidal-tabs button {
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--deck-line);
+  background: transparent;
+  color: #a39a8e;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.free-play-tidal-tabs button.active {
+  background: #2a2620;
+  color: #f2ece3;
+  border-color: #8a8278;
+}
+
+.free-play-tidal-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.free-play-tidal-search-label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: #8a8278;
+}
+
+.tidal-track-card-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  max-height: 18rem;
+  overflow-y: auto;
+}
+
+.tidal-track-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--deck-line);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.tidal-track-card-main {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+  flex: 1 1 12rem;
+}
+
+.tidal-track-card-art,
+.track-tidal-card-art {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #2a2620;
+}
+
+.tidal-track-card-art-fallback,
+.track-tidal-card-art-fallback {
+  background: linear-gradient(135deg, #2a2620, #1a1714);
+}
+
+.tidal-track-card-body {
+  min-width: 0;
+}
+
+.tidal-track-card-title {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #f2ece3;
+  line-height: 1.25;
+}
+
+.tidal-track-card-meta {
+  margin: 0.12rem 0 0;
+  font-size: 0.72rem;
+  color: #8a8278;
+  line-height: 1.35;
+}
+
+.tidal-track-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.tidal-track-card-actions button {
+  padding: 0.3rem 0.55rem;
+  border-radius: 7px;
+  border: 1px solid var(--deck-line);
+  background: transparent;
+  color: #cfc6b8;
+  font-size: 0.72rem;
+  font-family: var(--mono);
+  letter-spacing: 0.03em;
+  cursor: pointer;
+}
+
+.tidal-track-card-actions button:hover {
+  border-color: #8a8278;
+  color: #f2ece3;
+}
+
+.tidal-track-card-actions button.active {
+  background: #2a2620;
+  border-color: #8a8278;
+  color: #f2ece3;
+}
+
+.free-play-playlist-layout {
+  display: grid;
+  grid-template-columns: minmax(9rem, 12rem) minmax(0, 1fr);
+  gap: 0.65rem;
+  min-height: 12rem;
+}
+
+@media (max-width: 640px) {
+  .free-play-playlist-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.free-play-playlist-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  max-height: 18rem;
+  overflow-y: auto;
+}
+
+.free-play-playlist-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+  padding: 0.35rem 0.4rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #cfc6b8;
+  font-size: 0.78rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.free-play-playlist-row:hover,
+.free-play-playlist-row.active {
+  background: #2a2620;
+  border-color: var(--deck-line);
+  color: #f2ece3;
+}
+
+.free-play-playlist-art {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #2a2620;
+}
+
+.free-play-playlist-art-fallback {
+  background: linear-gradient(135deg, #2a2620, #1a1714);
+}
+
+.free-play-playlist-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.free-play-playlist-count {
+  flex-shrink: 0;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: #8a8278;
+}
+
+.free-play-playlist-tracks {
+  min-width: 0;
+}
+
+.track-tidal-card.deck-loaded {
+  align-items: center;
+}
+
+.track-tidal-deck-label {
+  margin: 0 0 0.1rem;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8a8278;
+}
+
 .free-tidal-ref-note {
   margin: 0.55rem 0 0;
   font-size: 0.78rem;

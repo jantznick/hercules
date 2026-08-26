@@ -45,6 +45,26 @@ export type TidalTrackSummary = {
   mediaTags: string[];
   /** Deprecated Open API availability flags (STREAM / DJ / STEM). */
   availability: string[];
+  /** Album cover thumbnail URL when include pulls coverArt. */
+  coverArtUrl: string | null;
+};
+
+export type TidalPlaylistSummary = {
+  id: string;
+  name: string;
+  description: string | null;
+  numberOfItems: number | null;
+  coverArtUrl: string | null;
+};
+
+export type TidalTrackListResult = {
+  tracks: TidalTrackSummary[];
+  nextCursor: string | null;
+};
+
+export type TidalPlaylistListResult = {
+  playlists: TidalPlaylistSummary[];
+  nextCursor: string | null;
 };
 
 type TidalTokenResponse = {
@@ -64,6 +84,11 @@ type JsonApiResource = {
 type JsonApiDocument = {
   data?: JsonApiResource | JsonApiResource[] | null;
   included?: JsonApiResource[];
+  links?: { next?: string; meta?: { nextCursor?: string } };
+};
+
+type JsonApiResourceWithRels = JsonApiResource & {
+  relationships?: Record<string, { data?: JsonApiResource | JsonApiResource[] }>;
 };
 
 function resolveScopes(): string {
@@ -412,6 +437,75 @@ function stringList(raw: unknown): string[] {
   return raw.filter((v): v is string => typeof v === 'string' && v.length > 0);
 }
 
+function relationshipRefs(resource: JsonApiResource, relName: string): JsonApiResource[] {
+  const rel = (resource as JsonApiResourceWithRels).relationships?.[relName]?.data;
+  if (!rel) return [];
+  return Array.isArray(rel) ? rel : [rel];
+}
+
+type ArtworkFileEntry = { href?: string; meta?: { width?: number; height?: number } };
+
+function artworkUrlFromResource(artwork: JsonApiResource | undefined): string | null {
+  if (!artwork) return null;
+  const files = artwork.attributes?.files;
+  if (!Array.isArray(files) || files.length === 0) return null;
+  const entries = files.filter(
+    (f): f is ArtworkFileEntry => typeof f === 'object' && f !== null && typeof (f as ArtworkFileEntry).href === 'string',
+  );
+  if (entries.length === 0) return null;
+  const target = 160;
+  const sorted = [...entries].sort((a, b) => {
+    const aw = a.meta?.width ?? 9999;
+    const bw = b.meta?.width ?? 9999;
+    return Math.abs(aw - target) - Math.abs(bw - target);
+  });
+  return sorted[0]?.href ?? null;
+}
+
+function coverArtUrlForAlbum(
+  album: JsonApiResource | undefined,
+  artworksById: Map<string, JsonApiResource>,
+): string | null {
+  if (!album) return null;
+  for (const artRef of relationshipRefs(album, 'coverArt')) {
+    const url = artworkUrlFromResource(artworksById.get(artRef.id));
+    if (url) return url;
+  }
+  return null;
+}
+
+function coverArtUrlForTrack(track: JsonApiResource, included: JsonApiResource[] | undefined): string | null {
+  const albumsById = includedByType(included, 'albums');
+  const artworksById = includedByType(included, 'artworks');
+  for (const albumRef of relationshipRefs(track, 'albums')) {
+    const url = coverArtUrlForAlbum(albumsById.get(albumRef.id), artworksById);
+    if (url) return url;
+  }
+  return null;
+}
+
+function coverArtUrlForPlaylist(playlist: JsonApiResource, included: JsonApiResource[] | undefined): string | null {
+  const artworksById = includedByType(included, 'artworks');
+  for (const artRef of relationshipRefs(playlist, 'coverArt')) {
+    const url = artworkUrlFromResource(artworksById.get(artRef.id));
+    if (url) return url;
+  }
+  return null;
+}
+
+function nextCursorFromDoc(doc: JsonApiDocument): string | null {
+  const fromMeta = doc.links?.meta?.nextCursor;
+  if (typeof fromMeta === 'string' && fromMeta.length > 0) return fromMeta;
+  const next = doc.links?.next;
+  if (typeof next !== 'string' || !next) return null;
+  try {
+    const url = next.startsWith('http') ? new URL(next) : new URL(next, TIDAL_API_BASE);
+    return url.searchParams.get('page[cursor]');
+  } catch {
+    return null;
+  }
+}
+
 function mapTrackResource(
   track: JsonApiResource,
   included: JsonApiResource[] | undefined,
@@ -446,7 +540,42 @@ function mapTrackResource(
     popularity: Number.isFinite(popularity) ? popularity : null,
     mediaTags: stringList(attrs.mediaTags),
     availability: stringList(attrs.availability),
+    coverArtUrl: coverArtUrlForTrack(track, included),
   };
+}
+
+function mapPlaylistResource(playlist: JsonApiResource, included: JsonApiResource[] | undefined): TidalPlaylistSummary {
+  const attrs = playlist.attributes ?? {};
+  const numberOfItems =
+    typeof attrs.numberOfItems === 'number'
+      ? attrs.numberOfItems
+      : typeof attrs.numberOfItems === 'string'
+        ? Number.parseInt(attrs.numberOfItems, 10)
+        : null;
+
+  return {
+    id: playlist.id,
+    name: typeof attrs.name === 'string' ? attrs.name : 'Untitled playlist',
+    description: typeof attrs.description === 'string' ? attrs.description : null,
+    numberOfItems: Number.isFinite(numberOfItems) ? numberOfItems : null,
+    coverArtUrl: coverArtUrlForPlaylist(playlist, included),
+  };
+}
+
+function tracksFromItemRefs(
+  itemRefs: JsonApiResource[],
+  included: JsonApiResource[] | undefined,
+  limit: number,
+): TidalTrackSummary[] {
+  const tracksById = includedByType(included, 'tracks');
+  const tracks: TidalTrackSummary[] = [];
+  for (const ref of itemRefs) {
+    if (ref.type !== 'tracks') continue;
+    const track = tracksById.get(ref.id);
+    if (track) tracks.push(mapTrackResource(track, included));
+    if (tracks.length >= limit) break;
+  }
+  return tracks;
 }
 
 export async function getValidAccessToken(userId: string): Promise<string> {
@@ -481,7 +610,7 @@ export async function searchTracks(userId: string, query: string, limit = 20): P
   // Path /searchResults/{id} expects an opaque result id, not the free-text query
   // (that shape returns 400 "Invalid resource ID").
   // Nested includes pull artist/album titles for matched tracks.
-  const include = 'tracks,tracks.artists,tracks.albums';
+  const include = 'tracks,tracks.artists,tracks.albums,tracks.albums.coverArt';
   let doc: JsonApiDocument;
   try {
     doc = await tidalApiFetch('/searchResults', accessToken, {
@@ -491,12 +620,12 @@ export async function searchTracks(userId: string, query: string, limit = 20): P
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : '';
-    // Some tenants reject nested include paths; retry with tracks only.
+    // Some tenants reject nested include paths; retry with fewer includes.
     if (message.includes('400') && include.includes('.')) {
       doc = await tidalApiFetch('/searchResults', accessToken, {
         'filter[query]': trimmed.slice(0, 256),
         countryCode,
-        include: 'tracks',
+        include: 'tracks,tracks.artists,tracks.albums',
       });
     } else {
       throw err;
@@ -534,7 +663,7 @@ export async function getTrackMetadata(userId: string, trackId: string): Promise
 
   const doc = await tidalApiFetch(`/tracks/${encodeURIComponent(trackId)}`, accessToken, {
     countryCode,
-    include: 'artists,albums',
+    include: 'artists,albums,albums.coverArt',
   });
 
   const data = doc.data;
@@ -543,6 +672,119 @@ export async function getTrackMetadata(userId: string, trackId: string): Promise
   }
 
   return mapTrackResource(data, doc.included);
+}
+
+export async function listUserPlaylists(
+  userId: string,
+  limit = 30,
+  cursor?: string | null,
+): Promise<TidalPlaylistListResult> {
+  const { countryCode } = requireTidalConfig();
+  const accessToken = await getValidAccessToken(userId);
+  const pageSize = Math.min(Math.max(limit, 1), 50);
+
+  const params: Record<string, string> = {
+    'filter[owners.id]': 'me',
+    countryCode,
+    include: 'coverArt',
+    sort: '-lastModifiedAt',
+  };
+  if (cursor) params['page[cursor]'] = cursor;
+
+  const doc = await tidalApiFetch('/playlists', accessToken, params);
+  const data = doc.data;
+  const rows = Array.isArray(data) ? data : data ? [data] : [];
+  const included = doc.included ?? [];
+
+  return {
+    playlists: rows.filter((r) => r.type === 'playlists').slice(0, pageSize).map((r) => mapPlaylistResource(r, included)),
+    nextCursor: nextCursorFromDoc(doc),
+  };
+}
+
+export async function getPlaylistTracks(
+  userId: string,
+  playlistId: string,
+  limit = 50,
+  cursor?: string | null,
+): Promise<TidalTrackListResult> {
+  const { countryCode } = requireTidalConfig();
+  const accessToken = await getValidAccessToken(userId);
+  const pageSize = Math.min(Math.max(limit, 1), 50);
+
+  const params: Record<string, string> = {
+    countryCode,
+    include: 'items.tracks,items.tracks.artists,items.tracks.albums,items.tracks.albums.coverArt',
+  };
+  if (cursor) params['page[cursor]'] = cursor;
+
+  let doc: JsonApiDocument;
+  try {
+    doc = await tidalApiFetch(`/playlists/${encodeURIComponent(playlistId)}`, accessToken, params);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : '';
+    if (message.includes('400')) {
+      doc = await tidalApiFetch(`/playlists/${encodeURIComponent(playlistId)}`, accessToken, {
+        countryCode,
+        include: 'items.tracks,items.tracks.artists,items.tracks.albums',
+      });
+    } else {
+      throw err;
+    }
+  }
+
+  const playlist = doc.data;
+  if (!playlist || Array.isArray(playlist)) {
+    throw new Error('Playlist not found');
+  }
+
+  const itemRefs = relationshipRefs(playlist, 'items');
+  return {
+    tracks: tracksFromItemRefs(itemRefs, doc.included, pageSize),
+    nextCursor: nextCursorFromDoc(doc),
+  };
+}
+
+export async function listCollectionTracks(
+  userId: string,
+  limit = 50,
+  cursor?: string | null,
+): Promise<TidalTrackListResult> {
+  const { countryCode } = requireTidalConfig();
+  const accessToken = await getValidAccessToken(userId);
+  const pageSize = Math.min(Math.max(limit, 1), 50);
+
+  const params: Record<string, string> = {
+    countryCode,
+    include: 'items,items.artists,items.albums,items.albums.coverArt',
+  };
+  if (cursor) params['page[cursor]'] = cursor;
+
+  let doc: JsonApiDocument;
+  try {
+    doc = await tidalApiFetch('/userCollectionTracks/me', accessToken, params);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : '';
+    if (message.includes('400')) {
+      doc = await tidalApiFetch('/userCollectionTracks/me', accessToken, {
+        countryCode,
+        include: 'items,items.artists,items.albums',
+      });
+    } else {
+      throw err;
+    }
+  }
+
+  const collection = doc.data;
+  if (!collection || Array.isArray(collection)) {
+    return { tracks: [], nextCursor: null };
+  }
+
+  const itemRefs = relationshipRefs(collection, 'items');
+  return {
+    tracks: tracksFromItemRefs(itemRefs, doc.included, pageSize),
+    nextCursor: nextCursorFromDoc(doc),
+  };
 }
 
 export type TidalPlayerSession = {

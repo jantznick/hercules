@@ -66,14 +66,12 @@ export function mountTidalMediaElement(mod: TidalPlayerModule, host: HTMLElement
   }
 }
 
-export async function playTidalTrack(
+export async function loadTidalTrack(
   productId: string,
   sourceId: string,
   host: HTMLElement | null,
 ): Promise<TidalPlayerModule> {
   const mod = await ensureTidalPlayerSdk();
-  // load is async and is what assigns activePlayer; play() without awaiting load
-  // rejects with "No active player".
   await mod.load({
     productId,
     productType: "track",
@@ -87,7 +85,21 @@ export async function playTidalTrack(
     );
   }
 
-  await mod.play();
   mountTidalMediaElement(mod, host);
   return mod;
+}
+
+export async function playTidalTrack(
+  productId: string,
+  sourceId: string,
+  host: HTMLElement | null,
+): Promise<TidalPlayerModule> {
+  const mod = await loadTidalTrack(productId, sourceId, host);
+  await mod.play();
+  return mod;
+}
+
+export async function pauseTidalPlayback(): Promise<void> {
+  const mod = await ensureTidalPlayerSdk();
+  mod.pause();
 }

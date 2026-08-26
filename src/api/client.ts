@@ -96,6 +96,25 @@ export type TidalTrackSummary = {
   popularity: number | null;
   mediaTags: string[];
   availability: string[];
+  coverArtUrl: string | null;
+};
+
+export type TidalPlaylistSummary = {
+  id: string;
+  name: string;
+  description: string | null;
+  numberOfItems: number | null;
+  coverArtUrl: string | null;
+};
+
+export type TidalTrackListResult = {
+  tracks: TidalTrackSummary[];
+  nextCursor: string | null;
+};
+
+export type TidalPlaylistListResult = {
+  playlists: TidalPlaylistSummary[];
+  nextCursor: string | null;
 };
 
 export const tidalAPI = {
@@ -112,6 +131,29 @@ export const tidalAPI = {
   track: (id: string) =>
     request<{ track: TidalTrackSummary }>(`/tidal/tracks/${encodeURIComponent(id)}`),
   playerSession: () => request<TidalPlayerSession>("/tidal/player-session"),
+  playlists: (limit?: number, cursor?: string) => {
+    const params = new URLSearchParams();
+    if (limit != null) params.set("limit", String(limit));
+    if (cursor) params.set("cursor", cursor);
+    const q = params.toString();
+    return request<TidalPlaylistListResult>(`/tidal/playlists${q ? `?${q}` : ""}`);
+  },
+  playlistTracks: (id: string, limit?: number, cursor?: string) => {
+    const params = new URLSearchParams();
+    if (limit != null) params.set("limit", String(limit));
+    if (cursor) params.set("cursor", cursor);
+    const q = params.toString();
+    return request<TidalTrackListResult>(
+      `/tidal/playlists/${encodeURIComponent(id)}/tracks${q ? `?${q}` : ""}`,
+    );
+  },
+  collectionTracks: (limit?: number, cursor?: string) => {
+    const params = new URLSearchParams();
+    if (limit != null) params.set("limit", String(limit));
+    if (cursor) params.set("cursor", cursor);
+    const q = params.toString();
+    return request<TidalTrackListResult>(`/tidal/collection/tracks${q ? `?${q}` : ""}`);
+  },
 };
 
 export type PracticeKind = "lab" | "tutorial" | "drill";
