@@ -20,11 +20,17 @@ This document locks the **hybrid** approach used across labs, search, and refere
 ## What Tidal is for in Hercules
 
 1. **Reference listening** — sidecar player (`TidalPlayerPanel`) while you practice on bundled beds.
-2. **Catalog metadata** — search, title, artist, album, duration, **BPM** via backend Open API (`GET /api/tidal/search`, `GET /api/tidal/tracks/:id`). Backend calls TIDAL `GET /v2/searchResults?filter[query]=…&countryCode=…` (not `/searchResults/{query}` — path `{id}` is an opaque result id).
+2. **Catalog metadata** — search + track payloads map Open API fields when present: title, artists, album, **duration** (ISO 8601 → seconds), **BPM**, **key** / **keyScale** (surfaced as `keyLabel` + derived Camelot), ISRC, popularity, mediaTags, availability. Backend: `GET /api/tidal/search`, `GET /api/tidal/tracks/:id` → TIDAL `GET /v2/searchResults?filter[query]=…&countryCode=…` (not `/searchResults/{query}` — path `{id}` is an opaque result id).
 3. **Track identity** — associate a lab session with a Tidal track id for display; the **audio engine still loads the bundled bed** (T2 picker).
-4. **Free Play** — per-deck Tidal search on `/labs/free`, deck labels (title/artist/BPM), and in-lab **Play reference** via Player SDK (`FreePlayTidalReference`).
+4. **Free Play** — per-deck Tidal search on `/labs/free`, deck labels (title/artist/BPM/key), and in-lab **Play reference** via Player SDK (`FreePlayTidalReference`).
 
 Tidal is **not** a drop-in replacement for turntable buffers until/unless the Player SDK exposes routable PCM or a mixable output node.
+
+### Neural Mix / stemming (honest limit)
+
+- `@tidal-music/player` has **no stem / Neural Mix / solo-mute APIs** — only full-track (or video) playback into an `HTMLMediaElement`.
+- Open API may list deprecated `availability` values including `STEM` (DJ partner stem *usage* rights). That is **not** stem PCM for the browser Player SDK, and we do **not** decode DRM bytes into Web Audio.
+- Hercules Neural Mix pads/knobs therefore stay on the **bundled practice bed**. Free Play UI states this explicitly next to **Play reference**.
 
 ---
 
@@ -66,9 +72,10 @@ Package: [`@tidal-music/player`](https://github.com/tidal-music/tidal-sdk-web/tr
 Minimal integration:
 
 1. `bootstrap({ outputDevices: false, players: [{ itemTypes: ['track'], player: 'shaka' }, { itemTypes: ['track'], player: 'browser' }] })`
-2. `setCredentialsProvider({ bus, getCredentials })` — `getCredentials` calls `/api/tidal/player-session`.
-3. `load({ productId, productType: 'track', sourceId: 'hercules', sourceType: 'reference' })` then `play()`.
-4. Audio renders via SDK `HTMLMediaElement` (sidecar `<audio>`), **not** the turntable graph.
+2. `setEventSender(noop)` — **required**. Without it, `load()` throws `Playback not allowed without an event sender`.
+3. `setCredentialsProvider({ bus, getCredentials })` — `getCredentials` calls `/api/tidal/player-session`.
+4. **`await load({ productId, productType: 'track', sourceId, sourceType })` then `await play()`**. `load` is async and assigns `activePlayer`; calling `play()` before `load` settles rejects with **`No active player`**.
+5. Audio renders via SDK `HTMLMediaElement` (sidecar `<audio>`), **not** the turntable graph.
 
 Implementation: `src/components/TidalPlayerPanel.tsx` (Settings) and `src/components/FreePlayTidalReference.tsx` (Free Play). Shared bootstrap: `src/tidal/playerSdk.ts`.
 
@@ -81,7 +88,8 @@ Implementation: `src/components/TidalPlayerPanel.tsx` (Settings) and `src/compon
 | Credentials | Server-stored OAuth; bridge endpoint for `getCredentials` |
 | Routable Web Audio tap | **Not available** in spike — sidecar `<audio>` only |
 | HTTPS | TIDAL dev demos use `https://dev.tidal.com`; production Hercules should serve HTTPS |
-| Event telemetry | SDK supports `setEventSender` (@tidal-music/event-producer); omitted in spike |
+| Event sender | Required noop (or `@tidal-music/event-producer`); demo pattern |
+| Neural Mix / stems | **Not available** via Player SDK or Open API for browser play — see below |
 
 ---
 
@@ -89,7 +97,7 @@ Implementation: `src/components/TidalPlayerPanel.tsx` (Settings) and `src/compon
 
 - **Blend / beatmatch / EQ labs:** deck selects may show a Tidal track label, but **playback and grading use the bundled bed** at matching BPM.
 - **Waveforms and mix coach:** derived from bundled buffers, not Tidal streams.
-- **Free Play:** Tidal title/artist/BPM appear on the deck UI; **Play reference** streams via Player SDK. Pads/EQ/waveforms remain on the practice bed (hybrid note in UI).
+- **Free Play:** Tidal title/artist/BPM/key appear on the deck UI; **Play reference** streams via Player SDK. Pads/EQ/Neural Mix/waveforms remain on the practice bed (hybrid note in UI).
 - **Settings reference player:** optional search + play sidecar.
 
 ---

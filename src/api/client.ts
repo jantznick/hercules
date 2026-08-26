@@ -88,7 +88,14 @@ export type TidalTrackSummary = {
   artists: string[];
   album: string | null;
   bpm: number | null;
+  key: string | null;
+  keyScale: string | null;
+  keyLabel: string | null;
+  camelot: string | null;
   isrc: string | null;
+  popularity: number | null;
+  mediaTags: string[];
+  availability: string[];
 };
 
 export const tidalAPI = {

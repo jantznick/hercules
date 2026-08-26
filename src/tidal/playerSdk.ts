@@ -5,6 +5,11 @@ export type TidalPlayerModule = typeof import("@tidal-music/player");
 let playerModulePromise: Promise<TidalPlayerModule> | null = null;
 let sdkReady = false;
 
+/** Demo / reference listening does not need analytics batching. */
+const noopEventSender = {
+  sendEvent() {},
+};
+
 export function loadTidalPlayerModule(): Promise<TidalPlayerModule> {
   if (!playerModulePromise) {
     playerModulePromise = import("@tidal-music/player");
@@ -15,6 +20,10 @@ export function loadTidalPlayerModule(): Promise<TidalPlayerModule> {
 /**
  * Bootstrap Player SDK once and attach a credentials provider that refreshes
  * via our session-gated /api/tidal/player-session bridge.
+ *
+ * Requires setEventSender — load() throws "Playback not allowed without an
+ * event sender" otherwise. Callers must await load() before play(); otherwise
+ * play() rejects with "No active player".
  */
 export async function ensureTidalPlayerSdk(): Promise<TidalPlayerModule> {
   const mod = await loadTidalPlayerModule();
@@ -26,6 +35,9 @@ export async function ensureTidalPlayerSdk(): Promise<TidalPlayerModule> {
         { itemTypes: ["track"], player: "browser" },
       ],
     });
+
+    // Official demo uses a noop sender outside Cypress; types expect event-producer.
+    mod.setEventSender(noopEventSender as Parameters<typeof mod.setEventSender>[0]);
 
     mod.setCredentialsProvider({
       bus: () => {},
@@ -60,12 +72,21 @@ export async function playTidalTrack(
   host: HTMLElement | null,
 ): Promise<TidalPlayerModule> {
   const mod = await ensureTidalPlayerSdk();
-  mod.load({
+  // load is async and is what assigns activePlayer; play() without awaiting load
+  // rejects with "No active player".
+  await mod.load({
     productId,
     productType: "track",
     sourceId,
     sourceType: "reference",
   });
+
+  if (!mod.getMediaProduct()) {
+    throw new Error(
+      "Tidal stream did not become active (check Connect Tidal, playback scope, and HTTPS).",
+    );
+  }
+
   await mod.play();
   mountTidalMediaElement(mod, host);
   return mod;

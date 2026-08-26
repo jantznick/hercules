@@ -14,8 +14,12 @@ import { WaveformStrip } from "./WaveformStrip";
 function deckWaveLabel(deck: 1 | 2, tidal: TidalTrackRef | null): string {
   if (!tidal) return `Deck ${deck}`;
   const bpm = tidal.bpm != null ? ` · ${Math.round(tidal.bpm)} BPM` : "";
+  const key =
+    tidal.keyLabel || tidal.camelot
+      ? ` · ${tidal.keyLabel && tidal.camelot ? `${tidal.keyLabel} (${tidal.camelot})` : tidal.keyLabel || tidal.camelot}`
+      : "";
   const artist = tidal.artists[0] ?? "Unknown";
-  return `D${deck} · ${artist} — ${tidal.title}${bpm}`;
+  return `D${deck} · ${artist} — ${tidal.title}${bpm}${key}`;
 }
 
 export function HardwareFreePlay() {

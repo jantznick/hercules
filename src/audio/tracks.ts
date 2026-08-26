@@ -23,6 +23,9 @@ export type TidalTrackRef = {
   artists: string[];
   bpm: number | null;
   durationSeconds: number | null;
+  keyLabel: string | null;
+  camelot: string | null;
+  isrc: string | null;
 };
 
 /** Deck pick: bundled bed drives Web Audio EQ; optional Tidal ref for catalog context. */
@@ -82,6 +85,9 @@ export function tidalRefFromApiTrack(track: {
   artists: string[];
   bpm: number | null;
   durationSeconds: number | null;
+  keyLabel?: string | null;
+  camelot?: string | null;
+  isrc?: string | null;
 }): TidalTrackRef {
   return {
     id: track.id,
@@ -89,17 +95,27 @@ export function tidalRefFromApiTrack(track: {
     artists: track.artists,
     bpm: track.bpm,
     durationSeconds: track.durationSeconds,
+    keyLabel: track.keyLabel ?? null,
+    camelot: track.camelot ?? null,
+    isrc: track.isrc ?? null,
   };
+}
+
+export function formatTidalKeyMeta(ref: Pick<TidalTrackRef, "keyLabel" | "camelot">): string {
+  if (ref.keyLabel && ref.camelot) return `${ref.keyLabel} (${ref.camelot})`;
+  return ref.keyLabel || ref.camelot || "";
 }
 
 export function formatTidalRefLabel(ref: TidalTrackRef): string {
   const artist = ref.artists[0] ?? "Unknown artist";
   const bpm = ref.bpm != null ? ` · ${Math.round(ref.bpm)} BPM` : "";
+  const key = formatTidalKeyMeta(ref);
+  const keyPart = key ? ` · ${key}` : "";
   const dur =
     ref.durationSeconds != null && Number.isFinite(ref.durationSeconds)
       ? ` · ${formatTrackDuration(ref.durationSeconds)}`
       : "";
-  return `${artist} — ${ref.title}${bpm}${dur}`;
+  return `${artist} — ${ref.title}${bpm}${keyPart}${dur}`;
 }
 
 export function trackById(id: TrackId): TrackInfo {

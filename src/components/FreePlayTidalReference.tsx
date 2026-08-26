@@ -94,7 +94,8 @@ export function FreePlayTidalReference({ deck1, deck2 }: Props) {
       <div className="free-tidal-ref-head">
         <h3>Tidal reference</h3>
         <p className="free-tidal-ref-note">
-          Tidal audio via Player SDK · deck pads/EQ stay on the practice bed
+          Tidal audio via Player SDK · deck pads/EQ/Neural Mix stay on the practice bed (no Tidal
+          stems)
         </p>
       </div>
 

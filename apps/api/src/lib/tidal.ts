@@ -32,7 +32,19 @@ export type TidalTrackSummary = {
   artists: string[];
   album: string | null;
   bpm: number | null;
+  /** Musical key root from Open API (e.g. A, FSharp). */
+  key: string | null;
+  /** Scale / mode from Open API (e.g. MAJOR, MINOR). */
+  keyScale: string | null;
+  /** Display key, e.g. "Am" / "F#m". */
+  keyLabel: string | null;
+  /** Camelot code when major/minor mapping is known (e.g. "8A"). */
+  camelot: string | null;
   isrc: string | null;
+  popularity: number | null;
+  mediaTags: string[];
+  /** Deprecated Open API availability flags (STREAM / DJ / STEM). */
+  availability: string[];
 };
 
 type TidalTokenResponse = {
@@ -287,6 +299,119 @@ function albumTitleFromRelationships(
   return typeof title === 'string' ? title : null;
 }
 
+/** Open API duration is ISO 8601 (e.g. PT2M58S); some payloads may send seconds. */
+export function parseTidalDurationSeconds(raw: unknown): number | null {
+  if (typeof raw === 'number' && Number.isFinite(raw) && raw >= 0) {
+    return raw;
+  }
+  if (typeof raw !== 'string') return null;
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+
+  if (/^\d+(\.\d+)?$/.test(trimmed)) {
+    const n = Number.parseFloat(trimmed);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  const match = /^P(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$/i.exec(trimmed);
+  if (!match) return null;
+  const days = Number.parseInt(match[1] || '0', 10);
+  const hours = Number.parseInt(match[2] || '0', 10);
+  const minutes = Number.parseInt(match[3] || '0', 10);
+  const seconds = Number.parseFloat(match[4] || '0');
+  const total = days * 86400 + hours * 3600 + minutes * 60 + seconds;
+  return Number.isFinite(total) ? total : null;
+}
+
+const KEY_DISPLAY: Record<string, string> = {
+  C: 'C',
+  CSharp: 'C#',
+  D: 'D',
+  Eb: 'Eb',
+  E: 'E',
+  F: 'F',
+  FSharp: 'F#',
+  G: 'G',
+  Ab: 'Ab',
+  A: 'A',
+  Bb: 'Bb',
+  B: 'B',
+};
+
+/** Camelot for common major/minor (and aeolian ≈ minor) pairs. */
+const CAMELOT_MAJOR: Record<string, string> = {
+  C: '8B',
+  G: '9B',
+  D: '10B',
+  A: '11B',
+  E: '12B',
+  B: '1B',
+  FSharp: '2B',
+  Db: '3B',
+  CSharp: '3B',
+  Ab: '4B',
+  Eb: '5B',
+  Bb: '6B',
+  F: '7B',
+};
+
+const CAMELOT_MINOR: Record<string, string> = {
+  A: '8A',
+  E: '9A',
+  B: '10A',
+  FSharp: '11A',
+  CSharp: '12A',
+  GSharp: '1A',
+  Ab: '1A',
+  Eb: '2A',
+  DSharp: '2A',
+  Bb: '3A',
+  F: '4A',
+  C: '5A',
+  G: '6A',
+  D: '7A',
+};
+
+function normalizeKeyToken(raw: unknown): string | null {
+  if (typeof raw !== 'string') return null;
+  const t = raw.trim();
+  if (!t || t.toUpperCase() === 'UNKNOWN') return null;
+  return t;
+}
+
+export function formatTidalKeyLabel(key: string | null, keyScale: string | null): string | null {
+  if (!key) return null;
+  const root = KEY_DISPLAY[key] ?? key;
+  const scale = (keyScale || '').toUpperCase();
+  if (!scale || scale === 'UNKNOWN' || scale === 'MAJOR') return root;
+  if (scale === 'MINOR' || scale === 'AEOLIAN' || scale === 'HARMONIC_MINOR' || scale === 'MELODIC_MINOR') {
+    return `${root}m`;
+  }
+  const pretty = scale
+    .toLowerCase()
+    .split('_')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+  return `${root} ${pretty}`;
+}
+
+export function tidalKeyToCamelot(key: string | null, keyScale: string | null): string | null {
+  if (!key) return null;
+  const scale = (keyScale || 'MAJOR').toUpperCase();
+  if (scale === 'MAJOR' || scale === 'UNKNOWN' || !keyScale) {
+    return CAMELOT_MAJOR[key] ?? null;
+  }
+  if (scale === 'MINOR' || scale === 'AEOLIAN' || scale === 'HARMONIC_MINOR' || scale === 'MELODIC_MINOR') {
+    return CAMELOT_MINOR[key] ?? null;
+  }
+  return null;
+}
+
+function stringList(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.filter((v): v is string => typeof v === 'string' && v.length > 0);
+}
+
 function mapTrackResource(
   track: JsonApiResource,
   included: JsonApiResource[] | undefined,
@@ -294,18 +419,33 @@ function mapTrackResource(
   const artistsById = includedByType(included, 'artists');
   const albumsById = includedByType(included, 'albums');
   const attrs = track.attributes ?? {};
-  const duration = typeof attrs.duration === 'string' ? Number.parseInt(attrs.duration, 10) : typeof attrs.duration === 'number' ? attrs.duration : null;
+  const durationSeconds = parseTidalDurationSeconds(attrs.duration);
   const bpm = typeof attrs.bpm === 'number' ? attrs.bpm : typeof attrs.bpm === 'string' ? Number.parseFloat(attrs.bpm) : null;
+  const key = normalizeKeyToken(attrs.key);
+  const keyScale = normalizeKeyToken(attrs.keyScale);
+  const popularity =
+    typeof attrs.popularity === 'number'
+      ? attrs.popularity
+      : typeof attrs.popularity === 'string'
+        ? Number.parseFloat(attrs.popularity)
+        : null;
 
   return {
     id: track.id,
     title: typeof attrs.title === 'string' ? attrs.title : 'Unknown track',
-    durationSeconds: Number.isFinite(duration) ? duration : null,
+    durationSeconds,
     explicit: Boolean(attrs.explicit),
     artists: artistNamesFromRelationships(track, artistsById),
     album: albumTitleFromRelationships(track, albumsById),
     bpm: Number.isFinite(bpm) ? bpm : null,
+    key,
+    keyScale,
+    keyLabel: formatTidalKeyLabel(key, keyScale),
+    camelot: tidalKeyToCamelot(key, keyScale),
     isrc: typeof attrs.isrc === 'string' ? attrs.isrc : null,
+    popularity: Number.isFinite(popularity) ? popularity : null,
+    mediaTags: stringList(attrs.mediaTags),
+    availability: stringList(attrs.availability),
   };
 }
 

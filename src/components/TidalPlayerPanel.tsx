@@ -113,7 +113,8 @@ export function TidalPlayerPanel() {
       <h2>Tidal reference player</h2>
       <p>
         Hear the real track via TIDAL&apos;s Player SDK. Turntable labs still use bundled loops for
-        EQ and grading — see <code>docs/tidal-playback.md</code>.
+        EQ, Neural Mix, and grading — Tidal streams have no stem controls in the Player SDK. See{" "}
+        <code>docs/tidal-playback.md</code>.
       </p>
       {sdkVersion ? (
         <p className="tidal-player-meta">Player SDK v{sdkVersion}</p>
@@ -141,6 +142,11 @@ export function TidalPlayerPanel() {
                 <span className="tidal-player-result-meta">
                   {formatArtists(track)}
                   {track.bpm != null ? ` · ${Math.round(track.bpm)} BPM` : ""}
+                  {track.keyLabel
+                    ? ` · ${track.camelot ? `${track.keyLabel} (${track.camelot})` : track.keyLabel}`
+                    : track.camelot
+                      ? ` · ${track.camelot}`
+                      : ""}
                   {track.durationSeconds != null ? ` · ${formatDuration(track.durationSeconds)}` : ""}
                 </span>
               </button>
@@ -154,6 +160,12 @@ export function TidalPlayerPanel() {
           <p>
             <strong>{selected.title}</strong> — {formatArtists(selected)}
             {selected.bpm != null ? ` · ${Math.round(selected.bpm)} BPM` : ""}
+            {selected.keyLabel
+              ? ` · ${selected.camelot ? `${selected.keyLabel} (${selected.camelot})` : selected.keyLabel}`
+              : selected.camelot
+                ? ` · ${selected.camelot}`
+                : ""}
+            {selected.isrc ? ` · ISRC ${selected.isrc}` : ""}
           </p>
           <div className="auth-inline-actions">
             <button type="button" className="auth-inline-btn primary" onClick={() => void togglePlayback()}>
