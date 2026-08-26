@@ -44,9 +44,15 @@ as the build command instead.
 ## Wire to the API
 
 1. Deploy/note the public API origin
-2. Set Render `VITE_API_URL` to that origin and redeploy the static site
-3. On the API, set `FRONTEND_URLS` to the Render static origin (e.g. `https://<name>.onrender.com`) and redeploy the API
+2. Set Render `VITE_API_URL` to that origin (e.g. `https://api.hercules.nickjantz.com`) and redeploy the static site
+3. On the API, set `FRONTEND_URLS` to the **exact** browser origin of the SPA (e.g. `https://hercules.nickjantz.com` — scheme + host, **no** trailing slash) and redeploy the API
 4. Register / login — confirm credentialed requests and cookies
+
+### CORS vs cookie domain
+
+The browser error `No 'Access-Control-Allow-Origin'` on `/api/auth/me` means the API CORS allowlist does **not** include your SPA origin. Fix with `FRONTEND_URLS`, not `COOKIE_DOMAIN`.
+
+Leave `COOKIE_DOMAIN` unset for host-only session cookies on `api.*`. It is unrelated to CORS preflight.
 
 ---
 

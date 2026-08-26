@@ -11,6 +11,15 @@ function resolveApiBase(): string {
 
 const API_BASE = resolveApiBase();
 
+/** Absolute API path for full-page navigations (OAuth redirects). Uses VITE_API_URL in prod. */
+export function apiHref(path: string): string {
+  const p = path.startsWith("/") ? path : `/${path}`;
+  if (API_BASE.startsWith("http")) {
+    return `${API_BASE.replace(/\/$/, "")}${p}`;
+  }
+  return `${API_BASE}${p}`;
+}
+
 export type AuthUser = {
   id: string;
   email: string;

@@ -30,27 +30,31 @@ if (isProduction) {
 }
 
 function resolveCorsOrigins(): string[] {
+  const normalize = (s: string) => s.trim().replace(/\/$/, '');
   const fromList = (process.env.FRONTEND_URLS || '')
     .split(',')
-    .map((s) => s.trim())
+    .map(normalize)
     .filter(Boolean);
   if (fromList.length) return fromList;
 
-  const single = (process.env.FRONTEND_URL || '').trim();
+  const single = normalize(process.env.FRONTEND_URL || '');
   if (single) return [single];
 
   return ['http://localhost:5173'];
 }
 
 const corsOrigins = resolveCorsOrigins();
+console.log(`CORS allowlist: ${corsOrigins.join(', ') || '(empty)'}`);
 
 app.use(
   cors({
     origin(origin, callback) {
+      // Cookie Domain is unrelated — browsers send Origin; it must match FRONTEND_URLS exactly.
       if (!origin || corsOrigins.includes(origin)) {
         callback(null, true);
         return;
       }
+      console.warn(`CORS rejected origin: ${origin}`);
       callback(null, false);
     },
     credentials: true,

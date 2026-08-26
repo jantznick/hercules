@@ -48,7 +48,7 @@ flowchart TB
 | `SESSION_SECRET` | api | Long random string (required) |
 | `FRONTEND_URLS` | api | Web origin(s) for CORS, e.g. `https://<web>.up.railway.app` |
 | `FRONTEND_URL` | api | Optional single origin; magic-link + Tidal post-OAuth redirects use first allowlist entry |
-| `COOKIE_DOMAIN` | api | **Leave unset** while web and api are on different registrable domains (`*.up.railway.app`). Set e.g. `.yourdomain.com` once both share a parent domain |
+| `COOKIE_DOMAIN` | api | **Leave unset** for host-only cookies on `api.*` (recommended). CORS failures are **not** fixed by this — set `FRONTEND_URLS` instead. |
 | `NODE_ENV` | api, web | `production` |
 | `PORT` | api, web | Railway injects; apps listen on it |
 | `RESEND_API_KEY` | api | Required in production for magic-link email |
@@ -134,8 +134,8 @@ Smoke: open the web URL → register / login → Network tab shows credentialed 
 
 Attach e.g. `app.yourdomain.com` (web) and `api.yourdomain.com` (api), then:
 
-1. Update `FRONTEND_URLS`, `TIDAL_REDIRECT_URI`, rebuild web with new `VITE_API_URL`
-2. Set `COOKIE_DOMAIN=.yourdomain.com` once both hosts share that domain
+1. Update `FRONTEND_URLS` to the exact SPA origin (e.g. `https://hercules.nickjantz.com`), `TIDAL_REDIRECT_URI`, rebuild web with new `VITE_API_URL`
+2. Leave `COOKIE_DOMAIN` unset unless you intentionally need a shared parent-domain cookie (unusual for this SPA→API pattern)
 3. Update Tidal redirect URI to the new api host
 
 ---

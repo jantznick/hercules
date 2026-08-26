@@ -1,6 +1,6 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { authAPI, tidalAPI, type TidalConnectionStatus } from "../api/client";
+import { apiHref, authAPI, tidalAPI, type TidalConnectionStatus } from "../api/client";
 import { TidalPlayerPanel } from "../components/TidalPlayerPanel";
 import { useAuth } from "../context/AuthContext";
 import { PageHeader } from "./HomePage";
@@ -84,7 +84,7 @@ export function SettingsPage() {
         }
       />
 
-      <section className="info-block" style={{ marginBottom: "1rem" }}>
+      <section id="account" className="info-block" style={{ marginBottom: "1rem" }}>
         <h2>Account</h2>
         {isLoading ? (
           <p>Checking sign-in…</p>
@@ -115,7 +115,7 @@ export function SettingsPage() {
               <>
                 <p>Connect your Tidal account to search tracks from Hercules.</p>
                 <div className="auth-inline-actions">
-                  <a href="/api/tidal/login" className="auth-inline-btn primary">
+                  <a href={apiHref("/tidal/login")} className="auth-inline-btn primary">
                     Connect Tidal
                   </a>
                 </div>

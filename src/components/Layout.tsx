@@ -1,4 +1,5 @@
 import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { HardwareArmProvider, useHardwareArm } from "../context/HardwareArmContext";
 import { GenreProvider } from "../djing/GenreContext";
 import { SectionChrome } from "./SectionChrome";
@@ -69,12 +70,53 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
 ];
 
 const CHEAT_SHEET: NavItem = { to: "/cheatsheet", label: "Cheat sheet" };
+const ACCOUNT: NavItem = { to: "/settings#account", label: "Account" };
 
-const FLAT_NAV = [...NAV_GROUPS.flatMap((g) => g.items), CHEAT_SHEET];
+const FLAT_NAV = [...NAV_GROUPS.flatMap((g) => g.items), ACCOUNT, CHEAT_SHEET];
 
 function pathActive(pathname: string, item: NavItem, navIsActive: boolean) {
   if (navIsActive) return true;
   return (item.also ?? []).some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
+
+function AccountNavControl({ compact }: { compact?: boolean }) {
+  const { isAuthenticated, isLoading, user, openAuthModal } = useAuth();
+
+  if (isLoading) {
+    return compact ? null : <p className="hw-arm-note">Checking account…</p>;
+  }
+
+  if (isAuthenticated && user) {
+    return (
+      <div className={`account-nav${compact ? " account-nav-compact" : ""}`}>
+        {!compact && <p className="hw-arm-note">{user.email}</p>}
+        <NavLink to="/settings#account" className="side-link account-nav-link">
+          {compact ? "Account" : "Account · Tidal"}
+        </NavLink>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`account-nav${compact ? " account-nav-compact" : ""}`}>
+      <button
+        type="button"
+        className="hw-arm-btn"
+        onClick={() => openAuthModal("login")}
+      >
+        Sign in
+      </button>
+      {!compact && (
+        <button
+          type="button"
+          className="account-nav-secondary"
+          onClick={() => openAuthModal("register")}
+        >
+          Create account
+        </button>
+      )}
+    </div>
+  );
 }
 
 export function Layout() {
@@ -109,6 +151,7 @@ export function Layout() {
         </nav>
         <div className="sidebar-foot">
           <HardwareArmControl />
+          <AccountNavControl />
           <nav aria-label="Reference">
             <NavLink
               to={CHEAT_SHEET.to}
@@ -123,7 +166,10 @@ export function Layout() {
       <div className="shell-main">
         <header className="mobile-bar">
           <span className="brand-mark">Mix Ultra Lab</span>
-          <HardwareArmControl compact />
+          <div className="mobile-bar-actions">
+            <AccountNavControl compact />
+            <HardwareArmControl compact />
+          </div>
         </header>
         <nav className="mobile-nav" aria-label="Mobile">
           {FLAT_NAV.map((item) => (
