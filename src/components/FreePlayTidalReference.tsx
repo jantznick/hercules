@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { TidalTrackRef } from "../audio/tracks";
-import { formatTidalRefLabel } from "../audio/tracks";
+import { formatTidalKeyMeta } from "../audio/tracks";
 import {
   ensureTidalPlayerSdk,
   mountTidalMediaElement,
@@ -12,30 +12,40 @@ type PlaybackState = "idle" | "loading" | "playing" | "paused" | "error";
 type Props = {
   deck1: TidalTrackRef | null;
   deck2: TidalTrackRef | null;
+  /** Which deck’s song the single Player SDK stream should follow. */
+  listeningDeck: 1 | 2;
+  onListeningDeckChange: (deck: 1 | 2) => void;
 };
 
 /**
- * Free-play sidecar: play the Tidal track loaded on either deck via Player SDK.
- * Turntable EQ/pads still use the bundled practice bed.
+ * Free Play deck audio: one Tidal Player SDK stream, focused on the active deck.
+ * Practice-bed EQ/pads stay muted separately when a Tidal track is loaded.
  */
-export function FreePlayTidalReference({ deck1, deck2 }: Props) {
-  const [activeDeck, setActiveDeck] = useState<1 | 2>(1);
+export function FreePlayTidalReference({
+  deck1,
+  deck2,
+  listeningDeck,
+  onListeningDeckChange,
+}: Props) {
   const [playbackState, setPlaybackState] = useState<PlaybackState>("idle");
   const [statusNote, setStatusNote] = useState<string | null>(null);
   const audioHostRef = useRef<HTMLDivElement>(null);
   const playingIdRef = useRef<string | null>(null);
+  const autoPlayedKeyRef = useRef<string | null>(null);
 
-  const track = activeDeck === 1 ? deck1 : deck2;
-  const other = activeDeck === 1 ? deck2 : deck1;
+  const track = listeningDeck === 1 ? deck1 : deck2;
+  const other = listeningDeck === 1 ? deck2 : deck1;
+  const trackId = track?.id ?? null;
 
   useEffect(() => {
     if (track) return;
-    if (other) setActiveDeck(activeDeck === 1 ? 2 : 1);
-  }, [track, other, activeDeck]);
+    if (other) onListeningDeckChange(listeningDeck === 1 ? 2 : 1);
+  }, [track, other, listeningDeck, onListeningDeckChange]);
 
   useEffect(() => {
     if (track) return;
     playingIdRef.current = null;
+    autoPlayedKeyRef.current = null;
     setPlaybackState("idle");
     void ensureTidalPlayerSdk()
       .then((mod) => {
@@ -44,19 +54,27 @@ export function FreePlayTidalReference({ deck1, deck2 }: Props) {
       .catch(() => {});
   }, [track]);
 
-  const playActive = async () => {
-    if (!track) return;
+  const playActive = useCallback(async (deck: 1 | 2, ref: TidalTrackRef) => {
     setPlaybackState("loading");
     setStatusNote(null);
     try {
-      const mod = await playTidalTrack(track.id, `hercules-free-d${activeDeck}`, audioHostRef.current);
-      playingIdRef.current = track.id;
+      const mod = await playTidalTrack(ref.id, `hercules-free-d${deck}`, audioHostRef.current);
+      playingIdRef.current = ref.id;
       setPlaybackState(mod.getPlaybackState() === "PLAYING" ? "playing" : "paused");
     } catch (err) {
       setPlaybackState("error");
       setStatusNote(err instanceof Error ? err.message : "Playback failed");
     }
-  };
+  }, []);
+
+  // Selecting a song (or switching listening deck) starts that deck’s track.
+  useEffect(() => {
+    if (!track || !trackId) return;
+    const key = `${listeningDeck}:${trackId}`;
+    if (autoPlayedKeyRef.current === key) return;
+    autoPlayedKeyRef.current = key;
+    void playActive(listeningDeck, track);
+  }, [listeningDeck, track, trackId, playActive]);
 
   const toggle = async () => {
     if (!track) return;
@@ -74,7 +92,7 @@ export function FreePlayTidalReference({ deck1, deck2 }: Props) {
         setPlaybackState("playing");
         return;
       }
-      await playActive();
+      await playActive(listeningDeck, track);
     } catch (err) {
       setPlaybackState("error");
       setStatusNote(err instanceof Error ? err.message : "Playback failed");
@@ -82,49 +100,48 @@ export function FreePlayTidalReference({ deck1, deck2 }: Props) {
   };
 
   if (!deck1 && !deck2) {
-    return (
-      <div className="free-tidal-ref empty">
-        <p>Search Tidal on a deck above, then play the real track here (Player SDK).</p>
-      </div>
-    );
+    return null;
   }
+
+  const artist = track?.artists[0] ?? "Unknown artist";
+  const key = track ? formatTidalKeyMeta(track) : "";
+  const bpm = track?.bpm != null ? `${Math.round(track.bpm)} BPM` : "";
 
   return (
     <div className="free-tidal-ref">
-      <div className="free-tidal-ref-head">
-        <h3>Tidal reference</h3>
-        <p className="free-tidal-ref-note">
-          Tidal audio via Player SDK · deck pads/EQ/Neural Mix stay on the practice bed (no Tidal
-          stems)
-        </p>
-      </div>
-
-      <div className="free-tidal-ref-decks" role="tablist" aria-label="Reference deck">
+      <div className="free-tidal-ref-decks" role="tablist" aria-label="Listening deck">
         <button
           type="button"
           role="tab"
-          aria-selected={activeDeck === 1}
-          className={activeDeck === 1 ? "active" : ""}
+          aria-selected={listeningDeck === 1}
+          className={listeningDeck === 1 ? "active" : ""}
           disabled={!deck1}
-          onClick={() => setActiveDeck(1)}
+          onClick={() => onListeningDeckChange(1)}
         >
-          Deck 1{deck1 ? `: ${deck1.title}` : ""}
+          Deck 1 listening
         </button>
         <button
           type="button"
           role="tab"
-          aria-selected={activeDeck === 2}
-          className={activeDeck === 2 ? "active" : ""}
+          aria-selected={listeningDeck === 2}
+          className={listeningDeck === 2 ? "active" : ""}
           disabled={!deck2}
-          onClick={() => setActiveDeck(2)}
+          onClick={() => onListeningDeckChange(2)}
         >
-          Deck 2{deck2 ? `: ${deck2.title}` : ""}
+          Deck 2 listening
         </button>
       </div>
 
       {track ? (
         <div className="free-tidal-ref-now">
-          <p className="free-tidal-ref-label">{formatTidalRefLabel(track)}</p>
+          <div className="free-tidal-ref-now-meta">
+            <p className="free-tidal-ref-title">{track.title}</p>
+            <p className="free-tidal-ref-artist">
+              {artist}
+              {bpm ? ` · ${bpm}` : ""}
+              {key ? ` · ${key}` : ""}
+            </p>
+          </div>
           <button
             type="button"
             className="auth-inline-btn primary"
@@ -134,10 +151,16 @@ export function FreePlayTidalReference({ deck1, deck2 }: Props) {
             {playbackState === "loading"
               ? "Loading…"
               : playbackState === "playing" && playingIdRef.current === track.id
-                ? "Pause reference"
-                : "Play reference"}
+                ? "Pause"
+                : "Play"}
           </button>
         </div>
+      ) : null}
+
+      {deck1 && deck2 ? (
+        <p className="free-tidal-ref-note">
+          One song at a time — switch listening to hear the other deck.
+        </p>
       ) : null}
 
       <div ref={audioHostRef} className="tidal-player-audio-host" aria-hidden="true" />

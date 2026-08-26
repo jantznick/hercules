@@ -28,6 +28,9 @@ export function useTurntableSession(opts: {
   values: LiveDeckValues;
   midiEnabled: boolean;
   transportFromMidi?: boolean;
+  /** Silence practice-bed output (e.g. Free Play with a Tidal song loaded). */
+  muteBed1?: boolean;
+  muteBed2?: boolean;
 }) {
   const engineRef = useRef<TurntableEngine | null>(null);
   const [booted, setBooted] = useState(false);
@@ -46,6 +49,8 @@ export function useTurntableSession(opts: {
   const [error, setError] = useState<string | null>(null);
   const valuesRef = useRef(opts.values);
   valuesRef.current = opts.values;
+  const muteRef = useRef({ muteBed1: !!opts.muteBed1, muteBed2: !!opts.muteBed2 });
+  muteRef.current = { muteBed1: !!opts.muteBed1, muteBed2: !!opts.muteBed2 };
   const tracks = useCatalog();
 
   useEffect(() => {
@@ -57,8 +62,8 @@ export function useTurntableSession(opts: {
 
   useEffect(() => {
     if (!engineRef.current || !booted) return;
-    applyLiveMix(engineRef.current, opts.values);
-  }, [opts.values, booted]);
+    applyLiveMix(engineRef.current, opts.values, muteRef.current);
+  }, [opts.values, opts.muteBed1, opts.muteBed2, booted]);
 
   const refreshWave = useCallback((eng: TurntableEngine) => {
     setPeaks1(getDeckPeaks(eng, 1));
@@ -89,7 +94,7 @@ export function useTurntableSession(opts: {
         engineRef.current = await createTurntable();
       }
       await ensureAudio(engineRef.current);
-      applyLiveMix(engineRef.current, valuesRef.current);
+      applyLiveMix(engineRef.current, valuesRef.current, muteRef.current);
       refreshWave(engineRef.current);
       setBooted(true);
     } catch (e) {

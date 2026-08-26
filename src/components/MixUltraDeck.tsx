@@ -267,6 +267,8 @@ type WingProps = {
   onPadModeChange?: (mode: string) => void;
   shiftLatched?: boolean;
   onShiftLatch?: (on: boolean) => void;
+  /** Optional loaded-track label (e.g. Free Play Tidal title). */
+  trackLabel?: string | null;
 };
 
 function DeckWing({
@@ -284,6 +286,7 @@ function DeckWing({
   onPadModeChange,
   shiftLatched,
   onShiftLatch,
+  trackLabel,
 }: WingProps) {
   const p = (name: string) => `deck${deck}.${name}` as MixUltraControl;
   const outer = deck === 1;
@@ -326,6 +329,11 @@ function DeckWing({
 
   const jogBlock = (
     <div className="mx-jog-block">
+      {trackLabel ? (
+        <p className="mx-deck-track" title={trackLabel}>
+          {trackLabel}
+        </p>
+      ) : null}
       <div
         className={`mx-jog${playing ? " on" : ""}${touching ? " touch" : ""}${interactive ? " interactive" : ""}`}
         title={interactive ? "Drag to nudge" : undefined}
@@ -511,6 +519,8 @@ type Props = {
   /** Pointer/touch drives the MIDI bus (works with or without a controller). */
   interactive?: boolean;
   onPadModeChange?: (deck: 1 | 2, mode: string) => void;
+  trackLabel1?: string | null;
+  trackLabel2?: string | null;
 };
 
 export function MixUltraDeck({
@@ -532,6 +542,8 @@ export function MixUltraDeck({
   status,
   interactive = false,
   onPadModeChange,
+  trackLabel1 = null,
+  trackLabel2 = null,
 }: Props) {
   const [mode1, setMode1] = useState(padMode1);
   const [mode2, setMode2] = useState(padMode2);
@@ -583,6 +595,7 @@ export function MixUltraDeck({
           onPadModeChange={setPadMode1}
           shiftLatched={shift1}
           onShiftLatch={setShift1}
+          trackLabel={trackLabel1}
         />
 
         <div className="mx-center">
@@ -749,6 +762,7 @@ export function MixUltraDeck({
           onPadModeChange={setPadMode2}
           shiftLatched={shift2}
           onShiftLatch={setShift2}
+          trackLabel={trackLabel2}
         />
       </div>
     </div>

@@ -16,7 +16,7 @@ export type TrackInfo = {
   synth?: "house" | "deep" | "breaks" | "tech";
 };
 
-/** Tidal track attached to a deck for reference listening / metadata — not turntable audio. */
+/** Tidal track attached to a deck for listening / metadata — Free Play plays via Player SDK. */
 export type TidalTrackRef = {
   id: string;
   title: string;
@@ -28,7 +28,7 @@ export type TidalTrackRef = {
   isrc: string | null;
 };
 
-/** Deck pick: bundled bed drives Web Audio EQ; optional Tidal ref for catalog context. */
+/** Deck pick: bundled bed for Web Audio EQ; optional Tidal ref for Free Play listening. */
 export type DeckTrackSelection = {
   bedId: TrackId;
   tidal?: TidalTrackRef | null;

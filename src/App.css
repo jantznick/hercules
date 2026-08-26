@@ -3061,6 +3061,64 @@ button.linkish {
   line-height: 1.45;
 }
 
+.track-picker-lead {
+  flex: 1 1 100%;
+  margin: 0;
+  font-size: 0.9rem;
+  color: #cfc6b8;
+  line-height: 1.4;
+}
+
+.track-picker-bar.free-play .track-picker-decks {
+  width: 100%;
+  gap: 1rem 1.5rem;
+}
+
+.track-picker-bar.free-play .track-picker-deck {
+  flex: 1 1 16rem;
+  min-width: 14rem;
+}
+
+.track-picker-advanced {
+  margin-top: 0.15rem;
+}
+
+.track-picker-advanced > summary {
+  cursor: pointer;
+  font-size: 0.78rem;
+  color: #8a8278;
+  list-style: none;
+}
+
+.track-picker-advanced > summary::-webkit-details-marker {
+  display: none;
+}
+
+.track-picker-advanced > summary::before {
+  content: "▸ ";
+  color: #6e675e;
+}
+
+.track-picker-advanced[open] > summary::before {
+  content: "▾ ";
+}
+
+.track-picker-advanced label {
+  margin-top: 0.45rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: #8a8278;
+}
+
+.track-picker-advanced-note {
+  margin: 0.4rem 0 0;
+  font-size: 0.75rem;
+  color: #6e675e;
+  line-height: 1.4;
+}
+
 .track-picker-decks {
   display: flex;
   flex-wrap: wrap;
@@ -3125,10 +3183,12 @@ button.linkish {
 }
 
 .track-tidal-results button {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
   width: 100%;
   text-align: left;
-  padding: 0.4rem 0.55rem;
+  padding: 0.45rem 0.55rem;
   border: none;
   background: transparent;
   color: #f2ece3;
@@ -3138,6 +3198,15 @@ button.linkish {
 
 .track-tidal-results button:hover {
   background: #2a2620;
+}
+
+.track-tidal-result-title {
+  font-weight: 600;
+}
+
+.track-tidal-result-meta {
+  font-size: 0.72rem;
+  color: #8a8278;
 }
 
 .track-tidal-selected {
@@ -3150,7 +3219,46 @@ button.linkish {
   color: #cfc6b8;
 }
 
+.track-tidal-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.55rem;
+  margin-top: 0.25rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--deck-line);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.track-tidal-card-body {
+  min-width: 0;
+}
+
+.track-tidal-card-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f2ece3;
+  line-height: 1.25;
+}
+
+.track-tidal-card-artist {
+  margin: 0.15rem 0 0;
+  font-size: 0.82rem;
+  color: #cfc6b8;
+}
+
+.track-tidal-card-meta {
+  margin: 0.2rem 0 0;
+  font-size: 0.72rem;
+  font-family: var(--mono);
+  letter-spacing: 0.04em;
+  color: #8a8278;
+}
+
 .track-tidal-clear {
+  flex-shrink: 0;
   font-size: 0.72rem;
   padding: 0.15rem 0.4rem;
   border-radius: 6px;
@@ -3183,29 +3291,6 @@ button.linkish {
   border-color: #8a8278;
 }
 
-.free-tidal-deck-labels {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  margin: 0 0 0.75rem;
-}
-
-.free-tidal-deck-labels p {
-  margin: 0;
-  font-size: 0.88rem;
-  color: #cfc6b8;
-}
-
-.free-tidal-deck-tag {
-  display: inline-block;
-  min-width: 1.6rem;
-  margin-right: 0.35rem;
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  color: #8a8278;
-}
-
 .free-tidal-ref {
   margin: 0 0 0.95rem;
   padding: 0.75rem 0.85rem;
@@ -3214,30 +3299,11 @@ button.linkish {
   background: rgba(0, 0, 0, 0.18);
 }
 
-.free-tidal-ref.empty {
-  border-style: dashed;
-}
-
-.free-tidal-ref.empty p,
 .free-tidal-ref-note {
-  margin: 0;
-  font-size: 0.82rem;
+  margin: 0.55rem 0 0;
+  font-size: 0.78rem;
   color: #8a8278;
   line-height: 1.45;
-}
-
-.free-tidal-ref-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.35rem 0.85rem;
-  margin-bottom: 0.55rem;
-}
-
-.free-tidal-ref-head h3 {
-  margin: 0;
-  font-size: 0.95rem;
-  font-weight: 600;
 }
 
 .free-tidal-ref-decks {
@@ -3249,16 +3315,13 @@ button.linkish {
 
 .free-tidal-ref-decks button {
   max-width: 100%;
-  padding: 0.35rem 0.65rem;
+  padding: 0.4rem 0.75rem;
   border-radius: 8px;
   border: 1px solid var(--deck-line);
   background: transparent;
   color: #a39a8e;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   cursor: pointer;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .free-tidal-ref-decks button.active {
@@ -3279,11 +3342,34 @@ button.linkish {
   gap: 0.55rem 0.85rem;
 }
 
-.free-tidal-ref-label {
-  margin: 0;
+.free-tidal-ref-now-meta {
   flex: 1 1 12rem;
-  font-size: 0.88rem;
+  min-width: 0;
+}
+
+.free-tidal-ref-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
   color: #f2ece3;
+}
+
+.free-tidal-ref-artist {
+  margin: 0.15rem 0 0;
+  font-size: 0.82rem;
+  color: #cfc6b8;
+}
+
+.mx-deck-track {
+  margin: 0 0 0.35rem;
+  max-width: 11rem;
+  font-size: 0.68rem;
+  line-height: 1.25;
+  color: #cfc6b8;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
 }
 
 .tidal-player-panel {

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { tidalAPI } from "../api/client";
 import {
-  formatTidalRefLabel,
+  formatTidalKeyMeta,
   formatTrackDuration,
   getCachedBuffer,
   tidalRefFromApiTrack,
@@ -18,11 +18,11 @@ type Props = {
   track2: TrackId;
   onSelect: (deck: 1 | 2, id: TrackId) => void;
   hint?: string;
-  /** Controlled Tidal refs (Free Play lifts these for deck UI + reference player). */
+  /** Controlled Tidal refs (Free Play lifts these for deck UI + player). */
   tidal1?: TidalTrackRef | null;
   tidal2?: TidalTrackRef | null;
   onTidalSelect?: (deck: 1 | 2, ref: TidalTrackRef | null) => void;
-  /** Emphasize Tidal search as the primary free-play path. */
+  /** Emphasize search → song on deck as the primary free-play path. */
   freePlayMode?: boolean;
 };
 
@@ -42,9 +42,10 @@ type DeckTidalSearchProps = {
   deck: 1 | 2;
   tidalRef: TidalTrackRef | null;
   onSelectRef: (ref: TidalTrackRef | null) => void;
+  freePlayMode: boolean;
 };
 
-function DeckTidalSearch({ deck, tidalRef, onSelectRef }: DeckTidalSearchProps) {
+function DeckTidalSearch({ deck, tidalRef, onSelectRef, freePlayMode }: DeckTidalSearchProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<TidalTrackRef[]>([]);
   const [searching, setSearching] = useState(false);
@@ -89,14 +90,20 @@ function DeckTidalSearch({ deck, tidalRef, onSelectRef }: DeckTidalSearchProps) 
     [onSelectRef],
   );
 
+  const artist = tidalRef?.artists[0] ?? "Unknown artist";
+  const key = tidalRef ? formatTidalKeyMeta(tidalRef) : "";
+  const bpm = tidalRef?.bpm != null ? `${Math.round(tidalRef.bpm)} BPM` : "";
+
   return (
-    <div className="track-tidal-deck-search">
-      <label htmlFor={`tidal-search-d${deck}`}>Tidal · Deck {deck}</label>
+    <div className={`track-tidal-deck-search${freePlayMode ? " free-play" : ""}`}>
+      <label htmlFor={`tidal-search-d${deck}`}>
+        {freePlayMode ? `Deck ${deck}` : `Tidal · Deck ${deck}`}
+      </label>
       <input
         id={`tidal-search-d${deck}`}
         type="search"
         className="track-tidal-input"
-        placeholder="Search title or artist…"
+        placeholder="Search songs…"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onFocus={() => results.length > 0 && setOpen(true)}
@@ -106,22 +113,38 @@ function DeckTidalSearch({ deck, tidalRef, onSelectRef }: DeckTidalSearchProps) 
       {searchError ? <span className="track-tidal-status warn">{searchError}</span> : null}
       {open && results.length > 0 ? (
         <ul className="track-tidal-results" role="listbox">
-          {results.map((r) => (
-            <li key={r.id}>
-              <button type="button" role="option" onClick={() => pick(r)}>
-                {formatTidalRefLabel(r)}
-              </button>
-            </li>
-          ))}
+          {results.map((r) => {
+            const rArtist = r.artists[0] ?? "Unknown artist";
+            const rKey = formatTidalKeyMeta(r);
+            const rBpm = r.bpm != null ? `${Math.round(r.bpm)} BPM` : "";
+            return (
+              <li key={r.id}>
+                <button type="button" role="option" onClick={() => pick(r)}>
+                  <span className="track-tidal-result-title">{r.title}</span>
+                  <span className="track-tidal-result-meta">
+                    {rArtist}
+                    {rBpm ? ` · ${rBpm}` : ""}
+                    {rKey ? ` · ${rKey}` : ""}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
         </ul>
       ) : null}
       {tidalRef ? (
-        <p className="track-tidal-selected">
-          <span>{formatTidalRefLabel(tidalRef)}</span>
+        <div className="track-tidal-card">
+          <div className="track-tidal-card-body">
+            <p className="track-tidal-card-title">{tidalRef.title}</p>
+            <p className="track-tidal-card-artist">{artist}</p>
+            <p className="track-tidal-card-meta">
+              {bpm || key ? [bpm, key].filter(Boolean).join(" · ") : "On this deck"}
+            </p>
+          </div>
           <button type="button" className="track-tidal-clear" onClick={() => onSelectRef(null)}>
             Clear
           </button>
-        </p>
+        </div>
       ) : null}
     </div>
   );
@@ -192,48 +215,106 @@ export function TrackPickerBar({
   }, [isAuthenticated, controlled]);
 
   const tidalReady = isAuthenticated && tidalConnected && !tidalStatusLoading;
+  const showPracticeBeds = !freePlayMode || !tidalReady;
 
   return (
     <div className={`hw-free-bar track-picker-bar${freePlayMode ? " free-play" : ""}`}>
-      {tidalReady ? (
+      {!freePlayMode && tidalReady ? (
         <p className="track-picker-hybrid-note">
-          {freePlayMode
-            ? "Load a Tidal track onto each deck, then Play reference below. Pads, EQ, and waveforms still run on the practice bed."
-            : "Practice beds drive EQ, crossfader, and waveforms. Tidal picks are catalog metadata — use the reference player to hear the real track."}
+          Practice beds drive EQ, crossfader, and waveforms. Tidal picks are catalog metadata — use
+          the reference player to hear the real track.
         </p>
+      ) : null}
+
+      {freePlayMode && tidalReady ? (
+        <p className="track-picker-lead">Search a song, put it on a deck, and that&apos;s what you hear.</p>
       ) : null}
 
       <div className="track-picker-decks">
         <div className="track-picker-deck">
           {tidalReady ? (
-            <DeckTidalSearch deck={1} tidalRef={tidal1} onSelectRef={(ref) => setTidal(1, ref)} />
+            <DeckTidalSearch
+              deck={1}
+              tidalRef={tidal1}
+              onSelectRef={(ref) => setTidal(1, ref)}
+              freePlayMode={freePlayMode}
+            />
           ) : null}
-          <label>
-            Deck 1 · practice bed
-            <select value={track1} onChange={(e) => onSelect(1, e.target.value)}>
-              {beds.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {trackLabel(t)}
-                </option>
-              ))}
-            </select>
-          </label>
+
+          {showPracticeBeds ? (
+            <label>
+              {freePlayMode ? "Deck 1" : "Deck 1 · practice bed"}
+              <select value={track1} onChange={(e) => onSelect(1, e.target.value)}>
+                {beds.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {trackLabel(t)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            <details className="track-picker-advanced">
+              <summary>Use practice tones instead</summary>
+              <label>
+                Deck 1 tones
+                <select value={track1} onChange={(e) => onSelect(1, e.target.value)}>
+                  {beds.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {trackLabel(t)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {tidal1 ? (
+                <p className="track-picker-advanced-note">
+                  EQ &amp; pads stay quiet under your song. Clear the song to hear these tones.
+                </p>
+              ) : null}
+            </details>
+          )}
         </div>
 
         <div className="track-picker-deck">
           {tidalReady ? (
-            <DeckTidalSearch deck={2} tidalRef={tidal2} onSelectRef={(ref) => setTidal(2, ref)} />
+            <DeckTidalSearch
+              deck={2}
+              tidalRef={tidal2}
+              onSelectRef={(ref) => setTidal(2, ref)}
+              freePlayMode={freePlayMode}
+            />
           ) : null}
-          <label>
-            Deck 2 · practice bed
-            <select value={track2} onChange={(e) => onSelect(2, e.target.value)}>
-              {beds.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {trackLabel(t)}
-                </option>
-              ))}
-            </select>
-          </label>
+
+          {showPracticeBeds ? (
+            <label>
+              {freePlayMode ? "Deck 2" : "Deck 2 · practice bed"}
+              <select value={track2} onChange={(e) => onSelect(2, e.target.value)}>
+                {beds.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {trackLabel(t)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            <details className="track-picker-advanced">
+              <summary>Use practice tones instead</summary>
+              <label>
+                Deck 2 tones
+                <select value={track2} onChange={(e) => onSelect(2, e.target.value)}>
+                  {beds.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {trackLabel(t)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {tidal2 ? (
+                <p className="track-picker-advanced-note">
+                  EQ &amp; pads stay quiet under your song. Clear the song to hear these tones.
+                </p>
+              ) : null}
+            </details>
+          )}
         </div>
       </div>
 
