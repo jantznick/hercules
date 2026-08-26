@@ -18,6 +18,12 @@ type Props = {
   track2: TrackId;
   onSelect: (deck: 1 | 2, id: TrackId) => void;
   hint?: string;
+  /** Controlled Tidal refs (Free Play lifts these for deck UI + reference player). */
+  tidal1?: TidalTrackRef | null;
+  tidal2?: TidalTrackRef | null;
+  onTidalSelect?: (deck: 1 | 2, ref: TidalTrackRef | null) => void;
+  /** Emphasize Tidal search as the primary free-play path. */
+  freePlayMode?: boolean;
 };
 
 function trackLabel(t: TrackInfo): string {
@@ -85,12 +91,12 @@ function DeckTidalSearch({ deck, tidalRef, onSelectRef }: DeckTidalSearchProps) 
 
   return (
     <div className="track-tidal-deck-search">
-      <label htmlFor={`tidal-search-d${deck}`}>Tidal reference (Deck {deck})</label>
+      <label htmlFor={`tidal-search-d${deck}`}>Tidal · Deck {deck}</label>
       <input
         id={`tidal-search-d${deck}`}
         type="search"
         className="track-tidal-input"
-        placeholder="Search Tidal…"
+        placeholder="Search title or artist…"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onFocus={() => results.length > 0 && setOpen(true)}
@@ -127,20 +133,42 @@ export function TrackPickerBar({
   track2,
   onSelect,
   hint,
+  tidal1: tidal1Prop,
+  tidal2: tidal2Prop,
+  onTidalSelect,
+  freePlayMode = false,
 }: Props) {
   const { isAuthenticated, isLoading, openAuthModal } = useAuth();
   const [tidalConnected, setTidalConnected] = useState(false);
   const [tidalStatusLoading, setTidalStatusLoading] = useState(false);
-  const [tidal1, setTidal1] = useState<TidalTrackRef | null>(null);
-  const [tidal2, setTidal2] = useState<TidalTrackRef | null>(null);
+  const [tidal1Local, setTidal1Local] = useState<TidalTrackRef | null>(null);
+  const [tidal2Local, setTidal2Local] = useState<TidalTrackRef | null>(null);
+
+  const controlled = typeof onTidalSelect === "function";
+  const tidal1 = controlled ? (tidal1Prop ?? null) : tidal1Local;
+  const tidal2 = controlled ? (tidal2Prop ?? null) : tidal2Local;
+
+  const setTidal = useCallback(
+    (deck: 1 | 2, ref: TidalTrackRef | null) => {
+      if (controlled) {
+        onTidalSelect(deck, ref);
+        return;
+      }
+      if (deck === 1) setTidal1Local(ref);
+      else setTidal2Local(ref);
+    },
+    [controlled, onTidalSelect],
+  );
 
   const beds = bundledTracks(tracks);
 
   useEffect(() => {
     if (!isAuthenticated) {
       setTidalConnected(false);
-      setTidal1(null);
-      setTidal2(null);
+      if (!controlled) {
+        setTidal1Local(null);
+        setTidal2Local(null);
+      }
       return;
     }
 
@@ -161,21 +189,25 @@ export function TrackPickerBar({
     return () => {
       cancelled = true;
     };
-  }, [isAuthenticated]);
+  }, [isAuthenticated, controlled]);
 
   const tidalReady = isAuthenticated && tidalConnected && !tidalStatusLoading;
 
   return (
-    <div className="hw-free-bar track-picker-bar">
+    <div className={`hw-free-bar track-picker-bar${freePlayMode ? " free-play" : ""}`}>
       {tidalReady ? (
         <p className="track-picker-hybrid-note">
-          Practice beds (bundled loops) drive EQ, crossfader, and waveforms here. Tidal picks are
-          reference metadata only — stream in Tidal or djay when you want the real track.
+          {freePlayMode
+            ? "Load a Tidal track onto each deck, then Play reference below. Pads, EQ, and waveforms still run on the practice bed."
+            : "Practice beds drive EQ, crossfader, and waveforms. Tidal picks are catalog metadata — use the reference player to hear the real track."}
         </p>
       ) : null}
 
       <div className="track-picker-decks">
         <div className="track-picker-deck">
+          {tidalReady ? (
+            <DeckTidalSearch deck={1} tidalRef={tidal1} onSelectRef={(ref) => setTidal(1, ref)} />
+          ) : null}
           <label>
             Deck 1 · practice bed
             <select value={track1} onChange={(e) => onSelect(1, e.target.value)}>
@@ -186,12 +218,12 @@ export function TrackPickerBar({
               ))}
             </select>
           </label>
-          {tidalReady ? (
-            <DeckTidalSearch deck={1} tidalRef={tidal1} onSelectRef={setTidal1} />
-          ) : null}
         </div>
 
         <div className="track-picker-deck">
+          {tidalReady ? (
+            <DeckTidalSearch deck={2} tidalRef={tidal2} onSelectRef={(ref) => setTidal(2, ref)} />
+          ) : null}
           <label>
             Deck 2 · practice bed
             <select value={track2} onChange={(e) => onSelect(2, e.target.value)}>
@@ -202,9 +234,6 @@ export function TrackPickerBar({
               ))}
             </select>
           </label>
-          {tidalReady ? (
-            <DeckTidalSearch deck={2} tidalRef={tidal2} onSelectRef={setTidal2} />
-          ) : null}
         </div>
       </div>
 
@@ -217,12 +246,6 @@ export function TrackPickerBar({
       {!isLoading && isAuthenticated && !tidalStatusLoading && !tidalConnected ? (
         <Link to="/settings" className="track-tidal-stub">
           Connect Tidal in Settings
-        </Link>
-      ) : null}
-
-      {tidalReady ? (
-        <Link to="/settings#tidal-reference" className="track-tidal-stub">
-          Tidal reference player
         </Link>
       ) : null}
 

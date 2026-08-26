@@ -3144,6 +3144,109 @@ button.linkish {
   border-color: #8a8278;
 }
 
+.free-tidal-deck-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0 0 0.75rem;
+}
+
+.free-tidal-deck-labels p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #cfc6b8;
+}
+
+.free-tidal-deck-tag {
+  display: inline-block;
+  min-width: 1.6rem;
+  margin-right: 0.35rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: #8a8278;
+}
+
+.free-tidal-ref {
+  margin: 0 0 0.95rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--deck-line);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.free-tidal-ref.empty {
+  border-style: dashed;
+}
+
+.free-tidal-ref.empty p,
+.free-tidal-ref-note {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #8a8278;
+  line-height: 1.45;
+}
+
+.free-tidal-ref-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.85rem;
+  margin-bottom: 0.55rem;
+}
+
+.free-tidal-ref-head h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.free-tidal-ref-decks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.55rem;
+}
+
+.free-tidal-ref-decks button {
+  max-width: 100%;
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--deck-line);
+  background: transparent;
+  color: #a39a8e;
+  font-size: 0.78rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.free-tidal-ref-decks button.active {
+  background: #2a2620;
+  color: #f2ece3;
+  border-color: #8a8278;
+}
+
+.free-tidal-ref-decks button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.free-tidal-ref-now {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 0.85rem;
+}
+
+.free-tidal-ref-label {
+  margin: 0;
+  flex: 1 1 12rem;
+  font-size: 0.88rem;
+  color: #f2ece3;
+}
+
 .tidal-player-panel {
   margin-top: 1rem;
 }

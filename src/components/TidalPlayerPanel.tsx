@@ -1,18 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { tidalAPI, type TidalTrackSummary } from "../api/client";
-
-type PlayerModule = typeof import("@tidal-music/player");
+import {
+  ensureTidalPlayerSdk,
+  mountTidalMediaElement,
+  playTidalTrack,
+} from "../tidal/playerSdk";
 
 type PlaybackState = "idle" | "loading" | "playing" | "paused" | "error";
-
-let playerModulePromise: Promise<PlayerModule> | null = null;
-
-function loadPlayerModule(): Promise<PlayerModule> {
-  if (!playerModulePromise) {
-    playerModulePromise = import("@tidal-music/player");
-  }
-  return playerModulePromise;
-}
 
 function formatArtists(track: TidalTrackSummary): string {
   return track.artists.length ? track.artists.join(", ") : "Unknown artist";
@@ -35,49 +29,7 @@ export function TidalPlayerPanel() {
   const [statusNote, setStatusNote] = useState<string | null>(null);
   const [sdkVersion, setSdkVersion] = useState<string | null>(null);
   const audioHostRef = useRef<HTMLDivElement>(null);
-  const sdkReadyRef = useRef(false);
   const searchTimerRef = useRef<number | null>(null);
-
-  const ensureSdk = useCallback(async (): Promise<PlayerModule> => {
-    const mod = await loadPlayerModule();
-
-    if (!sdkReadyRef.current) {
-      mod.bootstrap({
-        outputDevices: false,
-        players: [
-          { itemTypes: ["track"], player: "shaka" },
-          { itemTypes: ["track"], player: "browser" },
-        ],
-      });
-
-      mod.setCredentialsProvider({
-        bus: () => {},
-        getCredentials: async () => {
-          const session = await tidalAPI.playerSession();
-          return {
-            clientId: session.clientId,
-            token: session.accessToken,
-            requestedScopes: ["r_usr", "search.read"],
-            expires: new Date(session.expiresAt).getTime(),
-          };
-        },
-      });
-
-      sdkReadyRef.current = true;
-      setSdkVersion(mod.getPlayerVersion());
-    }
-
-    return mod;
-  }, []);
-
-  const mountMediaElement = useCallback((mod: PlayerModule) => {
-    const host = audioHostRef.current;
-    const el = mod.getMediaElement();
-    if (!host || !el) return;
-    if (el.parentElement !== host) {
-      host.replaceChildren(el);
-    }
-  }, []);
 
   useEffect(() => {
     return () => {
@@ -126,15 +78,8 @@ export function TidalPlayerPanel() {
     setStatusNote(null);
 
     try {
-      const mod = await ensureSdk();
-      mod.load({
-        productId: track.id,
-        productType: "track",
-        sourceId: "hercules-reference",
-        sourceType: "settings-sidecar",
-      });
-      await mod.play();
-      mountMediaElement(mod);
+      const mod = await playTidalTrack(track.id, "hercules-settings", audioHostRef.current);
+      setSdkVersion(mod.getPlayerVersion());
       setPlaybackState(mod.getPlaybackState() === "PLAYING" ? "playing" : "paused");
     } catch (err) {
       setPlaybackState("error");
@@ -145,7 +90,7 @@ export function TidalPlayerPanel() {
   const togglePlayback = async () => {
     if (!selected) return;
     try {
-      const mod = await ensureSdk();
+      const mod = await ensureTidalPlayerSdk();
       const state = mod.getPlaybackState();
       if (state === "PLAYING") {
         mod.pause();
@@ -154,7 +99,7 @@ export function TidalPlayerPanel() {
         await playTrack(selected);
       } else {
         await mod.play();
-        mountMediaElement(mod);
+        mountTidalMediaElement(mod, audioHostRef.current);
         setPlaybackState("playing");
       }
     } catch (err) {
@@ -171,7 +116,7 @@ export function TidalPlayerPanel() {
         EQ and grading — see <code>docs/tidal-playback.md</code>.
       </p>
       {sdkVersion ? (
-        <p className="tidal-player-meta">Player SDK v{sdkVersion} (spike)</p>
+        <p className="tidal-player-meta">Player SDK v{sdkVersion}</p>
       ) : null}
 
       <label className="tidal-player-search">
