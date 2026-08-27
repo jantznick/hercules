@@ -23,6 +23,55 @@ import { WaveformStrip } from "./WaveformStrip";
 
 const { center, centerTol, killMax, xfLeftMax, xfRightMin } = MIX_ZONES;
 
+/** Full steps / technique / tutorial for each graded recipe — don’t clone the syllabus here. */
+const RECIPE_LINKS: Record<
+  TransitionRecipeId,
+  {
+    fullSteps: { to: string; label: string };
+    technique: { to: string; label: string };
+    tutorial?: { to: string; label: string };
+    drill?: { to: string; label: string };
+  }
+> = {
+  "long-blend": {
+    fullSteps: { to: "/djing/transitions#long-blend", label: "Full steps" },
+    technique: { to: "/djing/techniques#long-blend", label: "Technique" },
+    tutorial: { to: "/tutorials/mix-long-blend", label: "Tutorial" },
+    drill: { to: "/tutorials/mix-long-blend?mode=drill", label: "Drill" },
+  },
+  "bass-swap": {
+    fullSteps: { to: "/djing/transitions#bass-swap", label: "Full steps" },
+    technique: { to: "/djing/techniques#bass-swap", label: "Technique" },
+    tutorial: { to: "/tutorials/mix-bass-swap", label: "Tutorial" },
+    drill: { to: "/tutorials/mix-bass-swap?mode=drill", label: "Drill" },
+  },
+  "filter-open": {
+    fullSteps: { to: "/djing/eq", label: "EQ & Filter" },
+    technique: { to: "/djing/techniques#filter-open-in", label: "Technique" },
+    tutorial: { to: "/tutorials/adv-filter-open", label: "Tutorial" },
+    drill: { to: "/tutorials/filter-sweep?mode=drill", label: "Filter drill" },
+  },
+  "xfader-cut": {
+    fullSteps: { to: "/djing/transitions#crossfader-cut", label: "Full steps" },
+    technique: { to: "/djing/techniques#xfader-cut", label: "Technique" },
+    tutorial: { to: "/tutorials/mix-xfader-cut", label: "Tutorial" },
+    drill: { to: "/tutorials/mix-xfader-cut?mode=drill", label: "Drill" },
+  },
+};
+
+function RecipeLearnLinks({ recipe }: { recipe: TransitionRecipeId }) {
+  const links = RECIPE_LINKS[recipe];
+  return (
+    <p className="technique-links">
+      <span className="technique-links-label">Learn</span>
+      <Link to={links.fullSteps.to}>{links.fullSteps.label}</Link>
+      <Link to={links.technique.to}>{links.technique.label}</Link>
+      {links.tutorial && <Link to={links.tutorial.to}>{links.tutorial.label}</Link>}
+      {links.drill && <Link to={links.drill.to}>{links.drill.label}</Link>}
+    </p>
+  );
+}
+
 type StepId = string;
 
 type Step = {
@@ -200,17 +249,30 @@ export function TransitionLearn() {
             <Link to="/labs/beatmatch">Beatmatch</Link>.
           </li>
           <li>
-            Switch to <strong>On hardware</strong>, pick a move (long blend, bass swap, filter open,
-            or cut), finish the steps, then read the score (pass ≥ 70).
+            Switch to <strong>On hardware</strong>, pick a move, finish the steps, then read the
+            score (pass ≥ 70).
           </li>
           <li>
-            Same ideas with real songs:{" "}
-            <Link to="/djing/transitions">Same-speed mixes</Link> ·{" "}
-            <Link to="/tutorials/mix-long-blend">Long blend</Link> ·{" "}
-            <Link to="/tutorials/mix-bass-swap">Bass swap</Link>.
+            Overview of every same-speed mix:{" "}
+            <Link to="/djing/transitions">Same-speed mixes</Link>. Named-move index:{" "}
+            <Link to="/djing/techniques">Techniques</Link>.
           </li>
         </ol>
       </HowToUse>
+
+      <div className="what-it-does">
+        <div className="section-head">
+          <h2>Recipes</h2>
+        </div>
+        <ul className="lab-recipe-list">
+          {TRANSITION_RECIPES.map((r) => (
+            <li key={r.id}>
+              <strong>{r.title}.</strong> {r.blurb}{" "}
+              <RecipeLearnLinks recipe={r.id} />
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <p className="footer-note">
         Grading uses demo beds + MIDI motion — not a spectral “mud” meter for Tidal/djay streams.
@@ -425,6 +487,7 @@ export function TransitionHardware({
         ))}
       </div>
       <p className="lab-mode-note">{TRANSITION_RECIPES.find((r) => r.id === recipe)?.blurb}</p>
+      <RecipeLearnLinks recipe={recipe} />
 
       <TrackPickerBar
         tracks={tt.tracks}

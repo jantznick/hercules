@@ -527,6 +527,36 @@ export function TransitionLabPage() {
       <RelatedExtras
         links={[
           {
+            to: "/djing/transitions",
+            label: "Same-speed mixes",
+            blurb: "Full steps for long blend, bass swap, cut…",
+          },
+          {
+            to: "/djing/techniques#same-speed",
+            label: "Techniques · same speed",
+            blurb: "Named-move index (what / when / Mix Ultra)",
+          },
+          {
+            to: "/djing/transitions#long-blend",
+            label: "Long blend",
+            blurb: "Full steps · faders only",
+          },
+          {
+            to: "/djing/transitions#bass-swap",
+            label: "Bass swap",
+            blurb: "Full steps · one bassline",
+          },
+          {
+            to: "/djing/techniques#filter-open-in",
+            label: "Filter-open",
+            blurb: "Technique · thin in, open the drop",
+          },
+          {
+            to: "/djing/transitions#crossfader-cut",
+            label: "Crossfader cut",
+            blurb: "Full steps · throw / chop",
+          },
+          {
             to: "/labs/blend",
             label: "Two-deck blend",
             blurb: "Shorter EQ + XF phrase drill",
@@ -542,14 +572,19 @@ export function TransitionLabPage() {
             blurb: "Left / center / right alone",
           },
           {
-            to: "/djing/transitions",
-            label: "Same-speed mixes",
-            blurb: "Named moves and when to use them",
+            to: "/tutorials/mix-long-blend",
+            label: "Tutorial: Long blend",
+            blurb: "Song sheet + optional graded drill",
           },
           {
-            to: "/tutorials/mix-long-blend?mode=drill",
-            label: "Tutorial drill: Long blend",
-            blurb: "Graded transition shell in the tutorial",
+            to: "/tutorials/mix-bass-swap",
+            label: "Tutorial: Bass swap",
+            blurb: "Song sheet + graded drill",
+          },
+          {
+            to: "/tutorials/mix-xfader-cut",
+            label: "Tutorial: Crossfader cut",
+            blurb: "Song sheet + graded drill",
           },
           {
             to: "/labs/free",

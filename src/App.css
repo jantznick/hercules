@@ -1808,6 +1808,18 @@ tr:last-child td {
   color: var(--ink-muted);
 }
 
+.lab-recipe-list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.lab-recipe-list li .technique-links {
+  margin: 0.35rem 0 0;
+}
+
 .tutorial-mode-shell {
   margin-bottom: 0.75rem;
 }
