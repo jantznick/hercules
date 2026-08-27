@@ -99,7 +99,8 @@ export function TransitionsPage() {
           </ol>
           <p>{flavor.longBlend}</p>
           <p>
-            Tutorial: <Link to="/tutorials/mix-long-blend">Long blend: Saving Up → Turn Off The Lights</Link>.
+            Tutorial: <Link to="/tutorials/mix-long-blend">Long blend: Saving Up → Turn Off The Lights</Link>
+            . Graded practice: <Link to="/labs/transition">Transition grade</Link>.
           </p>
         </section>
 
@@ -125,6 +126,7 @@ export function TransitionsPage() {
           <p>{flavor.bassSwap}</p>
           <p>
             Tutorial: <Link to="/tutorials/mix-bass-swap">Bass swap: Losing It → Ferrari</Link>.
+            Graded practice: <Link to="/labs/transition">Transition grade</Link>.
           </p>
         </section>
 
@@ -218,6 +220,7 @@ export function TransitionsPage() {
             you move the crossfader, that’s <strong>Auto-play when moving crossfader</strong> —{" "}
             <Link to="/settings">djay settings</Link>. Tutorial:{" "}
             <Link to="/tutorials/mix-xfader-cut">Crossfader cut: Ferrari vs Turn Off The Lights</Link>.
+            Graded practice: <Link to="/labs/transition">Transition grade</Link>.
           </p>
         </section>
       </div>

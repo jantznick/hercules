@@ -48,6 +48,11 @@ const LABS = [
     blurb: "EQ + crossfader phrase drill — bass and XF timing tips.",
   },
   {
+    to: "/labs/transition",
+    title: "Transition grade",
+    blurb: "Score long blend / bass swap / filter open / cut (pass ≥ 70).",
+  },
+  {
     to: "/labs/neural",
     title: "HIGH / MID / LOW",
     blurb: "Center N remaps knobs to stem volumes.",

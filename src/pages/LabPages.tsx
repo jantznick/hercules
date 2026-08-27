@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { BeatmatchHardware, BeatmatchLearn } from "../components/BeatmatchPracticeLab";
 import { BlendHardware, BlendLearn } from "../components/BlendPracticeLab";
+import { TransitionHardware, TransitionLearn } from "../components/TransitionPracticeLab";
 import { CrossfaderLab } from "../components/CrossfaderLab";
 import { CueLab } from "../components/CueLab";
 import { EqLab } from "../components/EqLab";
@@ -480,6 +481,11 @@ export function BlendLabPage() {
             blurb: "Left / center / right alone",
           },
           {
+            to: "/labs/transition",
+            label: "Transition grade",
+            blurb: "Score long blend / bass swap / filter / cut",
+          },
+          {
             to: "/djing/blend",
             label: "Blend",
             blurb: "Longer mix strategy",
@@ -488,6 +494,62 @@ export function BlendLabPage() {
             to: "/tutorials/two-deck-blend?mode=drill",
             label: "Tutorial drill: First two-deck blend",
             blurb: "Same graded shell inside the tutorial",
+          },
+          {
+            to: "/labs/free",
+            label: "Free play",
+            blurb: "Same deck, no grade",
+          },
+        ]}
+      />
+    </>
+  );
+}
+
+export function TransitionLabPage() {
+  return (
+    <>
+      <PageHeader
+        eyebrow="Labs"
+        title="Transition grade"
+        description="Score a basic same-speed handoff on laptop audio — long blend, bass swap, filter open, or crossfader cut. Pass ≥ 70 from EQ / Filter / XF timing plus tempo and kick scaffold."
+        actions={
+          <Link to="/labs" className="text-back">
+            All labs
+          </Link>
+        }
+      />
+      <LabModeShell
+        hardwareNote={HW_NOTE}
+        learn={<TransitionLearn />}
+        hardware={<TransitionHardware />}
+      />
+      <RelatedExtras
+        links={[
+          {
+            to: "/labs/blend",
+            label: "Two-deck blend",
+            blurb: "Shorter EQ + XF phrase drill",
+          },
+          {
+            to: "/labs/beatmatch",
+            label: "Beatmatch",
+            blurb: "Tempo fader + jog first",
+          },
+          {
+            to: "/labs/filter",
+            label: "Filter",
+            blurb: "Left / center / right alone",
+          },
+          {
+            to: "/djing/transitions",
+            label: "Same-speed mixes",
+            blurb: "Named moves and when to use them",
+          },
+          {
+            to: "/tutorials/mix-long-blend?mode=drill",
+            label: "Tutorial drill: Long blend",
+            blurb: "Graded transition shell in the tutorial",
           },
           {
             to: "/labs/free",

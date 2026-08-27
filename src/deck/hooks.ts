@@ -144,3 +144,71 @@ export function useBlendMotionRecorder(
     reset,
   };
 }
+
+type TransitionCcBundle = {
+  crossfader: number | undefined;
+  deck1Low: number | undefined;
+  deck2Low: number | undefined;
+  deck1Mid: number | undefined;
+  deck2Mid: number | undefined;
+  deck1High: number | undefined;
+  deck2High: number | undefined;
+  deck1Filter: number | undefined;
+  deck2Filter: number | undefined;
+  deck1Volume: number | undefined;
+  deck2Volume: number | undefined;
+  deck1Pitch: number | undefined;
+  deck2Pitch: number | undefined;
+};
+
+/** Record the CC set used by judgeBasicTransition. */
+export function useTransitionMotionRecorder(ccs: TransitionCcBundle, enabled: boolean) {
+  const crossfader = useMotionRecorder(ccs.crossfader, enabled);
+  const deck1Low = useMotionRecorder(ccs.deck1Low, enabled);
+  const deck2Low = useMotionRecorder(ccs.deck2Low, enabled);
+  const deck1Mid = useMotionRecorder(ccs.deck1Mid, enabled);
+  const deck2Mid = useMotionRecorder(ccs.deck2Mid, enabled);
+  const deck1High = useMotionRecorder(ccs.deck1High, enabled);
+  const deck2High = useMotionRecorder(ccs.deck2High, enabled);
+  const deck1Filter = useMotionRecorder(ccs.deck1Filter, enabled);
+  const deck2Filter = useMotionRecorder(ccs.deck2Filter, enabled);
+  const deck1Volume = useMotionRecorder(ccs.deck1Volume, enabled);
+  const deck2Volume = useMotionRecorder(ccs.deck2Volume, enabled);
+  const deck1Pitch = useMotionRecorder(ccs.deck1Pitch, enabled);
+  const deck2Pitch = useMotionRecorder(ccs.deck2Pitch, enabled);
+
+  const reset = () => {
+    crossfader.reset();
+    deck1Low.reset();
+    deck2Low.reset();
+    deck1Mid.reset();
+    deck2Mid.reset();
+    deck1High.reset();
+    deck2High.reset();
+    deck1Filter.reset();
+    deck2Filter.reset();
+    deck1Volume.reset();
+    deck2Volume.reset();
+    deck1Pitch.reset();
+    deck2Pitch.reset();
+  };
+
+  return {
+    samples: {
+      crossfader: crossfader.samples,
+      deck1Low: deck1Low.samples,
+      deck2Low: deck2Low.samples,
+      deck1Mid: deck1Mid.samples,
+      deck2Mid: deck2Mid.samples,
+      deck1High: deck1High.samples,
+      deck2High: deck2High.samples,
+      deck1Filter: deck1Filter.samples,
+      deck2Filter: deck2Filter.samples,
+      deck1Volume: deck1Volume.samples,
+      deck2Volume: deck2Volume.samples,
+      deck1Pitch: deck1Pitch.samples,
+      deck2Pitch: deck2Pitch.samples,
+    },
+    reset,
+  };
+}

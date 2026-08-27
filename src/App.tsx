@@ -45,6 +45,7 @@ import {
   NeuralLabPage,
   NeuralPadsLabPage,
   PadsLabPage,
+  TransitionLabPage,
 } from "./pages/LabPages";
 import "./App.css";
 
@@ -107,6 +108,7 @@ export default function App() {
           <Route path="labs/beatmatch" element={<BeatmatchLabPage />} />
           <Route path="labs/incoming-cue" element={<IncomingCueLabPage />} />
           <Route path="labs/blend" element={<BlendLabPage />} />
+          <Route path="labs/transition" element={<TransitionLabPage />} />
           <Route path="labs/neural" element={<NeuralLabPage />} />
           <Route path="labs/pads" element={<PadsLabPage />} />
           <Route path="labs/neural-pads" element={<NeuralPadsLabPage />} />

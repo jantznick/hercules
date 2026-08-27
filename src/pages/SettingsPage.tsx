@@ -15,6 +15,7 @@ import { PageHeader } from "./HomePage";
 
 const LAB_LABELS: Record<string, string> = {
   "/labs/blend": "Blend lab",
+  "/labs/transition": "Transition grade lab",
   "/labs/beatmatch": "Beatmatch lab",
   "/labs/hot-cue": "Hot cues lab",
   "/labs/cue": "Play & CUE lab",
