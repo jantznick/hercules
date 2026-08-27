@@ -1388,6 +1388,7 @@ export const TUTORIALS: Tutorial[] = [
     title: "Long blend: Saving Up → Turn Off The Lights",
     time: "~10 min",
     level: "Mixing",
+    coachLabFirst: { to: "/labs/transition", label: "Transition grade" },
     trackRecipe:
       "SONG SHEET — faders only. Prefer Original / Extended mixes so you have drums to blend (radio edits run out of intro too fast).\n\nDeck 1 (outgoing): Dom Dolla – Saving Up · ~128 BPM\n• Hot cue 1 → first useful kick / DJ intro (often the opening drums)\n• Hot cue 4 → last FULL groove still with kick+bass (not the dying last 20 seconds)\n\nDeck 2 (incoming): Chris Lake – Turn Off The Lights (feat. stef) · ~126–128 BPM\n• Hot cue 1 → first useful kick / DJ intro\n\nMatch Deck 2 by hand (tempo fader + jog; leave SYNC off). Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). Do not touch LOW, Filter, or Echo on this drill — channel faders only.\n\nBackup: two similar-BPM house tracks you already own. Same idea: fat groove on A, drum intro on B.",
     summary:
@@ -1440,7 +1441,7 @@ export const TUTORIALS: Tutorial[] = [
     title: "Bass swap: Losing It → Ferrari",
     time: "~10 min",
     level: "Mixing",
-    coachLabFirst: { to: "/labs/eq", label: "Bass kill (LOW)" },
+    coachLabFirst: { to: "/labs/transition", label: "Transition grade" },
     trackRecipe:
       "SONG SHEET — this is the LOW-knob drill, not the filter-open Advanced recipe.\n\nDeck 1 (outgoing): FISHER – Losing It · ~125 BPM\n• Hot cue 4 → last FULL groove (kick+bass still there)\n\nDeck 2 (incoming): James Hype & Miggy Dela Rosa – Ferrari · ~125–126 BPM\n• Hot cue 1 → first useful kick / DJ intro (not the drop — you want drums to blend)\n\nMatch Deck 2 by hand (tempo fader + jog; leave SYNC off). Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). Channel faders can both be up; only one LOW sits at 12 o’clock.\n\nBackup: Saving Up (A) → Turn Off The Lights (B), same LOW trade.",
     summary:
@@ -1577,7 +1578,7 @@ export const TUTORIALS: Tutorial[] = [
     title: "Crossfader cut: Ferrari vs Turn Off The Lights",
     time: "~8 min",
     level: "Mixing",
-    coachLabFirst: { to: "/labs/crossfader", label: "Crossfader" },
+    coachLabFirst: { to: "/labs/transition", label: "Transition grade" },
     trackRecipe:
       "SONG SHEET — two drops, one slider. Not the Advanced double-drop (that one layers both kicks).\n\nDeck 1: James Hype & Miggy Dela Rosa – Ferrari · ~125–126 BPM\n• Hot cue 2 → first kick of the MAIN DROP\n\nDeck 2: Chris Lake – Turn Off The Lights (feat. stef) · ~126–128 BPM\n• Hot cue 2 → first kick of the MAIN DROP\n\nMatch Deck 2 by hand (tempo fader + jog; leave SYNC off). Key Lock on (holds pitch while you beatmatch — not a pitch SYNC). Both channel faders UP. HIGH / MID / LOW at 12 o’clock. The crossfader does the work.\n\ndjay Sound: Crossfader curve = Cut (sharp). If a paused deck starts when you move the crossfader, turn off Auto-play when moving crossfader.\n\nBackup: Losing It drop (A) × Saving Up drop (B).",
     summary:

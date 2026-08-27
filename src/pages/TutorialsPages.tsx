@@ -357,7 +357,7 @@ function TutorialRunner({ tutorial }: { tutorial: Tutorial }) {
               graded {drill.label} drill below.
             </p>
           )}
-          <TutorialDrillMount kind={drill.kind} />
+          <TutorialDrillMount kind={drill.kind} transitionRecipe={drill.transitionRecipe} />
           <p className="footer-note" style={{ marginTop: "1rem" }}>
             Done grading?{" "}
             <button type="button" className="linkish" onClick={() => setMode("steps")}>

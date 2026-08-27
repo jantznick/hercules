@@ -6,10 +6,12 @@ import { HardwareEqLab } from "../components/HardwareEqLab";
 import { HardwareFilterLab } from "../components/HardwareFilterLab";
 import { HardwareHotCueLab } from "../components/HardwareHotCueLab";
 import { HardwarePlayCueLab } from "../components/HardwarePlayCueLab";
+import { TransitionHardware } from "../components/TransitionPracticeLab";
 
 /** Which graded HW shell a tutorial embeds (reuse lab code — don’t clone). */
 export type TutorialDrillKind =
   | "blend"
+  | "transition"
   | "beatmatch"
   | "hot-cue"
   | "play-cue"
@@ -28,6 +30,8 @@ export type TutorialDrill = {
   labLabel: string;
   /** Optional prep lab (e.g. incoming cue before blend) */
   prepLab?: { to: string; label: string };
+  /** When kind is transition, which recipe to open on */
+  transitionRecipe?: "long-blend" | "bass-swap" | "filter-open" | "xfader-cut";
 };
 
 /**
@@ -43,6 +47,16 @@ export const TUTORIAL_DRILLS: Record<string, TutorialDrill> = {
     labTo: "/labs/blend",
     labLabel: "Blend",
     prepLab: { to: "/labs/incoming-cue?mode=hardware", label: "Incoming cue (Deck 2)" },
+  },
+  "mix-long-blend": {
+    kind: "transition",
+    label: "Transition",
+    note:
+      "Graded long-blend / bass-swap / filter / cut score on laptop audio — quit djay so MIDI is free. Opens on Long blend. Full steps stay for real songs in djay.",
+    labTo: "/labs/transition",
+    labLabel: "Transition grade",
+    prepLab: { to: "/labs/blend?mode=hardware", label: "Two-deck blend" },
+    transitionRecipe: "long-blend",
   },
   "mix-manual-beatmatch": {
     kind: "beatmatch",
@@ -85,21 +99,23 @@ export const TUTORIAL_DRILLS: Record<string, TutorialDrill> = {
     labLabel: "Bass kill (LOW)",
   },
   "mix-bass-swap": {
-    kind: "eq",
-    label: "Bass kill",
+    kind: "transition",
+    label: "Transition",
     note:
-      "Graded LOW kill timing on laptop audio — the core hand move before a real bass swap. Quit djay first. Full steps trade bass between two songs in djay.",
-    labTo: "/labs/eq",
-    labLabel: "Bass kill (LOW)",
+      "Graded bass-swap transition score on laptop audio — quit djay first. Opens on Bass swap. Full steps trade bass between two songs in djay.",
+    labTo: "/labs/transition",
+    labLabel: "Transition grade",
     prepLab: { to: "/labs/incoming-cue?mode=hardware", label: "Incoming cue (Deck 2)" },
+    transitionRecipe: "bass-swap",
   },
   "mix-xfader-cut": {
-    kind: "crossfader",
-    label: "Crossfader",
+    kind: "transition",
+    label: "Transition",
     note:
-      "Graded left · center · right on laptop audio with both beds playing. Quit djay first. Full steps throw/cut between two real drops in djay.",
-    labTo: "/labs/crossfader",
-    labLabel: "Crossfader",
+      "Graded crossfader-cut score on laptop audio with both beds playing. Quit djay first. Opens on Crossfader cut. Full steps throw between two real drops in djay.",
+    labTo: "/labs/transition",
+    labLabel: "Transition grade",
+    transitionRecipe: "xfader-cut",
   },
 };
 
@@ -115,10 +131,18 @@ export function drillPath(tutorialId: string): string | null {
   return tutorialHasDrill(tutorialId) ? `/tutorials/${tutorialId}?mode=drill` : null;
 }
 
-export function TutorialDrillMount({ kind }: { kind: TutorialDrillKind }): ReactNode {
+export function TutorialDrillMount({
+  kind,
+  transitionRecipe,
+}: {
+  kind: TutorialDrillKind;
+  transitionRecipe?: "long-blend" | "bass-swap" | "filter-open" | "xfader-cut";
+}): ReactNode {
   switch (kind) {
     case "blend":
       return <BlendHardware />;
+    case "transition":
+      return <TransitionHardware initialRecipe={transitionRecipe ?? "bass-swap"} />;
     case "beatmatch":
       return <BeatmatchHardware />;
     case "hot-cue":

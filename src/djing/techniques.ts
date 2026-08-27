@@ -122,6 +122,7 @@ export const TECHNIQUES: NamedTechnique[] = [
     labs: [
       { to: "/labs/incoming-cue", label: "Incoming cue (Deck 2)" },
       { to: "/labs/blend", label: "Two-deck blend" },
+      { to: "/labs/transition", label: "Transition grade" },
     ],
     tutorials: ["mix-long-blend", "two-deck-blend"],
     sourceVideos: ["blakey5"],
@@ -143,6 +144,7 @@ export const TECHNIQUES: NamedTechnique[] = [
       { to: "/labs/eq", label: "Bass kill (LOW)" },
       { to: "/labs/incoming-cue", label: "Incoming cue (Deck 2)" },
       { to: "/labs/blend", label: "Two-deck blend" },
+      { to: "/labs/transition", label: "Transition grade" },
     ],
     tutorials: ["mix-bass-swap", "mix-gain", "mix-in-mix-out", "two-deck-blend"],
     sourceVideos: ["blakey5", "carlo3"],
@@ -173,7 +175,7 @@ export const TECHNIQUES: NamedTechnique[] = [
     mixUltra:
       "Filter right = thinner / less bass. Filter left = muffled. 12 o’clock = leave the song alone. Reset both decks when you’re done.",
     more: [{ to: "/djing/eq", label: "EQ, bass & filter" }],
-    labs: [{ to: "/labs/filter", label: "Filter" }],
+    labs: [{ to: "/labs/filter", label: "Filter" }, { to: "/labs/transition", label: "Transition grade" }],
     tutorials: ["adv-filter-open", "adv-kpdh-filter", "filter-sweep"],
     sourceVideos: ["carlo3"],
   },
@@ -220,7 +222,10 @@ export const TECHNIQUES: NamedTechnique[] = [
       { to: "/djing/transitions#crossfader-cut", label: "Full steps" },
       { to: "/settings", label: "djay settings" },
     ],
-    labs: [{ to: "/labs/crossfader", label: "Crossfader" }],
+    labs: [
+      { to: "/labs/crossfader", label: "Crossfader" },
+      { to: "/labs/transition", label: "Transition grade" },
+    ],
     tutorials: ["mix-xfader-cut"],
     sourceVideos: ["blakey5"],
   },
@@ -462,8 +467,9 @@ export const TUTORIAL_COACH_LABS: Record<string, LabLink> = {
   "cue-home": { to: "/labs/cue", label: "CUE button" },
   "filter-sweep": { to: "/labs/filter", label: "Filter" },
   "eq-vs-neural": { to: "/labs/eq", label: "Bass kill (LOW)" },
-  "mix-bass-swap": { to: "/labs/eq", label: "Bass kill (LOW)" },
-  "mix-xfader-cut": { to: "/labs/crossfader", label: "Crossfader" },
+  "mix-bass-swap": { to: "/labs/transition", label: "Transition grade" },
+  "mix-long-blend": { to: "/labs/transition", label: "Transition grade" },
+  "mix-xfader-cut": { to: "/labs/transition", label: "Transition grade" },
 };
 
 export function coachLabForTutorial(tutorialId: string): LabLink | null {
@@ -486,19 +492,29 @@ const EXTRA_TUTORIAL_LABS: Record<string, LabLink[]> = {
   "two-deck-blend": [
     { to: "/labs/incoming-cue", label: "Incoming cue (Deck 2)" },
     { to: "/labs/blend", label: "Two-deck blend" },
+    { to: "/labs/transition", label: "Transition grade" },
     { to: "/labs/eq", label: "Bass kill (LOW)" },
     { to: "/labs/crossfader", label: "Crossfader" },
   ],
   "mix-manual-beatmatch": [
     { to: "/labs/beatmatch", label: "Beatmatch" },
     { to: "/labs/blend", label: "Two-deck blend" },
+    { to: "/labs/transition", label: "Transition grade" },
+  ],
+  "mix-long-blend": [
+    { to: "/labs/transition", label: "Transition grade" },
+    { to: "/labs/blend", label: "Two-deck blend" },
   ],
   "mix-bass-swap": [
     { to: "/labs/eq", label: "Bass kill (LOW)" },
     { to: "/labs/incoming-cue", label: "Incoming cue (Deck 2)" },
     { to: "/labs/blend", label: "Two-deck blend" },
+    { to: "/labs/transition", label: "Transition grade" },
   ],
-  "mix-xfader-cut": [{ to: "/labs/crossfader", label: "Crossfader" }],
+  "mix-xfader-cut": [
+    { to: "/labs/crossfader", label: "Crossfader" },
+    { to: "/labs/transition", label: "Transition grade" },
+  ],
 };
 
 export function labsForTutorial(tutorialId: string): LabLink[] {

@@ -354,3 +354,536 @@ export function judgeBlendSession(
     complete: bass.verdict !== "incomplete" && crossfader.verdict !== "incomplete",
   };
 }
+
+/** Named basic transitions graded on Mix Ultra + laptop beds. */
+export type TransitionRecipeId =
+  | "long-blend"
+  | "bass-swap"
+  | "filter-open"
+  | "xfader-cut";
+
+export const TRANSITION_RECIPES: {
+  id: TransitionRecipeId;
+  title: string;
+  blurb: string;
+}[] = [
+  {
+    id: "long-blend",
+    title: "Long blend",
+    blurb: "Faders / crossfader only — leave EQ near 12 o’clock.",
+  },
+  {
+    id: "bass-swap",
+    title: "Bass swap",
+    blurb: "Kill incoming LOW, blend, then hand the bass to Deck 2.",
+  },
+  {
+    id: "filter-open",
+    title: "Filter open",
+    blurb: "Incoming Filter right (thin), then sweep to center as you blend.",
+  },
+  {
+    id: "xfader-cut",
+    title: "Crossfader cut",
+    blurb: "Both loud, EQ flat — throw XF left → right in a beat or two.",
+  },
+];
+
+/** Phrase bars for cut / filter-open windows. */
+export const TRANSITION_PHRASE_BARS = {
+  xfaderCut: [0.25, 2] as [number, number],
+  filterOpen: [1, 4] as [number, number],
+  volumeHandoff: [2, 8] as [number, number],
+} as const;
+
+export type TransitionSessionSamples = {
+  crossfader: MotionPoint[];
+  deck1Low: MotionPoint[];
+  deck2Low: MotionPoint[];
+  deck1Mid: MotionPoint[];
+  deck2Mid: MotionPoint[];
+  deck1High: MotionPoint[];
+  deck2High: MotionPoint[];
+  deck1Filter: MotionPoint[];
+  deck2Filter: MotionPoint[];
+  deck1Volume: MotionPoint[];
+  deck2Volume: MotionPoint[];
+  deck1Pitch: MotionPoint[];
+  deck2Pitch: MotionPoint[];
+  playheads: PlayheadSample[];
+};
+
+export type TransitionDimVerdict =
+  | RampVerdict
+  | KickAlignGrade
+  | "ok"
+  | "warn"
+  | "miss"
+  | "n/a";
+
+export type TransitionDimension = {
+  id: string;
+  label: string;
+  /** 0–100 contribution before weighting. */
+  score: number;
+  tip: string;
+  verdict: TransitionDimVerdict;
+};
+
+export type TransitionJudgment = {
+  recipe: TransitionRecipeId;
+  /** Weighted 0–100. */
+  score: number;
+  /** Pass at ≥ 70. */
+  passed: boolean;
+  dimensions: TransitionDimension[];
+  summary: string;
+};
+
+function lastValue(points: MotionPoint[]): number | null {
+  if (points.length === 0) return null;
+  return points[points.length - 1]!.value;
+}
+
+function anyInZone(points: MotionPoint[], zone: (v: number) => boolean): boolean {
+  return points.some((p) => zone(p.value));
+}
+
+function fractionInZone(points: MotionPoint[], zone: (v: number) => boolean): number {
+  if (points.length === 0) return 0;
+  let hit = 0;
+  for (const p of points) if (zone(p.value)) hit++;
+  return hit / points.length;
+}
+
+function rampScore(j: RampJudgment): number {
+  if (j.verdict === "ok") return 100;
+  if (j.verdict === "too-fast" || j.verdict === "too-slow") return 72;
+  return 25;
+}
+
+function dim(
+  id: string,
+  label: string,
+  score: number,
+  tip: string,
+  verdict: TransitionDimVerdict,
+): TransitionDimension {
+  return { id, label, score: Math.max(0, Math.min(100, Math.round(score))), tip, verdict };
+}
+
+/** Effective tempo from catalog BPM + pitch CC (1.0 = original). */
+export function effectiveBpm(catalogBpm: number, pitchCc: number): number {
+  return catalogBpm * pitchCcToRate(pitchCc);
+}
+
+/**
+ * How close two decks’ effective tempos are (catalog BPM × pitch CC).
+ * SYNC is not graded — only the tempo fader result.
+ */
+export function judgeTempoMatch(
+  bpm1: number,
+  bpm2: number,
+  pitch1Points: MotionPoint[],
+  pitch2Points: MotionPoint[],
+): TransitionDimension {
+  const p1 = lastValue(pitch1Points) ?? MIX_ZONES.center;
+  const p2 = lastValue(pitch2Points) ?? MIX_ZONES.center;
+  const e1 = effectiveBpm(bpm1, p1);
+  const e2 = effectiveBpm(bpm2, p2);
+  const delta = Math.abs(e1 - e2);
+  if (delta <= 0.35) {
+    return dim(
+      "tempo",
+      "Tempo match",
+      100,
+      `Effective tempos within ${delta.toFixed(2)} BPM — leave SYNC off; this is the tempo fader job.`,
+      "ok",
+    );
+  }
+  if (delta <= 1.2) {
+    return dim(
+      "tempo",
+      "Tempo match",
+      70,
+      `~${delta.toFixed(1)} BPM apart after pitch — nudge Deck 2’s tempo fader a little closer.`,
+      "warn",
+    );
+  }
+  return dim(
+    "tempo",
+    "Tempo match",
+    35,
+    `~${delta.toFixed(1)} BPM apart — match speeds with the tempo fader before the blend (SYNC stays off in drills).`,
+    "miss",
+  );
+}
+
+function judgeBassMud(
+  d1Low: MotionPoint[],
+  d2Low: MotionPoint[],
+  xf: MotionPoint[],
+): TransitionDimension {
+  const { center, centerTol, killMax, xfLeftMax, xfRightMin } = MIX_ZONES;
+  if (d1Low.length < 2 || d2Low.length < 2 || xf.length < 2) {
+    return dim(
+      "bass",
+      "Bass hygiene",
+      40,
+      "Need more LOW + crossfader motion to judge bass overlap.",
+      "incomplete",
+    );
+  }
+
+  let muddy = 0;
+  let overlap = 0;
+  const n = Math.min(d1Low.length, d2Low.length, xf.length);
+  for (let i = 0; i < n; i++) {
+    const xfV = xf[Math.min(i, xf.length - 1)]!.value;
+    const inOverlap = xfV > xfLeftMax && xfV < xfRightMin;
+    if (!inOverlap) continue;
+    overlap++;
+    const l1 = d1Low[Math.min(i, d1Low.length - 1)]!.value;
+    const l2 = d2Low[Math.min(i, d2Low.length - 1)]!.value;
+    const bothFull =
+      Math.abs(l1 - center) <= centerTol + 8 && Math.abs(l2 - center) <= centerTol + 8;
+    if (bothFull) muddy++;
+  }
+
+  if (overlap < 3) {
+    return dim(
+      "bass",
+      "Bass hygiene",
+      55,
+      "Little mid-crossfader overlap sampled — park XF in the middle longer next time if you want a bass tip.",
+      "incomplete",
+    );
+  }
+
+  const muddyFrac = muddy / overlap;
+  if (muddyFrac > 0.45) {
+    return dim(
+      "bass",
+      "Bass hygiene",
+      30,
+      "Both LOWs sat near 12 o’clock while both decks were in the room — kill one bass (incoming LOW left).",
+      "miss",
+    );
+  }
+  if (muddyFrac > 0.2) {
+    return dim(
+      "bass",
+      "Bass hygiene",
+      65,
+      "Some double-bass overlap — keep one LOW killed for most of the blend.",
+      "warn",
+    );
+  }
+
+  const d2Killed = anyInZone(d2Low, (v) => v <= killMax);
+  if (d2Killed) {
+    return dim(
+      "bass",
+      "Bass hygiene",
+      100,
+      "Incoming LOW was carved during the overlap — one bassline in the room.",
+      "ok",
+    );
+  }
+  return dim(
+    "bass",
+    "Bass hygiene",
+    85,
+    "No heavy double-bass mud detected on this pass.",
+    "ok",
+  );
+}
+
+function judgeEqFlatness(
+  mids: MotionPoint[],
+  highs: MotionPoint[],
+  label: string,
+): TransitionDimension {
+  const { center, centerTol } = MIX_ZONES;
+  const pts = [...mids, ...highs];
+  if (pts.length < 4) {
+    return dim("eq-flat", label, 60, "Not enough MID/HIGH samples — leave them near 12 o’clock for basic mixes.", "incomplete");
+  }
+  const near = fractionInZone(pts, (v) => Math.abs(v - center) <= centerTol + 10);
+  if (near >= 0.75) {
+    return dim("eq-flat", label, 100, "MID/HIGH stayed near 12 o’clock — good for a basic handoff.", "ok");
+  }
+  if (near >= 0.45) {
+    return dim("eq-flat", label, 70, "Some MID/HIGH moves — fine if intentional; reset to 12 o’clock after the mix.", "warn");
+  }
+  return dim(
+    "eq-flat",
+    label,
+    45,
+    "MID/HIGH wandered a lot — basic transitions usually leave them at 12 o’clock (Neural Mix stem mode is a different lab).",
+    "warn",
+  );
+}
+
+function judgeVolumeHandoff(
+  vol1: MotionPoint[],
+  vol2: MotionPoint[],
+  bpm?: number,
+): RampJudgment {
+  const up = (v: number) => v >= 90;
+  const down = (v: number) => v <= 24;
+  const bars = TRANSITION_PHRASE_BARS.volumeHandoff;
+  const idealMs =
+    bpm != null
+      ? ([idealMsFromBars(bpm, bars[0]), idealMsFromBars(bpm, bars[1])] as [number, number])
+      : ([idealMsFromBars(120, bars[0]), idealMsFromBars(120, bars[1])] as [number, number]);
+
+  // Prefer Deck 2 up then Deck 1 down as a proxy for channel-fader long blend.
+  const incomingUp = judgeCcRamp(vol2, {
+    startZone: down,
+    endZone: up,
+    idealMs,
+    phraseBpm: bpm,
+    phraseBars: bars,
+    label: "Deck 2 channel fader up",
+  });
+  const outgoingDown = judgeCcRamp(vol1, {
+    startZone: up,
+    endZone: down,
+    idealMs,
+    phraseBpm: bpm,
+    phraseBars: bars,
+    label: "Deck 1 channel fader down",
+  });
+  if (incomingUp.verdict !== "incomplete" && outgoingDown.verdict !== "incomplete") {
+    const worse =
+      rampScore(incomingUp) <= rampScore(outgoingDown) ? incomingUp : outgoingDown;
+    return {
+      ...worse,
+      tip: `Channel faders: ${incomingUp.tip} · ${outgoingDown.tip}`,
+    };
+  }
+  if (incomingUp.verdict !== "incomplete") return incomingUp;
+  return outgoingDown;
+}
+
+function kickDim(samples: PlayheadSample[]): TransitionDimension {
+  const k = judgeKickAlignment(samples);
+  if (!k.hasSignal || k.grade == null) {
+    return dim("kick", "Kick scaffold", 50, k.tip, "incomplete");
+  }
+  if (k.grade === "aligned") {
+    return dim("kick", "Kick scaffold", 100, k.tip, "aligned");
+  }
+  if (k.grade === "offset") {
+    return dim("kick", "Kick scaffold", 55, k.tip, "offset");
+  }
+  return dim("kick", "Kick scaffold", 40, k.tip, "drifting");
+}
+
+function weightedScore(dims: { dim: TransitionDimension; weight: number }[]): number {
+  let sum = 0;
+  let w = 0;
+  for (const { dim: d, weight } of dims) {
+    if (d.verdict === "n/a") continue;
+    sum += d.score * weight;
+    w += weight;
+  }
+  if (w <= 0) return 0;
+  return Math.round(sum / w);
+}
+
+function summarize(recipe: TransitionRecipeId, score: number, passed: boolean): string {
+  const name = TRANSITION_RECIPES.find((r) => r.id === recipe)?.title ?? "Transition";
+  if (passed && score >= 90) return `${name}: excellent handoff (${score}).`;
+  if (passed) return `${name}: solid pass (${score}) — check the tips for polish.`;
+  return `${name}: ${score}/100 — fix the miss/warn lines and try again (pass ≥ 70).`;
+}
+
+/**
+ * Grade a basic same-speed transition from recorded Mix Ultra CCs + playhead scaffold.
+ * Does not analyze Neural Mix stems or djay SYNC audio — those stay out of the laptop turntable.
+ */
+export function judgeBasicTransition(
+  recipe: TransitionRecipeId,
+  samples: TransitionSessionSamples,
+  opts?: { bpm1?: number; bpm2?: number },
+): TransitionJudgment {
+  const { center, centerTol, killMax, xfLeftMax, xfRightMin } = MIX_ZONES;
+  const bpm1 = opts?.bpm1 ?? 120;
+  const bpm2 = opts?.bpm2 ?? bpm1;
+  const phraseBpm = Math.round((bpm1 + bpm2) / 2);
+  const windows = blendWindowsForBpm(phraseBpm);
+
+  const xfRamp = judgeCcRamp(samples.crossfader, {
+    startZone: (v) => v <= xfLeftMax,
+    endZone: (v) => v >= xfRightMin,
+    idealMs:
+      recipe === "xfader-cut"
+        ? ([
+            idealMsFromBars(phraseBpm, TRANSITION_PHRASE_BARS.xfaderCut[0]),
+            idealMsFromBars(phraseBpm, TRANSITION_PHRASE_BARS.xfaderCut[1]),
+          ] as [number, number])
+        : windows.crossfader.idealMs,
+    phraseBpm,
+    phraseBars:
+      recipe === "xfader-cut" ? TRANSITION_PHRASE_BARS.xfaderCut : windows.crossfader.phraseBars,
+    label: recipe === "xfader-cut" ? "Crossfader cut" : "Crossfader blend",
+  });
+
+  const volHandoff = judgeVolumeHandoff(samples.deck1Volume, samples.deck2Volume, phraseBpm);
+  const handoffFromXf = rampScore(xfRamp);
+  const handoffFromVol = rampScore(volHandoff);
+  const useVol = recipe === "long-blend" && handoffFromVol > handoffFromXf;
+  const handoffJudgment = useVol ? volHandoff : xfRamp;
+  const handoff = dim(
+    "handoff",
+    useVol ? "Channel-fader handoff" : "Crossfader handoff",
+    rampScore(handoffJudgment),
+    handoffJudgment.tip,
+    handoffJudgment.verdict,
+  );
+
+  const tempo = judgeTempoMatch(bpm1, bpm2, samples.deck1Pitch, samples.deck2Pitch);
+  const kick = kickDim(samples.playheads);
+  const eqFlat = judgeEqFlatness(
+    [...samples.deck1Mid, ...samples.deck2Mid],
+    [...samples.deck1High, ...samples.deck2High],
+    "MID / HIGH",
+  );
+
+  const d2Bass = judgeCcRamp(samples.deck2Low, {
+    startZone: (v) => Math.abs(v - center) <= centerTol,
+    endZone: (v) => v <= killMax,
+    idealMs: windows.bassSwap.idealMs,
+    phraseBpm,
+    phraseBars: windows.bassSwap.phraseBars,
+    label: "Deck 2 bass kill",
+  });
+  const d1Bass = judgeCcRamp(samples.deck1Low, {
+    startZone: (v) => Math.abs(v - center) <= centerTol,
+    endZone: (v) => v <= killMax,
+    idealMs: windows.bassSwap.idealMs,
+    phraseBpm,
+    phraseBars: windows.bassSwap.phraseBars,
+    label: "Deck 1 bass kill (handoff)",
+  });
+  const bassMud = judgeBassMud(samples.deck1Low, samples.deck2Low, samples.crossfader);
+
+  const filterOpen = judgeCcRamp(samples.deck2Filter, {
+    startZone: (v) => v >= 88,
+    endZone: (v) => Math.abs(v - center) <= centerTol,
+    idealMs: [
+      idealMsFromBars(phraseBpm, TRANSITION_PHRASE_BARS.filterOpen[0]),
+      idealMsFromBars(phraseBpm, TRANSITION_PHRASE_BARS.filterOpen[1]),
+    ],
+    phraseBpm,
+    phraseBars: TRANSITION_PHRASE_BARS.filterOpen,
+    label: "Deck 2 filter open",
+  });
+
+  const weighted: { dim: TransitionDimension; weight: number }[] = [];
+
+  if (recipe === "long-blend") {
+    const lowsNear = fractionInZone(
+      [...samples.deck1Low, ...samples.deck2Low],
+      (v) => Math.abs(v - center) <= centerTol + 14,
+    );
+    const eqDiscipline = dim(
+      "eq-discipline",
+      "EQ discipline",
+      lowsNear >= 0.7 ? 100 : lowsNear >= 0.4 ? 65 : 35,
+      lowsNear >= 0.7
+        ? "LOWs stayed near 12 o’clock — this is a fader-only long blend."
+        : "Long blend is channel faders / XF only — park LOWs at 12 o’clock (bass swap is the next move).",
+      lowsNear >= 0.7 ? "ok" : lowsNear >= 0.4 ? "warn" : "miss",
+    );
+    weighted.push(
+      { dim: handoff, weight: 0.4 },
+      { dim: eqDiscipline, weight: 0.2 },
+      { dim: eqFlat, weight: 0.1 },
+      { dim: tempo, weight: 0.15 },
+      { dim: kick, weight: 0.15 },
+    );
+  } else if (recipe === "bass-swap") {
+    const bassSwapDim = dim(
+      "bass-swap",
+      "Bass swap",
+      Math.round((rampScore(d2Bass) * 0.55 + rampScore(d1Bass) * 0.25 + bassMud.score * 0.2)),
+      `Incoming: ${d2Bass.tip} Outgoing: ${d1Bass.tip}`,
+      d2Bass.verdict === "incomplete" || d1Bass.verdict === "incomplete"
+        ? "incomplete"
+        : d2Bass.verdict === "ok"
+          ? "ok"
+          : d2Bass.verdict,
+    );
+    weighted.push(
+      { dim: handoff, weight: 0.3 },
+      { dim: bassSwapDim, weight: 0.35 },
+      { dim: eqFlat, weight: 0.1 },
+      { dim: tempo, weight: 0.125 },
+      { dim: kick, weight: 0.125 },
+    );
+  } else if (recipe === "filter-open") {
+    const filterDim = dim(
+      "filter",
+      "Filter open",
+      rampScore(filterOpen),
+      filterOpen.tip,
+      filterOpen.verdict,
+    );
+    const bassCarve = dim(
+      "bass-carve",
+      "Incoming bass carve",
+      rampScore(d2Bass),
+      d2Bass.tip,
+      d2Bass.verdict,
+    );
+    weighted.push(
+      { dim: handoff, weight: 0.25 },
+      { dim: filterDim, weight: 0.35 },
+      { dim: bassCarve, weight: 0.15 },
+      { dim: tempo, weight: 0.125 },
+      { dim: kick, weight: 0.125 },
+    );
+  } else {
+    // xfader-cut
+    const cutSpeed =
+      xfRamp.verdict === "too-slow"
+        ? dim("cut-speed", "Cut speed", 45, xfRamp.tip, "too-slow")
+        : xfRamp.verdict === "too-fast"
+          ? dim(
+              "cut-speed",
+              "Cut speed",
+              90,
+              "Snap cut logged — fine for a throw; count beat 1 so it isn’t early.",
+              "ok",
+            )
+          : dim("cut-speed", "Cut speed", rampScore(xfRamp), xfRamp.tip, xfRamp.verdict);
+    const flatEq = dim(
+      "cut-eq",
+      "EQ flat for cut",
+      Math.round((eqFlat.score + (bassMud.score >= 70 ? 40 : bassMud.score)) / 1.4),
+      "Cuts usually keep EQ at 12 o’clock — both decks loud, then throw XF.",
+      eqFlat.verdict,
+    );
+    weighted.push(
+      { dim: handoff, weight: 0.35 },
+      { dim: cutSpeed, weight: 0.25 },
+      { dim: flatEq, weight: 0.15 },
+      { dim: tempo, weight: 0.125 },
+      { dim: kick, weight: 0.125 },
+    );
+  }
+
+  const dimensions = weighted.map((w) => w.dim);
+  const score = weightedScore(weighted);
+  const passed = score >= 70 && handoff.verdict !== "incomplete";
+  return {
+    recipe,
+    score,
+    passed,
+    dimensions,
+    summary: summarize(recipe, score, passed),
+  };
+}
