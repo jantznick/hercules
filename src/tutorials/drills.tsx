@@ -7,6 +7,7 @@ import { HardwareFilterLab } from "../components/HardwareFilterLab";
 import { HardwareHotCueLab } from "../components/HardwareHotCueLab";
 import { HardwarePlayCueLab } from "../components/HardwarePlayCueLab";
 import { TransitionHardware } from "../components/TransitionPracticeLab";
+import type { TransitionRecipeId } from "../mix/timingFeedback";
 
 /** Which graded HW shell a tutorial embeds (reuse lab code — don’t clone). */
 export type TutorialDrillKind =
@@ -31,7 +32,7 @@ export type TutorialDrill = {
   /** Optional prep lab (e.g. incoming cue before blend) */
   prepLab?: { to: string; label: string };
   /** When kind is transition, which recipe to open on */
-  transitionRecipe?: "long-blend" | "bass-swap" | "filter-open" | "xfader-cut";
+  transitionRecipe?: TransitionRecipeId;
 };
 
 /**
@@ -136,13 +137,13 @@ export function TutorialDrillMount({
   transitionRecipe,
 }: {
   kind: TutorialDrillKind;
-  transitionRecipe?: "long-blend" | "bass-swap" | "filter-open" | "xfader-cut";
+  transitionRecipe?: TransitionRecipeId;
 }): ReactNode {
   switch (kind) {
     case "blend":
       return <BlendHardware />;
     case "transition":
-      return <TransitionHardware initialRecipe={transitionRecipe ?? "bass-swap"} />;
+      return <TransitionHardware initialRecipe={transitionRecipe ?? "free"} />;
     case "beatmatch":
       return <BeatmatchHardware />;
     case "hot-cue":

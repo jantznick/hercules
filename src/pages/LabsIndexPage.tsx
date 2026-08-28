@@ -50,7 +50,7 @@ const LABS = [
   {
     to: "/labs/transition",
     title: "Transition grade",
-    blurb: "Score long blend / bass swap / filter open / cut (pass ≥ 70).",
+    blurb: "Mix Ultra mirror — Start / End grades your handoff (pass ≥ 70).",
   },
   {
     to: "/labs/neural",
