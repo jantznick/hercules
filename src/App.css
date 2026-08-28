@@ -1820,6 +1820,41 @@ tr:last-child td {
   margin: 0.35rem 0 0;
 }
 
+.transition-setup-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.transition-setup-row .genre-bar-hint {
+  flex: 1;
+  min-width: 12rem;
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--ink-muted);
+}
+
+.transition-recording-banner {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.transition-recording-btn {
+  animation: transition-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes transition-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+
 .tutorial-mode-shell {
   margin-bottom: 0.75rem;
 }

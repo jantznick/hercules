@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { BeatmatchHardware, BeatmatchLearn } from "../components/BeatmatchPracticeLab";
 import { BlendHardware, BlendLearn } from "../components/BlendPracticeLab";
-import { TransitionHardware, TransitionLearn } from "../components/TransitionPracticeLab";
+import { TransitionLearn, TransitionTurntable } from "../components/TransitionPracticeLab";
 import { CrossfaderLab } from "../components/CrossfaderLab";
 import { CueLab } from "../components/CueLab";
 import { EqLab } from "../components/EqLab";
@@ -512,7 +512,7 @@ export function TransitionLabPage() {
       <PageHeader
         eyebrow="Labs"
         title="Transition grade"
-        description="Score a basic same-speed handoff on laptop audio — long blend, bass swap, filter open, or crossfader cut. Pass ≥ 70 from EQ / Filter / XF timing plus tempo and kick scaffold."
+        description="Full Mix Ultra turntable on laptop audio. Pick a style and tracks, choose the move you’re practicing (or Free), hit Start, mix with EQ / Filter / crossfader / tempo, then End & grade."
         actions={
           <Link to="/labs" className="text-back">
             All labs
@@ -522,7 +522,7 @@ export function TransitionLabPage() {
       <LabModeShell
         hardwareNote={HW_NOTE}
         learn={<TransitionLearn />}
-        hardware={<TransitionHardware />}
+        hardware={<TransitionTurntable />}
       />
       <RelatedExtras
         links={[

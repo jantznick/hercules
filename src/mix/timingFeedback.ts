@@ -360,13 +360,19 @@ export type TransitionRecipeId =
   | "long-blend"
   | "bass-swap"
   | "filter-open"
-  | "xfader-cut";
+  | "xfader-cut"
+  | "free";
 
 export const TRANSITION_RECIPES: {
   id: TransitionRecipeId;
   title: string;
   blurb: string;
 }[] = [
+  {
+    id: "free",
+    title: "Free",
+    blurb: "Any handoff — score tempo, EQ hygiene, and blend quality.",
+  },
   {
     id: "long-blend",
     title: "Long blend",
@@ -388,6 +394,9 @@ export const TRANSITION_RECIPES: {
     blurb: "Both loud, EQ flat — throw XF left → right in a beat or two.",
   },
 ];
+
+/** Named moves only (for inferring closest pattern in free mode). */
+export const NAMED_TRANSITION_RECIPES = TRANSITION_RECIPES.filter((r) => r.id !== "free");
 
 /** Phrase bars for cut / filter-open windows. */
 export const TRANSITION_PHRASE_BARS = {
@@ -694,27 +703,24 @@ function weightedScore(dims: { dim: TransitionDimension; weight: number }[]): nu
 }
 
 function summarize(recipe: TransitionRecipeId, score: number, passed: boolean): string {
+  if (recipe === "free") {
+    if (passed && score >= 90) return `Free mix: excellent handoff (${score}).`;
+    if (passed) return `Free mix: solid (${score}) — check the tips for polish.`;
+    return `Free mix: ${score}/100 — clearer handoff or tempo match (pass ≥ 70).`;
+  }
   const name = TRANSITION_RECIPES.find((r) => r.id === recipe)?.title ?? "Transition";
   if (passed && score >= 90) return `${name}: excellent handoff (${score}).`;
   if (passed) return `${name}: solid pass (${score}) — check the tips for polish.`;
   return `${name}: ${score}/100 — fix the miss/warn lines and try again (pass ≥ 70).`;
 }
 
-/**
- * Grade a basic same-speed transition from recorded Mix Ultra CCs + playhead scaffold.
- * Does not analyze Neural Mix stems or djay SYNC audio — those stay out of the laptop turntable.
- */
-export function judgeBasicTransition(
-  recipe: TransitionRecipeId,
+function buildHandoffDim(
   samples: TransitionSessionSamples,
-  opts?: { bpm1?: number; bpm2?: number },
-): TransitionJudgment {
-  const { center, centerTol, killMax, xfLeftMax, xfRightMin } = MIX_ZONES;
-  const bpm1 = opts?.bpm1 ?? 120;
-  const bpm2 = opts?.bpm2 ?? bpm1;
-  const phraseBpm = Math.round((bpm1 + bpm2) / 2);
-  const windows = blendWindowsForBpm(phraseBpm);
-
+  phraseBpm: number,
+  recipe: TransitionRecipeId,
+  windows: ReturnType<typeof blendWindowsForBpm>,
+): TransitionDimension {
+  const { xfLeftMax, xfRightMin } = MIX_ZONES;
   const xfRamp = judgeCcRamp(samples.crossfader, {
     startZone: (v) => v <= xfLeftMax,
     endZone: (v) => v >= xfRightMin,
@@ -736,14 +742,35 @@ export function judgeBasicTransition(
   const handoffFromVol = rampScore(volHandoff);
   const useVol = recipe === "long-blend" && handoffFromVol > handoffFromXf;
   const handoffJudgment = useVol ? volHandoff : xfRamp;
-  const handoff = dim(
+  return dim(
     "handoff",
     useVol ? "Channel-fader handoff" : "Crossfader handoff",
     rampScore(handoffJudgment),
     handoffJudgment.tip,
     handoffJudgment.verdict,
   );
+}
 
+/**
+ * Grade a basic same-speed transition from recorded Mix Ultra CCs + playhead scaffold.
+ * Does not analyze Neural Mix stems or djay SYNC audio — those stay out of the laptop turntable.
+ */
+export function judgeBasicTransition(
+  recipe: TransitionRecipeId,
+  samples: TransitionSessionSamples,
+  opts?: { bpm1?: number; bpm2?: number },
+): TransitionJudgment {
+  if (recipe === "free") {
+    return judgeFreeTransition(samples, opts);
+  }
+
+  const { center, centerTol, killMax } = MIX_ZONES;
+  const bpm1 = opts?.bpm1 ?? 120;
+  const bpm2 = opts?.bpm2 ?? bpm1;
+  const phraseBpm = Math.round((bpm1 + bpm2) / 2);
+  const windows = blendWindowsForBpm(phraseBpm);
+
+  const handoff = buildHandoffDim(samples, phraseBpm, recipe, windows);
   const tempo = judgeTempoMatch(bpm1, bpm2, samples.deck1Pitch, samples.deck2Pitch);
   const kick = kickDim(samples.playheads);
   const eqFlat = judgeEqFlatness(
@@ -847,11 +874,22 @@ export function judgeBasicTransition(
       { dim: kick, weight: 0.125 },
     );
   } else {
-    // xfader-cut
+    const { xfLeftMax, xfRightMin } = MIX_ZONES;
+    const cutXfRamp = judgeCcRamp(samples.crossfader, {
+      startZone: (v) => v <= xfLeftMax,
+      endZone: (v) => v >= xfRightMin,
+      idealMs: [
+        idealMsFromBars(phraseBpm, TRANSITION_PHRASE_BARS.xfaderCut[0]),
+        idealMsFromBars(phraseBpm, TRANSITION_PHRASE_BARS.xfaderCut[1]),
+      ],
+      phraseBpm,
+      phraseBars: TRANSITION_PHRASE_BARS.xfaderCut,
+      label: "Crossfader cut",
+    });
     const cutSpeed =
-      xfRamp.verdict === "too-slow"
-        ? dim("cut-speed", "Cut speed", 45, xfRamp.tip, "too-slow")
-        : xfRamp.verdict === "too-fast"
+      cutXfRamp.verdict === "too-slow"
+        ? dim("cut-speed", "Cut speed", 45, cutXfRamp.tip, "too-slow")
+        : cutXfRamp.verdict === "too-fast"
           ? dim(
               "cut-speed",
               "Cut speed",
@@ -859,7 +897,7 @@ export function judgeBasicTransition(
               "Snap cut logged — fine for a throw; count beat 1 so it isn’t early.",
               "ok",
             )
-          : dim("cut-speed", "Cut speed", rampScore(xfRamp), xfRamp.tip, xfRamp.verdict);
+          : dim("cut-speed", "Cut speed", rampScore(cutXfRamp), cutXfRamp.tip, cutXfRamp.verdict);
     const flatEq = dim(
       "cut-eq",
       "EQ flat for cut",
@@ -885,5 +923,108 @@ export function judgeBasicTransition(
     passed,
     dimensions,
     summary: summarize(recipe, score, passed),
+  };
+}
+
+const MIN_TRANSITION_SAMPLES = 4;
+const MIN_TRANSITION_WINDOW_MS = 2500;
+
+function incompleteTransitionJudgment(
+  recipe: TransitionRecipeId,
+  tip: string,
+): TransitionJudgment {
+  return {
+    recipe,
+    score: 0,
+    passed: false,
+    dimensions: [
+      dim("session", "Recording", 0, tip, "incomplete"),
+    ],
+    summary: summarize(recipe, 0, false),
+  };
+}
+
+/**
+ * Free mode: holistic blend quality + which named move the motion closest matches.
+ */
+export function judgeFreeTransition(
+  samples: TransitionSessionSamples,
+  opts?: { bpm1?: number; bpm2?: number },
+): TransitionJudgment {
+  const recipe = "free" as const;
+  if (samples.crossfader.length < MIN_TRANSITION_SAMPLES) {
+    return incompleteTransitionJudgment(
+      recipe,
+      "Need more motion — hit Start, blend, then End (at least a few seconds).",
+    );
+  }
+  const firstT = samples.crossfader[0]?.t ?? samples.deck1Low[0]?.t ?? 0;
+  const lastT =
+    samples.crossfader[samples.crossfader.length - 1]?.t ??
+    samples.deck1Low[samples.deck1Low.length - 1]?.t ??
+    firstT;
+  if (lastT - firstT < MIN_TRANSITION_WINDOW_MS) {
+    return incompleteTransitionJudgment(
+      recipe,
+      "Blend window was too short — give the handoff a phrase or two before End.",
+    );
+  }
+
+  const bpm1 = opts?.bpm1 ?? 120;
+  const bpm2 = opts?.bpm2 ?? bpm1;
+  const phraseBpm = Math.round((bpm1 + bpm2) / 2);
+  const windows = blendWindowsForBpm(phraseBpm);
+
+  const handoffBlend = buildHandoffDim(samples, phraseBpm, "long-blend", windows);
+  const handoffCut = buildHandoffDim(samples, phraseBpm, "xfader-cut", windows);
+  const handoff = handoffBlend.score >= handoffCut.score ? handoffBlend : handoffCut;
+
+  const tempo = judgeTempoMatch(bpm1, bpm2, samples.deck1Pitch, samples.deck2Pitch);
+  const kick = kickDim(samples.playheads);
+  const bassMud = judgeBassMud(samples.deck1Low, samples.deck2Low, samples.crossfader);
+  const eqFlat = judgeEqFlatness(
+    [...samples.deck1Mid, ...samples.deck2Mid],
+    [...samples.deck1High, ...samples.deck2High],
+    "MID / HIGH",
+  );
+
+  const inferred = NAMED_TRANSITION_RECIPES.map((r) => ({
+    id: r.id,
+    judgment: judgeBasicTransition(r.id, samples, opts),
+  })).reduce((best, cur) => (cur.judgment.score > best.judgment.score ? cur : best));
+
+  const inferredTitle =
+    TRANSITION_RECIPES.find((r) => r.id === inferred.id)?.title ?? inferred.id;
+
+  const weighted: { dim: TransitionDimension; weight: number }[] = [
+    { dim: handoff, weight: 0.3 },
+    { dim: bassMud, weight: 0.2 },
+    { dim: tempo, weight: 0.15 },
+    { dim: kick, weight: 0.125 },
+    { dim: eqFlat, weight: 0.1 },
+    {
+      dim: dim(
+        "inferred",
+        "Closest named move",
+        inferred.judgment.score,
+        `Motion best matches ${inferredTitle} (${inferred.judgment.score}/100 for that pattern).`,
+        inferred.judgment.score >= 70 ? "ok" : "warn",
+      ),
+      weight: 0.075,
+    },
+  ];
+
+  const dimensions = weighted.map((w) => w.dim);
+  const score = weightedScore(weighted);
+  const passed = score >= 70 && handoff.verdict !== "incomplete";
+
+  return {
+    recipe,
+    score,
+    passed,
+    dimensions,
+    summary: passed
+      ? `Free mix: ${score} — closest to ${inferredTitle}.`
+      : summarize(recipe, score, false),
   };
 }

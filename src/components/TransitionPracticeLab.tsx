@@ -1,38 +1,48 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { trackById } from "../audio/tracks";
+import {
+  formatTidalKeyMeta,
+  trackById,
+  type TidalTrackRef,
+} from "../audio/tracks";
 import { useTurntableSession } from "../audio/useTurntableSession";
+import { placeholderPeaks } from "../audio/waveform";
 import { usePublishDeckState, useTransitionMotionRecorder } from "../deck/hooks";
+import { GENRE_OPTIONS, type GenreId } from "../djing/genres";
+import { GENRE_DECK_PAIRS } from "../mix/genrePresets";
 import {
   judgeBasicTransition,
-  MIX_ZONES,
   pushPlayheadSample,
   TRANSITION_RECIPES,
   type PlayheadSample,
+  type TransitionJudgment,
   type TransitionRecipeId,
 } from "../mix/timingFeedback";
-import { useCcZonePass } from "../midi/useCcZonePass";
-import { useLiveController, type LiveDeckValues } from "../midi/useLiveController";
 import { markLabPass } from "../tutorials/labPass";
-import type { DeckHighlight } from "./MixUltraDeck";
+import { useLiveController } from "../midi/useLiveController";
 import { HardwareGrade, HardwareLabShell } from "./HardwareLabShell";
-import { HowToUse, WhatItDoes } from "./HowToUse";
 import { MixUltraDeck } from "./MixUltraDeck";
 import { TrackPickerBar } from "./TrackPickerBar";
 import { WaveformStrip } from "./WaveformStrip";
 
-const { center, centerTol, killMax, xfLeftMax, xfRightMin } = MIX_ZONES;
+type SessionPhase = "idle" | "recording" | "graded";
 
-/** Full steps / technique / tutorial for each graded recipe — don’t clone the syllabus here. */
-const RECIPE_LINKS: Record<
-  TransitionRecipeId,
-  {
-    fullSteps: { to: string; label: string };
-    technique: { to: string; label: string };
-    tutorial?: { to: string; label: string };
-    drill?: { to: string; label: string };
-  }
+/** Full steps / technique / tutorial for each graded recipe. */
+const RECIPE_LINKS: Partial<
+  Record<
+    TransitionRecipeId,
+    {
+      fullSteps?: { to: string; label: string };
+      technique?: { to: string; label: string };
+      tutorial?: { to: string; label: string };
+      drill?: { to: string; label: string };
+    }
+  >
 > = {
+  free: {
+    fullSteps: { to: "/djing/transitions", label: "Same-speed mixes" },
+    technique: { to: "/djing/techniques#same-speed", label: "Techniques" },
+  },
   "long-blend": {
     fullSteps: { to: "/djing/transitions#long-blend", label: "Full steps" },
     technique: { to: "/djing/techniques#long-blend", label: "Technique" },
@@ -61,163 +71,17 @@ const RECIPE_LINKS: Record<
 
 function RecipeLearnLinks({ recipe }: { recipe: TransitionRecipeId }) {
   const links = RECIPE_LINKS[recipe];
+  if (!links) return null;
   return (
     <p className="technique-links">
       <span className="technique-links-label">Learn</span>
-      <Link to={links.fullSteps.to}>{links.fullSteps.label}</Link>
-      <Link to={links.technique.to}>{links.technique.label}</Link>
+      {links.fullSteps && <Link to={links.fullSteps.to}>{links.fullSteps.label}</Link>}
+      {links.technique && <Link to={links.technique.to}>{links.technique.label}</Link>}
       {links.tutorial && <Link to={links.tutorial.to}>{links.tutorial.label}</Link>}
       {links.drill && <Link to={links.drill.to}>{links.drill.label}</Link>}
     </p>
   );
 }
-
-type StepId = string;
-
-type Step = {
-  id: StepId;
-  prompt: string;
-  highlight: DeckHighlight;
-  watch: (v: LiveDeckValues) => number | undefined;
-  pass: (v: LiveDeckValues) => boolean;
-};
-
-const RECIPE_STEPS: Record<TransitionRecipeId, Step[]> = {
-  "long-blend": [
-    {
-      id: "setup",
-      prompt: "Crossfader left · both LOWs at 12 o’clock · both decks playing",
-      highlight: "crossfader",
-      watch: (v) => v.crossfader,
-      pass: (v) => {
-        const xf = v.crossfader ?? 64;
-        const l1 = v["deck1.low"] ?? 64;
-        const l2 = v["deck2.low"] ?? 64;
-        return (
-          xf <= xfLeftMax &&
-          Math.abs(l1 - center) <= centerTol &&
-          Math.abs(l2 - center) <= centerTol
-        );
-      },
-    },
-    {
-      id: "xfCenter",
-      prompt: "Ease the crossfader toward center (both in the room)",
-      highlight: "crossfader",
-      watch: (v) => v.crossfader,
-      pass: (v) => Math.abs((v.crossfader ?? 0) - center) <= centerTol,
-    },
-    {
-      id: "finish",
-      prompt: "Slide the crossfader full right — Deck 2 owns the room",
-      highlight: "crossfader",
-      watch: (v) => v.crossfader,
-      pass: (v) => (v.crossfader ?? 0) >= xfRightMin,
-    },
-  ],
-  "bass-swap": [
-    {
-      id: "setup",
-      prompt: "Crossfader left · Deck 2 LOW at 12 o’clock · both decks playing",
-      highlight: "crossfader",
-      watch: (v) => v.crossfader,
-      pass: (v) => {
-        const xf = v.crossfader ?? 64;
-        const low = v["deck2.low"] ?? 64;
-        return xf <= xfLeftMax && Math.abs(low - center) <= centerTol;
-      },
-    },
-    {
-      id: "killD2Low",
-      prompt: "Kill Deck 2 LOW (fully left) — carve space for the blend",
-      highlight: "deck2.low",
-      watch: (v) => v["deck2.low"],
-      pass: (v) => (v["deck2.low"] ?? 64) <= killMax,
-    },
-    {
-      id: "xfCenter",
-      prompt: "Ease the crossfader toward center (both in the room)",
-      highlight: "crossfader",
-      watch: (v) => v.crossfader,
-      pass: (v) => Math.abs((v.crossfader ?? 0) - center) <= centerTol,
-    },
-    {
-      id: "finish",
-      prompt: "Kill Deck 1 LOW and slide the crossfader full right",
-      highlight: "deck1.low",
-      watch: (v) => {
-        const a = v["deck1.low"] ?? 0;
-        const b = v.crossfader ?? 0;
-        return a * 128 + b;
-      },
-      pass: (v) =>
-        (v["deck1.low"] ?? 64) <= killMax && (v.crossfader ?? 0) >= xfRightMin,
-    },
-  ],
-  "filter-open": [
-    {
-      id: "setup",
-      prompt: "Crossfader left · Deck 2 Filter right (thin) · LOW killed on Deck 2",
-      highlight: "deck2.filter",
-      watch: (v) => {
-        const f = v["deck2.filter"] ?? 0;
-        const low = v["deck2.low"] ?? 0;
-        const xf = v.crossfader ?? 0;
-        return f * 128 + low + xf;
-      },
-      pass: (v) =>
-        (v.crossfader ?? 64) <= xfLeftMax &&
-        (v["deck2.filter"] ?? 64) >= 88 &&
-        (v["deck2.low"] ?? 64) <= killMax,
-    },
-    {
-      id: "xfCenter",
-      prompt: "Bring the crossfader toward center while Deck 2 stays thin",
-      highlight: "crossfader",
-      watch: (v) => v.crossfader,
-      pass: (v) => Math.abs((v.crossfader ?? 0) - center) <= centerTol,
-    },
-    {
-      id: "open",
-      prompt: "Sweep Deck 2 Filter back to 12 o’clock (open the drop)",
-      highlight: "deck2.filter",
-      watch: (v) => v["deck2.filter"],
-      pass: (v) => Math.abs((v["deck2.filter"] ?? 0) - center) <= centerTol,
-    },
-    {
-      id: "finish",
-      prompt: "Park crossfader full right — new song owns the room",
-      highlight: "crossfader",
-      watch: (v) => v.crossfader,
-      pass: (v) => (v.crossfader ?? 0) >= xfRightMin,
-    },
-  ],
-  "xfader-cut": [
-    {
-      id: "setup",
-      prompt: "Both decks playing · EQ near 12 o’clock · crossfader left",
-      highlight: "crossfader",
-      watch: (v) => v.crossfader,
-      pass: (v) => {
-        const xf = v.crossfader ?? 64;
-        const l1 = v["deck1.low"] ?? 64;
-        const l2 = v["deck2.low"] ?? 64;
-        return (
-          xf <= xfLeftMax &&
-          Math.abs(l1 - center) <= centerTol + 8 &&
-          Math.abs(l2 - center) <= centerTol + 8
-        );
-      },
-    },
-    {
-      id: "throw",
-      prompt: "Throw the crossfader full right — a cut, not a long blend",
-      highlight: "crossfader",
-      watch: (v) => v.crossfader,
-      pass: (v) => (v.crossfader ?? 0) >= xfRightMin,
-    },
-  ],
-};
 
 function tipClass(verdict: string): string {
   if (verdict === "ok" || verdict === "aligned") return "ok";
@@ -226,101 +90,53 @@ function tipClass(verdict: string): string {
   return "too-fast";
 }
 
-/** Learn: named basic transitions get a numeric grade on hardware. */
-export function TransitionLearn() {
-  return (
-    <div className="lab">
-      <WhatItDoes>
-        <p>
-          <strong>Transition grade</strong> scores a same-speed handoff on the Mix Ultra with laptop
-          audio: crossfader (or channel faders), LOW / MID / HIGH, Filter, tempo fader closeness, and
-          an experimental kick scaffold. Neural Mix stems and djay SYNC are not graded here — leave
-          SYNC off; stem mutes stay in the Neural labs.
-        </p>
-      </WhatItDoes>
-
-      <HowToUse>
-        <ol>
-          <li>
-            Warm up:{" "}
-            <Link to="/labs/blend">Two-deck blend</Link>,{" "}
-            <Link to="/labs/eq">Bass kill</Link>,{" "}
-            <Link to="/labs/filter">Filter</Link>,{" "}
-            <Link to="/labs/beatmatch">Beatmatch</Link>.
-          </li>
-          <li>
-            Switch to <strong>On hardware</strong>, pick a move, finish the steps, then read the
-            score (pass ≥ 70).
-          </li>
-          <li>
-            Overview of every same-speed mix:{" "}
-            <Link to="/djing/transitions">Same-speed mixes</Link>. Named-move index:{" "}
-            <Link to="/djing/techniques">Techniques</Link>.
-          </li>
-        </ol>
-      </HowToUse>
-
-      <div className="what-it-does">
-        <div className="section-head">
-          <h2>Recipes</h2>
-        </div>
-        <ul className="lab-recipe-list">
-          {TRANSITION_RECIPES.map((r) => (
-            <li key={r.id}>
-              <strong>{r.title}.</strong> {r.blurb}{" "}
-              <RecipeLearnLinks recipe={r.id} />
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <p className="footer-note">
-        Grading uses demo beds + MIDI motion — not a spectral “mud” meter for Tidal/djay streams.
-      </p>
-    </div>
-  );
+function deckWaveLabel(deck: 1 | 2, tidal: TidalTrackRef | null, bedTitle: string): string {
+  if (!tidal) return `Deck ${deck} · ${bedTitle}`;
+  const bpm = tidal.bpm != null ? ` · ${Math.round(tidal.bpm)} BPM` : "";
+  const key = formatTidalKeyMeta(tidal);
+  const keyPart = key ? ` · ${key}` : "";
+  const artist = tidal.artists[0] ?? "Unknown";
+  return `D${deck} · ${artist} — ${tidal.title}${bpm}${keyPart}`;
 }
 
-/** On hardware: recipe steps → numeric multi-dimension transition grade. */
-export function TransitionHardware({
-  initialRecipe = "bass-swap",
+function deckTrackLabel(tidal: TidalTrackRef | null, bedTitle: string): string | null {
+  if (tidal) {
+    const artist = tidal.artists[0] ?? "Unknown";
+    return `${artist} — ${tidal.title}`;
+  }
+  return bedTitle;
+}
+
+/**
+ * Practice turntable: full Mix Ultra mirror, pick style/songs, Start → mix → End → grade.
+ */
+export function TransitionTurntable({
+  initialTarget = "free",
 }: {
-  initialRecipe?: TransitionRecipeId;
+  initialTarget?: TransitionRecipeId;
 }) {
   const live = useLiveController(true);
   const tt = useTurntableSession({
     values: live.values,
     midiEnabled: true,
     transportFromMidi: true,
+    muteBed1: false,
+    muteBed2: false,
   });
-  const [recipe, setRecipe] = useState<TransitionRecipeId>(initialRecipe);
-  const [stepIndex, setStepIndex] = useState(0);
-  const [done, setDone] = useState<StepId[]>([]);
-  const [finished, setFinished] = useState(false);
+
+  const [genre, setGenre] = useState<GenreId>("any");
+  const [target, setTarget] = useState<TransitionRecipeId>(initialTarget);
+  const [phase, setPhase] = useState<SessionPhase>("idle");
+  const [grade, setGrade] = useState<TransitionJudgment | null>(null);
   const [alignSamples, setAlignSamples] = useState<PlayheadSample[]>([]);
-  const stepIndexRef = useRef(0);
-  const finishedRef = useRef(false);
+  const [tidal1, setTidal1] = useState<TidalTrackRef | null>(null);
+  const [tidal2, setTidal2] = useState<TidalTrackRef | null>(null);
 
-  const steps = RECIPE_STEPS[recipe];
+  const recording = phase === "recording";
+  const locked = phase !== "idle";
 
-  useEffect(() => {
-    stepIndexRef.current = stepIndex;
-  }, [stepIndex]);
-  useEffect(() => {
-    finishedRef.current = finished;
-  }, [finished]);
-
-  const startedBoth = useRef(false);
-  useEffect(() => {
-    if (!tt.booted || startedBoth.current) return;
-    startedBoth.current = true;
-    void tt.playDeck(1);
-    void tt.playDeck(2);
-  }, [tt.booted, tt.playDeck]);
-
-  const step = steps[stepIndex]!;
-  const inZone = step.pass(live.values);
-  const watchValue = step.watch(live.values);
+  const pitch1 = live.values["deck1.pitch"] ?? 64;
+  const pitch2 = live.values["deck2.pitch"] ?? 64;
 
   const { samples: motion, reset: resetMotion } = useTransitionMotionRecorder(
     {
@@ -338,14 +154,11 @@ export function TransitionHardware({
       deck1Pitch: live.values["deck1.pitch"],
       deck2Pitch: live.values["deck2.pitch"],
     },
-    !finished,
+    recording,
   );
 
-  const pitch1 = live.values["deck1.pitch"] ?? 64;
-  const pitch2 = live.values["deck2.pitch"] ?? 64;
-
   useEffect(() => {
-    if (!tt.booted || finished || !tt.playing1 || !tt.playing2) return;
+    if (!recording || !tt.booted || !tt.playing1 || !tt.playing2) return;
     const bpm1 = trackById(tt.track1).bpm;
     const bpm2 = trackById(tt.track2).bpm;
     setAlignSamples((prev) =>
@@ -359,8 +172,8 @@ export function TransitionHardware({
       }),
     );
   }, [
+    recording,
     tt.booted,
-    finished,
     tt.playing1,
     tt.playing2,
     tt.playhead1,
@@ -371,55 +184,6 @@ export function TransitionHardware({
     pitch2,
   ]);
 
-  const grade = useMemo(() => {
-    if (!finished) return null;
-    return judgeBasicTransition(
-      recipe,
-      { ...motion, playheads: alignSamples },
-      {
-        bpm1: trackById(tt.track1).bpm,
-        bpm2: trackById(tt.track2).bpm,
-      },
-    );
-  }, [finished, recipe, motion, alignSamples, tt.track1, tt.track2]);
-
-  const reset = useCallback(() => {
-    setStepIndex(0);
-    setDone([]);
-    setFinished(false);
-    setAlignSamples([]);
-    resetMotion();
-    startedBoth.current = false;
-  }, [resetMotion]);
-
-  const changeRecipe = (id: TransitionRecipeId) => {
-    setRecipe(id);
-    setStepIndex(0);
-    setDone([]);
-    setFinished(false);
-    setAlignSamples([]);
-    resetMotion();
-  };
-
-  const advance = useCallback(() => {
-    if (finishedRef.current) return;
-    const i = stepIndexRef.current;
-    const list = RECIPE_STEPS[recipe];
-    const s = list[i];
-    if (!s) return;
-    setDone((d) => (d.includes(s.id) ? d : [...d, s.id]));
-    if (i + 1 >= list.length) setFinished(true);
-    else setStepIndex(i + 1);
-  }, [recipe]);
-
-  useCcZonePass({
-    value: watchValue ?? null,
-    inZone,
-    enabled: !finished,
-    dwellMs: 220,
-    onPass: advance,
-  });
-
   usePublishDeckState({
     playing1: tt.playing1,
     playing2: tt.playing2,
@@ -428,15 +192,29 @@ export function TransitionHardware({
     cues1: tt.cues1,
     cues2: tt.cues2,
     values: live.values,
+    pressed: live.pressed,
+    pads1: live.pads1,
+    pads2: live.pads2,
     playhead1: tt.playhead1,
     playhead2: tt.playhead2,
-    duration1: tt.duration1,
-    duration2: tt.duration2,
     midiReady: live.ready,
     audioReady: tt.booted,
-    highlight: finished ? null : step.highlight,
     syncLeds: true,
   });
+
+  const applyGenrePreset = useCallback(
+    (g: GenreId) => {
+      const pair = GENRE_DECK_PAIRS[g];
+      void tt.setTrack(1, pair.deck1);
+      void tt.setTrack(2, pair.deck2);
+    },
+    [tt.setTrack],
+  );
+
+  useEffect(() => {
+    if (!tt.booted || locked) return;
+    applyGenrePreset(genre);
+  }, [genre, tt.booted, locked, applyGenrePreset]);
 
   const arm = async () => {
     try {
@@ -445,71 +223,163 @@ export function TransitionHardware({
       /* MIDI optional */
     }
     await tt.boot();
+  };
+
+  const resetSession = useCallback(() => {
+    setPhase("idle");
+    setGrade(null);
+    setAlignSamples([]);
+    resetMotion();
+  }, [resetMotion]);
+
+  const startSession = async () => {
+    if (!tt.booted) await arm();
+    resetMotion();
+    setAlignSamples([]);
+    setGrade(null);
+    setPhase("recording");
     void tt.playDeck(1);
     void tt.playDeck(2);
   };
 
-  useEffect(() => {
-    if (finished && grade?.passed) markLabPass("/labs/transition");
-  }, [finished, grade?.passed]);
+  const endSession = () => {
+    const judgment = judgeBasicTransition(
+      target,
+      { ...motion, playheads: alignSamples },
+      {
+        bpm1: trackById(tt.track1).bpm,
+        bpm2: trackById(tt.track2).bpm,
+      },
+    );
+    setGrade(judgment);
+    setPhase("graded");
+    if (judgment.passed) markLabPass("/labs/transition");
+  };
+
+  const targetMeta = TRANSITION_RECIPES.find((r) => r.id === target);
+  const bed1 = trackById(tt.track1);
+  const bed2 = trackById(tt.track2);
+
+  const peaks1 = tidal1 ? placeholderPeaks(tidal1.id) : tt.peaks1;
+  const peaks2 = tidal2 ? placeholderPeaks(tidal2.id) : tt.peaks2;
 
   return (
     <HardwareLabShell
-      onRestart={reset}
+      onRestart={() => {
+        tt.stopDeck(1);
+        tt.stopDeck(2);
+        resetSession();
+      }}
       extraToolbar={
-        <button
-          type="button"
-          className={tt.booted ? "active" : ""}
-          onClick={() => void arm()}
-        >
-          {tt.booted ? "Both decks on" : "Arm audio"}
-        </button>
+        <>
+          <button
+            type="button"
+            className={tt.booted ? "active" : ""}
+            disabled={locked}
+            onClick={() => void arm()}
+          >
+            {tt.booted ? "Audio on" : "Arm audio"}
+          </button>
+          {phase === "idle" && (
+            <button type="button" className="active" onClick={() => void startSession()}>
+              Start transition
+            </button>
+          )}
+          {phase === "recording" && (
+            <button type="button" className="active transition-recording-btn" onClick={endSession}>
+              End & grade
+            </button>
+          )}
+          {phase === "graded" && (
+            <button type="button" onClick={resetSession}>Try again</button>
+          )}
+        </>
       }
     >
       {tt.error && <p className="midi-banner warn">{tt.error}</p>}
-      {tt.booted && (!tt.playing1 || !tt.playing2) && (
-        <p className="midi-banner warn">Start both decks — Play on D1 and D2, or re-arm.</p>
+      {recording && (
+        <p className="midi-banner transition-recording-banner">
+          Recording — mix with the box (or on-screen deck). Hit <strong>End & grade</strong> when
+          Deck 2 owns the room.
+        </p>
       )}
 
-      <div className="lab-mode-toggle" role="tablist" aria-label="Transition recipe">
+      <div className="transition-setup-row">
+        <label className="genre-bar-label">
+          <span>Style</span>
+          <select
+            value={genre}
+            disabled={locked}
+            onChange={(e) => setGenre(e.target.value as GenreId)}
+            aria-label="Practice style — loads a default bed pair"
+          >
+            {GENRE_OPTIONS.map((opt) => (
+              <option key={opt.id} value={opt.id}>
+                {opt.label} ({opt.tag})
+              </option>
+            ))}
+          </select>
+        </label>
+        <p className="genre-bar-hint">
+          Style picks default demo beds — or choose tracks below.{" "}
+          <Link to="/djing/transitions">Same-speed mixes</Link>.
+        </p>
+      </div>
+
+      <div className="lab-mode-toggle" role="tablist" aria-label="Transition target">
         {TRANSITION_RECIPES.map((r) => (
           <button
             key={r.id}
             type="button"
             role="tab"
-            className={recipe === r.id ? "active" : ""}
-            aria-selected={recipe === r.id}
-            disabled={finished && recipe === r.id}
-            onClick={() => changeRecipe(r.id)}
+            className={target === r.id ? "active" : ""}
+            aria-selected={target === r.id}
+            disabled={locked}
+            onClick={() => setTarget(r.id)}
           >
             {r.title}
           </button>
         ))}
       </div>
-      <p className="lab-mode-note">{TRANSITION_RECIPES.find((r) => r.id === recipe)?.blurb}</p>
-      <RecipeLearnLinks recipe={recipe} />
+      <p className="lab-mode-note">{targetMeta?.blurb}</p>
+      <RecipeLearnLinks recipe={target} />
 
       <TrackPickerBar
         tracks={tt.tracks}
         track1={tt.track1}
         track2={tt.track2}
-        onSelect={(deck, id) => void tt.setTrack(deck, id)}
-        hint="Leave SYNC off — grade EQ / Filter / XF + tempo scaffold"
+        onSelect={(deck, id) => {
+          if (!locked) void tt.setTrack(deck, id);
+        }}
+        tidal1={tidal1}
+        tidal2={tidal2}
+        onTidalSelect={(deck, ref) => {
+          if (!locked) {
+            if (deck === 1) setTidal1(ref);
+            else setTidal2(ref);
+          }
+        }}
+        freePlayMode
+        hint={
+          locked
+            ? "Finish this attempt before changing tracks"
+            : "Catalog beds drive the grade · Tidal is reference listening (EQ grade uses beds)"
+        }
       />
 
       {tt.booted && (
         <div className="wave-stack">
           <WaveformStrip
-            label="Deck 1"
-            peaks={tt.peaks1}
+            label={deckWaveLabel(1, tidal1, bed1.title)}
+            peaks={peaks1}
             playhead={tt.playhead1}
             duration={tt.duration1}
             cues={tt.cues1}
             playing={tt.playing1}
           />
           <WaveformStrip
-            label="Deck 2"
-            peaks={tt.peaks2}
+            label={deckWaveLabel(2, tidal2, bed2.title)}
+            peaks={peaks2}
             playhead={tt.playhead2}
             duration={tt.duration2}
             cues={tt.cues2}
@@ -519,31 +389,41 @@ export function TransitionHardware({
       )}
 
       <div className="hw-score-strip">
-        <span>
-          {done.length}/{steps.length}
-        </span>
+        <span>{phase === "recording" ? "Recording…" : phase === "graded" ? "Graded" : "Ready"}</span>
         <span>xf {live.values.crossfader ?? "—"}</span>
         <span>D2 low {live.values["deck2.low"] ?? "—"}</span>
-        <span>D2 filter {live.values["deck2.filter"] ?? "—"}</span>
         {grade && <span>score {grade.score}</span>}
       </div>
 
       <MixUltraDeck
         interactive
-        highlight={finished ? null : step.highlight}
         values={live.values}
         pressed={live.pressed}
         playing1={tt.playing1}
         playing2={tt.playing2}
-        prompt={finished ? "Transition locked — read the grade" : step.prompt}
+        pads1={live.pads1}
+        pads2={live.pads2}
+        cues1={tt.cues1}
+        cues2={tt.cues2}
+        jogAngle1={live.jogAngle1}
+        jogAngle2={live.jogAngle2}
+        trackLabel1={deckTrackLabel(tidal1, bed1.title)}
+        trackLabel2={deckTrackLabel(tidal2, bed2.title)}
+        prompt={
+          phase === "recording"
+            ? `Mixing: ${targetMeta?.title ?? "transition"} — EQ · Filter · XF · tempo`
+            : phase === "graded"
+              ? "Read the grade below — Try again for another pass"
+              : `Pick a move, load decks, hit Start — then ${targetMeta?.title ?? "mix"}`
+        }
         status={
-          inZone
-            ? "Hold it… locking in"
-            : "Glow = this step’s control. Full score after the last park."
+          phase === "recording"
+            ? "Leave SYNC off · grade reads your CC motion"
+            : "Full Mix Ultra mirror — match djay hands on the box"
         }
       />
 
-      {finished && grade && (
+      {grade && (
         <HardwareGrade pass={grade.passed}>
           <p>
             <strong>{grade.passed ? "Pass" : "Retry"}.</strong> {grade.summary}
@@ -554,11 +434,38 @@ export function TransitionHardware({
             </p>
           ))}
           <p className="footer-note">
-            Kick line is a playhead/BPM scaffold, not audio kick detection. Neural Mix pads:{" "}
-            <Link to="/labs/neural-pads">Neural Mix pads</Link>.
+            Score is MIDI motion + tempo scaffold on demo beds — not spectral audio analysis. Real
+            songs: use the tutorial links above in djay.
           </p>
         </HardwareGrade>
       )}
     </HardwareLabShell>
+  );
+}
+
+/** Tutorial drill embed — same turntable. */
+export function TransitionHardware({
+  initialRecipe = "free",
+}: {
+  initialRecipe?: TransitionRecipeId;
+}) {
+  return <TransitionTurntable initialTarget={initialRecipe} />;
+}
+
+/** Brief intro (optional Learn tab). */
+export function TransitionLearn() {
+  return (
+    <div className="lab">
+      <p>
+        The <strong>Transition grade</strong> lab is a full Mix Ultra turntable on laptop audio —
+        like free play, but you pick a move (or Free), hit <strong>Start transition</strong>, mix,
+        then <strong>End & grade</strong>.
+      </p>
+      <p>
+        Open <Link to="/labs/transition?mode=hardware">On hardware</Link> for the deck. Overview:{" "}
+        <Link to="/djing/transitions">Same-speed mixes</Link> ·{" "}
+        <Link to="/djing/techniques">Techniques</Link>.
+      </p>
+    </div>
   );
 }
